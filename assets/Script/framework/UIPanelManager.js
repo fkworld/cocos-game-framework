@@ -71,13 +71,13 @@ export default class UIPanelManager extends cc.Component {
         }
         // 优先采用窗口自带的显示方式
         try {
-            panel.panel_node.getComponent(panel_name).show()
+            panel.node.getComponent(panel_name).show()
         } catch (error) {
             panel.show()
         }
         // 修改渲染深度，使其置于顶部
         this.now_z_index += 1
-        panel.zIndex = this.now_z_index
+        panel.node.zIndex = this.now_z_index
     }
 
     /**
@@ -89,9 +89,13 @@ export default class UIPanelManager extends cc.Component {
         if (panel === false) {
             return
         }
-        panel.panel_node.getComponent(panel_name).hide()
-        // 切记要把渲染深度改回去
-        // 要么就在hide()动作结束后改深度，要么就干脆不该深度，2选1
+        // 优先采用窗口自带的关闭方式
+        try {
+            panel.node.getComponent(panel_name).show()
+        } catch (error) {
+            panel.show()
+        }
+        // 要么就在hide()动作结束后改深度，要么就干脆不改深度，2选1
         // panel.zIndex = 0
     }
 
@@ -99,12 +103,12 @@ export default class UIPanelManager extends cc.Component {
     /**
      * 检查窗口名称
      * @param {string} panel_name 窗口名称
-     * @returns {boolean | UIPanel}
+     * @returns {false | UIPanel}
      */
     check_panel(panel_name) {
         let panel = this.panel_array[panel_name]
         if (panel === undefined) {
-            cc.error("查找的窗口不存在，panel_name=", panel_name)
+            cc.error("查找的panel不存在，panel_name=", panel_name)
             return false
         }
         return panel
