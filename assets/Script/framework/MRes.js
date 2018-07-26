@@ -16,7 +16,7 @@ const C = {
  * @class
  */
 @ccclass
-export default class ResManager extends cc.Component {
+export default class MRes extends cc.Component {
 
     onLoad() {
         // 初始化
@@ -36,8 +36,12 @@ export default class ResManager extends cc.Component {
         this.load_res(C.PATH_PANEL, cc.Prefab, this.array_panel)
 
         // 保存实例
-        ResManager.instance = this
+        MRes.instance = this
     }
+
+    /** 脚本实例 
+     * @type {MRes}*/
+    static get ins() { return MRes.instance }
 
     /** 总计数
      * @type {number}
@@ -50,10 +54,6 @@ export default class ResManager extends cc.Component {
      */
     get load_count() { return this._load_count }
     set load_count(count) { this._load_count = count }
-
-    /** 脚本实例 
-     * @type {ResManager}*/
-    static get ins() { return ResManager.instance }
 
     /**
      * 载入资源

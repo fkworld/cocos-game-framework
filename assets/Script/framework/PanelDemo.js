@@ -1,4 +1,4 @@
-import UIPanel from "./UIPanel";
+import PanelBase from "./PanelBase";
 
 const { ccclass, property } = cc._decorator
 
@@ -11,6 +11,6 @@ const { ccclass, property } = cc._decorator
 class PanelDemo extends cc.Component {
     onLoad() {
         /** 得到封装的UIPanel方法 */
-        // this.ui = new UIPanel(this.node)
+        // this.ui = new PanelBase(this.node)
     }
 }

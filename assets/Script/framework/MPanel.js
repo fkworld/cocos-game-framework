@@ -1,5 +1,5 @@
-import UIPanel from "./UIPanel";
-import ResManager from "./ResManager";
+import PanelBase from "./PanelBase";
+import MRes from "./MRes";
 
 const { ccclass, property } = cc._decorator
 
@@ -10,7 +10,7 @@ const { ccclass, property } = cc._decorator
  * - 游戏窗口有多种打开方式：默认打开方式、其他规定的打开方式，规定之外的自定义打开方式
  */
 @ccclass
-export default class UIPanelManager extends cc.Component {
+export default class MPanel extends cc.Component {
 
     /** 
      * panel挂载的父节点
@@ -19,16 +19,11 @@ export default class UIPanelManager extends cc.Component {
     @property(cc.Node)
     panel_parent = null
 
-    /**
-     * 构造函数
-     */
-    constructor() {
-        super()
+    onLoad() {
+        // 初始化
         /** 当前的渲染 */
         this.now_z_index = 0
-    }
 
-    onLoad() {
         // 初始化存储
         /** panel数组 */
         this.panel_array = {}
@@ -36,26 +31,26 @@ export default class UIPanelManager extends cc.Component {
         this.create_all_panel()
 
         // 保存脚本运行实例
-        UIPanelManager.instance = this
+        MPanel.instance = this
     }
 
     /**
      * 脚本运行实例
-     * @type {UIPanelManager} UIPanelManager._instance
+     * @type {MPanel} MPanel.instance
      */
-    static get ins() { return UIPanelManager.instance }
+    static get ins() { return MPanel.instance }
 
     /** 创建所有的panel */
     create_all_panel() {
-        if (!ResManager.ins.is_load_over) {
+        if (!MRes.ins.is_load_over) {
             this.scheduleOnce(this.create_all_panel, 0.5)
         } else {
-            for (let prefab of ResManager.ins.array_panel) {
+            for (let prefab of MRes.ins.array_panel) {
                 // 创建node并写入
                 let node = cc.instantiate(prefab)
                 node.parent = this.panel_parent
                 node.active = false
-                this.panel_array[prefab.name] = new UIPanel(node)
+                this.panel_array[prefab.name] = new PanelBase(node)
             }
         }
     }
@@ -103,7 +98,7 @@ export default class UIPanelManager extends cc.Component {
     /**
      * 检查窗口名称
      * @param {string} panel_name 窗口名称
-     * @returns {false | UIPanel}
+     * @returns {false | PanelBase}
      */
     check_panel(panel_name) {
         let panel = this.panel_array[panel_name]

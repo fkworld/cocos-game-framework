@@ -9,7 +9,7 @@ const C = {
  * @author fengyong
  * @class
  */
-export default class UIPanel {
+export default class PanelBase {
 
     /**
      * 构造函数：传入窗口的根节点
