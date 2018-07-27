@@ -85,7 +85,7 @@ export default class MRes extends cc.Component {
                     this.load_count += 1
                 }
                 // 载入成功
-                cc.info("载入资源成功，path=", path)
+                cc.log("载入资源成功，path=", path)
                 this.check_load_over()
             }
         )
