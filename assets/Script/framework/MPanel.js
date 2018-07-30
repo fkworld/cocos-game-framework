@@ -19,6 +19,9 @@ export default class MPanel extends cc.Component {
     @property(cc.Node)
     panel_parent = null
 
+    /** @type {MPanel} */
+    static ins
+
     onLoad() {
         // 初始化
         /** 当前的渲染 */
@@ -29,14 +32,8 @@ export default class MPanel extends cc.Component {
         this.panel_array = {}
 
         // 保存脚本运行实例
-        MPanel.instance = this
+        MPanel.ins = this
     }
-
-    /**
-     * 脚本运行实例
-     * @type {MPanel} MPanel.instance
-     */
-    static get ins() { return MPanel.instance }
 
     /** 创建所有的panel */
     create_all_panel() {

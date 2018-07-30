@@ -18,6 +18,9 @@ const C = {
 @ccclass
 export default class MRes extends cc.Component {
 
+    /** @type {MRes} */
+    static ins
+
     onLoad() {
         // 初始化
         this.load_count = 0
@@ -34,11 +37,8 @@ export default class MRes extends cc.Component {
         // this.load_chain()
 
         // 保存实例
-        MRes.instance = this
+        MRes.ins = this
     }
-
-    /** @type {MRes} 脚本实例 */
-    static get ins() { return MRes.instance }
 
     /** @type {number} 总计数 */
     get total_count() { return this._total_count }

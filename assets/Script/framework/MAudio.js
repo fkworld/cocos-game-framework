@@ -7,10 +7,10 @@ const { ccclass, property } = cc._decorator
 @ccclass
 export default class MAudio extends cc.Component {
 
-    onLoad() {
-        MAudio.instance = this
-    }
-
     /** @type {MAudio} */
-    static get ins() { return MAudio.instance }
+    static ins
+
+    onLoad() {
+        MAudio.ins = this
+    }
 }
