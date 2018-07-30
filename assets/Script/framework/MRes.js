@@ -1,9 +1,9 @@
 const { ccclass, property } = cc._decorator
 /** 配置参数 */
 const C = {
-    /** panel路径参数 */
+    /** panel资源路径参数 */
     PATH_PANEL: "panel",
-    /** audio路径参数 */
+    /** audio资源路径参数 */
     PATH_AUDIO: "audio",
 }
 
@@ -22,8 +22,6 @@ export default class MRes extends cc.Component {
         // 初始化
         this.load_count = 0
         this.total_count = 0
-        /** 是否全部载入完毕 */
-        this.is_load_over = false
 
         // 初始化存储
         /** panel数组 */
@@ -32,33 +30,40 @@ export default class MRes extends cc.Component {
         this.array_audio = Array.of()
 
         // 链式加载
-        this.load()
+        // 在AppMain中显式加载
+        // this.load_chain()
 
         // 保存实例
         MRes.instance = this
     }
 
-    /** 脚本实例 
-     * @type {MRes}*/
+    /** @type {MRes} 脚本实例 */
     static get ins() { return MRes.instance }
 
-    /** 总计数
-     * @type {number}
-     */
+    /** @type {number} 总计数 */
     get total_count() { return this._total_count }
     set total_count(count) { this._total_count = count }
 
-    /** 载入计数
-     * @type {number}
-     */
+    /** @type {number} 载入计数 */
     get load_count() { return this._load_count }
     set load_count(count) { this._load_count = count }
 
-    async load() {
-        let ret = null
-        ret = await this.load_res(C.PATH_PANEL, cc.Prefab, this.array_panel)
-        ret = await this.load_res(C.PATH_AUDIO, cc.AudioClip, this.array_audio)
-        return ret
+    /** 
+     * 资源加载链
+     * - 实际上是链式加载，嵌套写法，需要使用aysnc/await进行进一步优化
+     */
+    load_chain() {
+        return new Promise((resolve, reject) => {
+            this.load_res(C.PATH_AUDIO, cc.AudioClip, this.array_audio).then((v) => {
+                cc.log(...v)
+                this.load_res(C.PATH_PANEL, cc.Prefab, this.array_panel).then((v) => {
+                    cc.log(...v)
+
+                    // 载入链完成
+                    resolve()
+                })
+            })
+        })
     }
 
     /**
@@ -78,8 +83,7 @@ export default class MRes extends cc.Component {
                 (err, res) => {
                     // 载入失败
                     if (err) {
-                        cc.error("载入资源失败，path&type=", path, type.toString(), "err=", err)
-                        reject("aa")
+                        reject(Array.of("载入资源失败，path&type=", path, type.toString(), "err=", err))
                         return
                     }
                     // 写入数据
@@ -90,8 +94,7 @@ export default class MRes extends cc.Component {
                         this.load_count += 1
                     }
                     // 载入成功
-                    cc.log("载入资源成功，path=", path)
-                    resolve("aaa")
+                    resolve(Array.of("资源载入成功，path=", path))
                 }
             )
         })

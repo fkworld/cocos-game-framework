@@ -1,5 +1,6 @@
 import { L } from "./LocalData";
 import MRes from "./MRes";
+import MPanel from "./MPanel";
 
 const { ccclass, property } = cc._decorator
 
@@ -19,28 +20,14 @@ class AppMain extends cc.Component {
     ll = null
 
     start() {
-        let max_step = 2
-
-        // 0：等待资源载入完毕
-        this.loading_log = "正在载入资源"
-        let f = setInterval(() => {
-            if (MRes.ins.is_load_over) {
-                clearInterval(f)
-            }
-        }, 200)
-
-        setTimeout(() => { }, 5000)
-        cc.log(1)
-
-        // 1：初始化本地数据
-        this.loading_log = "正在检查本地数据"
-        L.is_init = false
-        this.inin_local_data()
-        this.init_test_local_data()
-    }
-
-    update() {
-
+        MRes.ins.load_chain().then(() => {
+            // 1、初始化本地数据
+            L.is_init = false
+            this.inin_local_data()
+            this.init_test_local_data()
+            // 2、针对资源进行二次存储（修改存储结构）
+            MPanel.ins.create_all_panel()
+        })
     }
 
     /** 载入的输出log */

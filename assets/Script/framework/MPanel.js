@@ -28,8 +28,6 @@ export default class MPanel extends cc.Component {
         /** panel数组 */
         this.panel_array = {}
 
-        this.create_all_panel()
-
         // 保存脚本运行实例
         MPanel.instance = this
     }
@@ -42,17 +40,14 @@ export default class MPanel extends cc.Component {
 
     /** 创建所有的panel */
     create_all_panel() {
-        if (!MRes.ins.is_load_over) {
-            this.scheduleOnce(this.create_all_panel, 0.5)
-        } else {
-            for (let prefab of MRes.ins.array_panel) {
-                // 创建node并写入
-                let node = cc.instantiate(prefab)
-                node.parent = this.panel_parent
-                node.active = false
-                this.panel_array[prefab.name] = new PanelBase(node)
-            }
+        for (let prefab of MRes.ins.array_panel) {
+            // 创建node并写入
+            let node = cc.instantiate(prefab)
+            node.parent = this.panel_parent
+            node.active = false
+            this.panel_array[prefab.name] = new PanelBase(node)
         }
+        cc.log("创建所有UI节点成功")
     }
 
     /**
