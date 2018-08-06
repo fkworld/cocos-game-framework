@@ -12,6 +12,9 @@ const { ccclass, property } = cc._decorator
 @ccclass
 export default class MPanel extends cc.Component {
 
+    /** @type {MPanel} */
+    static ins
+
     /** 
      * panel挂载的父节点
      * @type {cc.Node}
@@ -19,8 +22,9 @@ export default class MPanel extends cc.Component {
     @property(cc.Node)
     panel_parent = null
 
-    /** @type {MPanel} */
-    static ins
+    /** @type {cc.Node} panel_loading */
+    @property(cc.Node)
+    panel_loading = null
 
     onLoad() {
         // 初始化
@@ -44,6 +48,9 @@ export default class MPanel extends cc.Component {
             node.active = false
             this.panel_array[prefab.name] = new PanelBase(node)
         }
+        // 匹配loadingpanel
+        // 需要prefab里没有同名的panel
+        this.panel_array["PanelLoading"] = new PanelBase(this.panel_loading)
         cc.log("创建所有UI节点成功")
     }
 
