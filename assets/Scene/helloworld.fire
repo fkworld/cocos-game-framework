@@ -469,9 +469,6 @@
     "_enabled": true,
     "pb": {
       "__id__": 13
-    },
-    "ll": {
-      "__id__": 21
     }
   },
   {
@@ -487,7 +484,7 @@
       "__id__": 23
     },
     "_N$mode": 0,
-    "_N$progress": 0.5,
+    "_N$progress": 0.1,
     "_N$reverse": false
   },
   {
@@ -551,7 +548,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "loading",
+    "_name": "PanelLoading",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -790,8 +787,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 98,
-      "height": 40
+      "width": 275,
+      "height": 25
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -818,18 +815,18 @@
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_actualFontSize": 40,
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_actualFontSize": 25,
+    "_fontSize": 25,
+    "_lineHeight": 25,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "Label",
+    "_N$string": "正在初始化游戏，请稍等",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 0
+    "_N$overflow": 3
   },
   {
     "__type__": "cc.Node",
@@ -864,7 +861,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
+      "width": 40,
       "height": 20
     },
     "_rotationX": 0,

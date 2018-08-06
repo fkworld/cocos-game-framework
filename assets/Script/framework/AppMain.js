@@ -4,6 +4,13 @@ import MPanel from "./MPanel";
 
 const { ccclass, property } = cc._decorator
 
+const C = {
+    /** 假进度条的移动速度 */
+    FAKE_BAR_V: 0.5,
+    /** 假进度条满了之后的延迟时间 */
+    FAKE_BAR_DELAY: 1,
+}
+
 /**
  * 框架文件，游戏启动主入口
  * - 包括控制游戏资源的初始化过程
@@ -15,10 +22,6 @@ class AppMain extends cc.Component {
     @property(cc.ProgressBar)
     pb = null
 
-    /** @type {cc.Label} loading log */
-    @property(cc.Label)
-    ll = null
-
     start() {
         MRes.ins.load_chain().then(() => {
             // 1、初始化本地数据
@@ -27,11 +30,19 @@ class AppMain extends cc.Component {
             this.init_test_local_data()
             // 2、针对资源进行二次存储（修改存储结构）
             MPanel.ins.create_all_panel()
+            // 3、显示游戏界面
+            this.pb.progress = 1
+            this.scheduleOnce(() => {
+                // MPanel.ins.panel_hide("PanelLoading")
+            }, C.FAKE_BAR_DELAY)
         })
+        this.pb.progress = 0
     }
 
-    /** 载入的输出log */
-    set loading_log(log) { this.ll.string = log }
+    update(dt) {
+        if (this.pb.progress >= 1) { return }
+        this.pb.progress += C.FAKE_BAR_V * dt
+    }
 
     /** 初始化本地数据 */
     inin_local_data() {
