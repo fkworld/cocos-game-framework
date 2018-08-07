@@ -72,7 +72,6 @@ class Global {
 
 }
 
-/** 
- * Global全局类实例
- */
-export let G = new Global()
+/** Global全局类实例 */
+let G = new Global()
+export default G
