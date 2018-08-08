@@ -1,7 +1,11 @@
-import PanelBase from "./PanelBase";
 import MRes from "./MRes";
 
 const { ccclass, property } = cc._decorator
+/** 配置参数 */
+const C = {
+    /** 默认动作时间 */
+    DEFAULT_TIME: 0.2,
+}
 
 /**
  * 框架文件：游戏panel管理类
@@ -32,8 +36,10 @@ export default class MPanel extends cc.Component {
         this.now_z_index = 0
 
         // 初始化存储
-        /** panel数组 */
-        this.panel_array = {}
+        /** panel存储object（考虑到ES6的支持情况，暂时不要使用Map结构）
+         * - 每一行的结构为：string:cc.Node
+         */
+        this.object_all_panel = {}
 
         // 保存脚本运行实例
         MPanel.ins = this
@@ -46,12 +52,26 @@ export default class MPanel extends cc.Component {
             let node = cc.instantiate(prefab)
             node.parent = this.panel_parent
             node.active = false
-            this.panel_array[prefab.name] = new PanelBase(node)
+            this.object_all_panel[prefab.name] = node
         }
         // 匹配loadingpanel
         // 需要prefab里没有同名的panel
-        this.panel_array["PanelLoading"] = new PanelBase(this.panel_loading)
-        cc.log("创建所有UI节点成功")
+        this.object_all_panel["PanelLoading"] = this.panel_loading
+        cc.log(this.name, "创建所有UI节点成功")
+    }
+
+    /**
+     * 检查窗口名称
+     * @param {string} panel_name 窗口名称
+     * @returns {undefined | cc.Node}
+     */
+    check_panel(panel_name) {
+        let panel = this.object_all_panel[panel_name]
+        if (panel === undefined) {
+            cc.error("查找的panel不存在，panel_name=", panel_name)
+            return undefined // 查询不到的时候会panel=undefined，这里显式返回一下
+        }
+        return panel
     }
 
     /**
@@ -60,18 +80,22 @@ export default class MPanel extends cc.Component {
      */
     panel_show(panel_name) {
         let panel = this.check_panel(panel_name)
-        if (panel === false) {
-            return
-        }
-        // 优先采用窗口自带的显示方式
+        if (panel === undefined) { return }
+        // 特别要注意这里
+        // 可能会出现多次调用hide()方法，但是当第一个hide()方法执行成功后，节点隐藏，其余的hide()方法为静默状态
+        // 下次show()的时候，则会继续执行静默的hide()方法，导致界面异常隐藏掉
+        panel.stopAllActions()
+        // 为了避免这一问题，尽量不要在多次调用hide()方法，例如update()中
         try {
-            panel.node.getComponent(panel_name).show()
+            // 优先采用窗口自带的显示方式
+            panel.getComponent(panel_name).show()
         } catch (error) {
-            panel.show()
+            // 如果没有自带的显示方式，则调用默认显示方式
+            MPanel.show(panel)
         }
         // 修改渲染深度，使其置于顶部
         this.now_z_index += 1
-        panel.node.zIndex = this.now_z_index
+        panel.zIndex = this.now_z_index
     }
 
     /**
@@ -80,31 +104,91 @@ export default class MPanel extends cc.Component {
      */
     panel_hide(panel_name) {
         let panel = this.check_panel(panel_name)
-        if (panel === false) {
-            return
-        }
+        if (panel === undefined) { return }
         // 优先采用窗口自带的关闭方式
         try {
-            panel.node.getComponent(panel_name).show()
+            panel.getComponent(panel_name).hide()
         } catch (error) {
-            panel.show()
+            MPanel.hide(panel)
         }
-        // 要么就在hide()动作结束后改深度，要么就干脆不改深度，2选1
-        // panel.zIndex = 0
     }
 
+    //////////
+    // 默认方法
+    //////////
 
     /**
-     * 检查窗口名称
-     * @param {string} panel_name 窗口名称
-     * @returns {false | PanelBase}
+     * 统一的窗口默认显示方式，在MPanel中调用，不需要在各个子窗口中调用
+     * @static
+     * @param {cc.Node} panel_node
      */
-    check_panel(panel_name) {
-        let panel = this.panel_array[panel_name]
-        if (panel === undefined) {
-            cc.error("查找的panel不存在，panel_name=", panel_name)
-            return false
-        }
-        return panel
+    static show(panel_node) {
+        MPanel.show_with_nothing(panel_node)
+    }
+
+    /**
+     * 统一的窗口默认隐藏方式，在MPanel中调用，不需要在各个子窗口中调用
+     * @static
+     * @param {cc.Node} panel_node
+     */
+    static hide(panel_node) {
+        MPanel.hide_with_nothing(panel_node)
+    }
+
+    //////////
+    // 以下方法为具体show和hide实现方法
+    //////////
+
+    /** 
+     * 显示窗口：没有任何动画
+     * @static
+     * @param {cc.Node} panel_node
+     */
+    static show_with_nothing(panel_node) {
+        panel_node.active = true
+    }
+
+    /** 
+     * 隐藏窗口：没有任何动画
+     * @static
+     * @param {cc.Node} panel_node
+     */
+    static hide_with_nothing(panel_node) {
+        panel_node.active = false
+    }
+
+    /** 
+     * 显示窗口：放大缩小动画
+     * @static
+     * @param {cc.Node} panel_node
+     * @returns {number} action time
+     */
+    static show_with_scale(panel_node) {
+        // 前摇
+        panel_node.scale = 0
+        panel_node.active = true // 特别注意：只有当node.active为true时，才可以执行动作；因此在前摇结束后需要保证node.active为true
+        // 动作
+        let action = cc.scaleTo(C.DEFAULT_TIME, 1)
+        panel_node.runAction(action)
+        return time
+    }
+
+    /** 
+     * 隐藏窗口：放大缩小动画
+     * @static
+     * @param {cc.Node} panel_node
+     * @returns {number} action time
+     */
+    static hide_with_scale(panel_node) {
+        // 前摇
+        // 动作
+        let action = cc.sequence(
+            cc.scaleTo(C.DEFAULT_TIME, 0),
+            cc.callFunc(() => {
+                panel_node.active = false
+            })
+        )
+        panel_node.runAction(action)
+        return time
     }
 }

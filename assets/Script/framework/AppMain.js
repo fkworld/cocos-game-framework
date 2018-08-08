@@ -1,4 +1,4 @@
-import { L } from "./LocalData";
+import L from "./LocalData";
 import MRes from "./MRes";
 import MPanel from "./MPanel";
 
@@ -33,7 +33,8 @@ class AppMain extends cc.Component {
             // 3、显示游戏界面
             this.pb.progress = 1
             this.scheduleOnce(() => {
-                // MPanel.ins.panel_hide("PanelLoading")
+                MPanel.ins.panel_hide("PanelLoading")
+                MPanel.ins.panel_show("PanelTest")
             }, C.FAKE_BAR_DELAY)
         })
         this.pb.progress = 0
