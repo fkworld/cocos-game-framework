@@ -793,6 +793,7 @@
     "_N$barSprite": {
       "__id__": 18
     },
+    "_N$barNode": null,
     "_N$mode": 0,
     "_N$progress": 0.1,
     "_N$reverse": false
