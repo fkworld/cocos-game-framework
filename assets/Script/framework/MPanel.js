@@ -19,16 +19,9 @@ export default class MPanel extends cc.Component {
     /** @type {MPanel} */
     static ins
 
-    /** 
-     * panel挂载的父节点
-     * @type {cc.Node}
-     */
+    /** @type {cc.Node} panel挂载的父节点 */
     @property(cc.Node)
     panel_parent = null
-
-    /** @type {cc.Node} panel_loading */
-    @property(cc.Node)
-    panel_loading = null
 
     onLoad() {
         // 初始化
@@ -36,80 +29,71 @@ export default class MPanel extends cc.Component {
         this.now_z_index = 0
 
         // 初始化存储
-        /** panel存储object（考虑到ES6的支持情况，暂时不要使用Map结构）
-         * - 每一行的结构为：string:cc.Node
-         */
-        this.object_all_panel = {}
+        /** @type {{string:cc.Prefab}} panel存储object（考虑到ES6的支持情况，暂时不要使用Map结构）*/
+        this.object_panel = {}
+        /** @type {{string:cc.Node}} 新建的panel节点 */
+        this.object_node = {}
 
         // 保存脚本运行实例
         MPanel.ins = this
     }
 
-    /** 创建所有的panel */
-    create_all_panel() {
+    /** 数据转换 */
+    trans_array_to_object() {
         for (let prefab of MRes.ins.array_panel) {
-            // 创建node并写入
-            let node = cc.instantiate(prefab)
-            node.parent = this.panel_parent
-            node.active = false
-            this.object_all_panel[prefab.name] = node
+            this.object_panel[prefab.name] = prefab
         }
-        // 匹配loadingpanel
-        // 需要prefab里没有同名的panel
-        this.object_all_panel["PanelLoading"] = this.panel_loading
-        cc.log(this.name, "创建所有UI节点成功")
     }
 
     /**
-     * 检查窗口名称
-     * @param {string} panel_name 窗口名称
-     * @returns {undefined | cc.Node}
-     */
-    check_panel(panel_name) {
-        let panel = this.object_all_panel[panel_name]
-        if (panel === undefined) {
-            cc.error("查找的panel不存在，panel_name=", panel_name)
-            return undefined // 查询不到的时候会panel=undefined，这里显式返回一下
-        }
-        return panel
-    }
-
-    /**
-     * 显示panel
+     * 打开panel
      * @param {string} panel_name 窗口名
      */
-    panel_show(panel_name) {
-        let panel = this.check_panel(panel_name)
-        if (panel === undefined) { return }
-        // 特别要注意这里
-        // 可能会出现多次调用hide()方法，但是当第一个hide()方法执行成功后，节点隐藏，其余的hide()方法为静默状态
-        // 下次show()的时候，则会继续执行静默的hide()方法，导致界面异常隐藏掉
-        panel.stopAllActions()
-        // 为了避免这一问题，尽量不要在多次调用hide()方法，例如update()中
+    panel_open(panel_name) {
+        // 获取prefab
+        let panel = this.object_panel[panel_name]
+        if (panel === undefined) {
+            cc.error("需要显示的panel不存在，panel_name=", panel_name)
+            return
+        }
+        // 创建节点
+        let node = cc.instantiate(panel)
+        node.parent = this.panel_parent
+        node.active = false
+        node.position = cc.Vec2.ZERO
+        node.stopAllActions()
+        // 打开节点
         try {
             // 优先采用窗口自带的显示方式
-            panel.getComponent(panel_name).show()
+            node.getComponent(panel_name).open()
         } catch (error) {
             // 如果没有自带的显示方式，则调用默认显示方式
-            MPanel.show(panel)
+            MPanel.open(node)
         }
         // 修改渲染深度，使其置于顶部
         this.now_z_index += 1
-        panel.zIndex = this.now_z_index
+        node.zIndex = this.now_z_index
+        // 保存节点
+        this.object_node[panel_name] = node
     }
 
     /**
-     * 隐藏panel
-     * @param {string} panel_name 窗口名
+     * 关闭panel
+     * @param {string} panel_name 
      */
-    panel_hide(panel_name) {
-        let panel = this.check_panel(panel_name)
-        if (panel === undefined) { return }
-        // 优先采用窗口自带的关闭方式
+    panel_close(panel_name) {
+        // 获取节点
+        let node = this.object_node[panel_name]
+        if (node === undefined) {
+            cc.error("需要关闭的panel不存在，panel_name=", panel_name)
+            return
+        }
+        node.stopAllActions()
+        // 关闭节点
         try {
-            panel.getComponent(panel_name).hide()
+            node.getComponent(panel_name).close()
         } catch (error) {
-            MPanel.hide(panel)
+            MPanel.close(node)
         }
     }
 
@@ -122,8 +106,8 @@ export default class MPanel extends cc.Component {
      * @static
      * @param {cc.Node} panel_node
      */
-    static show(panel_node) {
-        MPanel.show_with_nothing(panel_node)
+    static open(panel_node) {
+        MPanel.open_with_nothing(panel_node)
     }
 
     /**
@@ -131,8 +115,8 @@ export default class MPanel extends cc.Component {
      * @static
      * @param {cc.Node} panel_node
      */
-    static hide(panel_node) {
-        MPanel.hide_with_nothing(panel_node)
+    static close(panel_node) {
+        MPanel.close_with_nothing(panel_node)
     }
 
     //////////
@@ -140,55 +124,80 @@ export default class MPanel extends cc.Component {
     //////////
 
     /** 
-     * 显示窗口：没有任何动画
+     * 打开panel：没有任何动画
      * @static
      * @param {cc.Node} panel_node
      */
-    static show_with_nothing(panel_node) {
+    static open_with_nothing(panel_node) {
         panel_node.active = true
     }
 
     /** 
-     * 隐藏窗口：没有任何动画
+     * 关闭panel：没有任何动画
      * @static
      * @param {cc.Node} panel_node
      */
-    static hide_with_nothing(panel_node) {
+    static close_with_nothing(panel_node) {
         panel_node.active = false
+        panel_node.removeFromParent()
+        panel_node.destroy()
     }
 
     /** 
-     * 显示窗口：放大缩小动画
+     * 打开panel：放大缩小动画
      * @static
      * @param {cc.Node} panel_node
      * @returns {number} action time
      */
-    static show_with_scale(panel_node) {
-        // 前摇
+    static open_with_scale(panel_node) {
         panel_node.scale = 0
         panel_node.active = true // 特别注意：只有当node.active为true时，才可以执行动作；因此在前摇结束后需要保证node.active为true
-        // 动作
-        let action = cc.scaleTo(C.DEFAULT_TIME, 1)
-        panel_node.runAction(action)
-        return time
+        panel_node.runAction(cc.scaleTo(C.DEFAULT_TIME, 1))
+        return C.DEFAULT_TIME
     }
 
     /** 
-     * 隐藏窗口：放大缩小动画
+     * 关闭panel：放大缩小动画
      * @static
      * @param {cc.Node} panel_node
      * @returns {number} action time
      */
-    static hide_with_scale(panel_node) {
-        // 前摇
-        // 动作
-        let action = cc.sequence(
+    static close_with_scale(panel_node) {
+        panel_node.runAction(cc.sequence(
             cc.scaleTo(C.DEFAULT_TIME, 0),
             cc.callFunc(() => {
-                panel_node.active = false
+                MPanel.close_with_nothing(panel_node)
             })
-        )
-        panel_node.runAction(action)
-        return time
+        ))
+        return C.DEFAULT_TIME
+    }
+
+    /** 
+     * 打开panel：透明度改变动画
+     * @static
+     * @param {cc.Node} panel_node
+     * @returns {number} action time
+     */
+    static open_with_fade(panel_node) {
+        panel_node.opacity = 0
+        panel_node.active = true // 特别注意：只有当node.active为true时，才可以执行动作；因此在前摇结束后需要保证node.active为true
+        panel_node.runAction(cc.fadeIn(C.DEFAULT_TIME))
+        return C.DEFAULT_TIME
+    }
+
+    /** 
+     * 关闭panel：透明度改变动画
+     * @static
+     * @param {cc.Node} panel_node
+     * @returns {number} action time
+     */
+    static close_with_fade(panel_node) {
+        panel_node.runAction(cc.sequence(
+            cc.fadeOut(C.DEFAULT_TIME),
+            cc.callFunc(() => {
+                MPanel.close_with_nothing(panel_node)
+            })
+        ))
+        return C.DEFAULT_TIME
     }
 }

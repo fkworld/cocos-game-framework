@@ -29,7 +29,7 @@ export default class MRes extends cc.Component {
         this.total_count = 0
 
         // 初始化存储
-        /** panel数组 */
+        /** @type {[cc.Prefab]} panel数组 */
         this.array_panel = Array.of()
         /** audio数组 */
         this.array_audio = Array.of()

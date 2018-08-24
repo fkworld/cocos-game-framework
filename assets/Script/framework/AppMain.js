@@ -5,10 +5,12 @@ import MPanel from "./MPanel";
 const { ccclass, property } = cc._decorator
 
 const C = {
-    /** 假进度条的移动速度 */
-    FAKE_BAR_V: 0.5,
+    /** 假进度条的移动速度（每秒移动多少百分比） */
+    FAKE_BAR_V: 1,
     /** 假进度条满了之后的延迟时间 */
-    FAKE_BAR_DELAY: 1,
+    FAKE_BAR_DELAY: 0.5,
+    /** loading界面渐隐时间 */
+    LAODING_FADE_TIME: 1,
 }
 
 /**
@@ -18,26 +20,35 @@ const C = {
 @ccclass
 class AppMain extends cc.Component {
 
+    /** @type {cc.Node} */
+    @property(cc.Node)
+    panel_loading = null
+
     /** @type {cc.ProgressBar} progress bar */
     @property(cc.ProgressBar)
     pb = null
 
     start() {
+        this.pb.progress = 0
         MRes.ins.load_chain().then(() => {
             // 1、初始化本地数据
             L.is_init = false
             this.inin_local_data()
             this.init_test_local_data()
             // 2、针对资源进行二次存储（修改存储结构）
-            MPanel.ins.create_all_panel()
-            // 3、显示游戏界面
-            this.pb.progress = 1
+            MPanel.ins.trans_array_to_object()
+            // 3、关闭loading界面，显示游戏界面
             this.scheduleOnce(() => {
-                MPanel.ins.panel_hide("PanelLoading")
-                MPanel.ins.panel_show("PanelTest")
-            }, C.FAKE_BAR_DELAY)
+                // 定制渐隐效果
+                this.panel_loading.runAction(cc.sequence(
+                    cc.fadeOut(C.LAODING_FADE_TIME),
+                    cc.callFunc(() => {
+                        // 渐隐结束后调用主窗口
+                        MPanel.ins.panel_open("PanelTest")
+                    })
+                ))
+            }, C.FAKE_BAR_DELAY + 1 / C.FAKE_BAR_V)
         })
-        this.pb.progress = 0
     }
 
     update(dt) {
