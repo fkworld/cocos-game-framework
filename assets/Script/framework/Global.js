@@ -70,6 +70,38 @@ class Global {
         }
     }
 
+    /**
+     * 依次运行多个promise
+     * - 考虑到async/await各个平台的支持情况不同，尽量不要在代码中使用
+     * - 默认每个promise，resolve一个无关的返回值；如果返回值是有用的，则无法使用这个方法
+     * - 我也不知道为啥这样写就能成功。。。嗯。。。
+     * - 实际使用起来感觉也挺复杂的（参考MRes.load_chain()），以后再改动吧。
+     * @param {[()=>{}]} promise_array 由于promise建立后立即执行的特性（坑），因此需要使用一个箭头函数进行包装
+     * @returns {Promise}
+     */
+    run_promise_chain(promise_array) {
+        let p = Promise.resolve()
+        for (let promise of promise_array) {
+            p = p.then(promise)
+        }
+        return p
+    }
+
+    /**
+     * 依次运行多个promise（有缺点）
+     * - 使用递归算法
+     * - 【注意】 异步操作无法使用尾递归优化
+     * - 【注意】 异步操作无法返回一个正常的返回值（异步函数会直接返回undefined）,应该无法在此函数后使用then()
+     * @param {[()=>{}]} promise_array
+     * @returns {undefined}
+     */
+    run_promise_chain_with_recursive(promise_array) {
+        if (promise_array.length === 0) { return }
+        let a = promise_array.shift()
+        a().then(() => {
+            this.run_promise_chain_with_recursive(promise_array)
+        })
+    }
 }
 
 /** Global全局类实例 */

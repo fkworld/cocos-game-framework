@@ -1,3 +1,5 @@
+import G from "./Global";
+
 const { ccclass, property } = cc._decorator
 /** 配置参数 */
 const C = {
@@ -50,20 +52,13 @@ export default class MRes extends cc.Component {
 
     /** 
      * 资源加载链
-     * - 实际上是链式加载，嵌套写法，需要使用aysnc/await进行进一步优化
+     * @returns {Promise}
      */
     load_chain() {
-        return new Promise((resolve, reject) => {
-            this.load_res(C.PATH_AUDIO, cc.AudioClip, this.array_audio).then((v) => {
-                cc.log(...v)
-                this.load_res(C.PATH_PANEL, cc.Prefab, this.array_panel).then((v) => {
-                    cc.log(...v)
-
-                    // 载入链完成
-                    resolve()
-                })
-            })
-        })
+        return G.run_promise_chain(Array.of(
+            () => { return this.load_res(C.PATH_AUDIO, cc.AudioClip, this.array_audio) },
+            () => { return this.load_res(C.PATH_PANEL, cc.Prefab, this.array_panel) },
+        ))
     }
 
     /**
@@ -83,7 +78,8 @@ export default class MRes extends cc.Component {
                 (err, res) => {
                     // 载入失败
                     if (err) {
-                        reject(Array.of("载入资源失败，path&type=", path, type.toString(), "err=", err))
+                        cc.log("载入资源失败，path&type=", path, type.toString(), "err=", err)
+                        reject()
                         return
                     }
                     // 写入数据
@@ -94,7 +90,8 @@ export default class MRes extends cc.Component {
                         this.load_count += 1
                     }
                     // 载入成功
-                    resolve(Array.of("资源载入成功，path=", path))
+                    cc.log("资源载入成功，path=", path)
+                    resolve()
                 }
             )
         })
