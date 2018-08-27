@@ -31,5 +31,5 @@ class LocalData {
 }
 
 /** 本地存储实例 */
-let L = new LocalData()
+const L = new LocalData()
 export default L

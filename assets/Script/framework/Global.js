@@ -105,5 +105,5 @@ class Global {
 }
 
 /** Global全局类实例 */
-let G = new Global()
+const G = new Global()
 export default G
