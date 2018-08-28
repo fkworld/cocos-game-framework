@@ -25,6 +25,10 @@ class LocalData {
     set sound(value) { this.set_item("sound", value) }
     get sound() { return this.get_item("sound") }
 
+    /** 语言 */
+    set language(value) { this.set_item("language", value) }
+    get language() { return this.get_item("language") }
+
     //////////
     // 下面的内容需要添加每个游戏自身的本地存储
     //////////
