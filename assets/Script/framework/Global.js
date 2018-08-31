@@ -102,6 +102,15 @@ class Global {
             this.run_promise_chain_with_recursive(promise_array)
         })
     }
+
+    /** 
+     * 获取节点的世界坐标
+     * @param {cc.Node} node
+     * @returns {cc.Vec2}
+     */
+    get_node_world_position(node) {
+        return node.parent.convertToWorldSpaceAR(node.position)
+    }
 }
 
 /** Global全局类实例 */
