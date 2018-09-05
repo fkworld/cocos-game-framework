@@ -1,4 +1,4 @@
-import G from "./Global";
+import G from "./G";
 
 const { ccclass, property } = cc._decorator
 /** 配置参数 */
@@ -19,7 +19,7 @@ const C = {
  */
 @ccclass
 export default class MRes extends cc.Component {
-
+    
     /** @type {MRes} */
     static ins
 
