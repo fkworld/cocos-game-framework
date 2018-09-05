@@ -16,7 +16,7 @@ Object.freeze(C)
 export default class MAudio extends cc.Component {
 
     /** @type {MAudio} */
-    static ins
+    static ins;
 
     onLoad() {
         MAudio.ins = this

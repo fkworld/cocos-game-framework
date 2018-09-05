@@ -1,7 +1,6 @@
 import L from "./L";
 import MRes from "./MRes";
 import MPanel from "./MPanel";
-import MAudio from "./MAudio";
 
 const { ccclass, property } = cc._decorator
 
@@ -11,7 +10,7 @@ const C = {
     /** 假进度条满了之后的延迟时间 */
     FAKE_BAR_DELAY: 0.5,
     /** loading界面渐隐时间 */
-    LAODING_FADE_TIME: 1,
+    LAODING_FADE_TIME: 0.5,
     SCREEN_RATIO: 1136 / 640,
 }
 Object.freeze(C)

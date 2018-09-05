@@ -6,6 +6,7 @@ const C = {
     /** panel资源路径参数 */
     PATH_PANEL: "panel",
 }
+Object.freeze(C)
 
 /**
  * 框架文件：资源管理器
@@ -13,25 +14,22 @@ const C = {
  * - 资源路径写在模块开头的C中
  * - 资源路径需要在resource文件夹下
  * - 脚本需要挂载在尽量靠前的位置
- * @class
  */
 @ccclass
 export default class MRes extends cc.Component {
 
     /** @type {MRes} */
-    static ins
+    static ins;
 
     onLoad() {
-        // 初始化存储
+        MRes.ins = this
+
         /** @type {Array<cc.Prefab>} panel数组 */
         this.array_panel = Array.of()
 
         // 链式加载
         // 在AppMain中显式加载
         // this.load_chain()
-
-        // 保存实例
-        MRes.ins = this
     }
 
     /**
@@ -47,7 +45,7 @@ export default class MRes extends cc.Component {
     /**
      * 载入资源
      * @param {string} path 路径
-     * @param {typeof cc.Asset} type 类型
+     * @param {cc.Asset} type 类型
      * @param {Array} array 资源数组
      */
     load_res(path, type, array) {

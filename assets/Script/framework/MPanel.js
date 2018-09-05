@@ -6,6 +6,7 @@ const C = {
     /** 默认动作时间 */
     DEFAULT_TIME: 0.2,
 }
+Object.freeze(C)
 
 /**
  * 框架文件：游戏panel管理类
@@ -17,25 +18,21 @@ const C = {
 export default class MPanel extends cc.Component {
 
     /** @type {MPanel} */
-    static ins
+    static ins;
 
     /** @type {cc.Node} panel挂载的父节点 */
     @property(cc.Node)
     panel_parent = null
 
     onLoad() {
-        // 初始化
+        MPanel.ins = this
+
         /** 当前的渲染 */
         this.now_z_index = 0
-
-        // 初始化存储
-        /** @type {{string:cc.Prefab}} panel存储object（考虑到ES6的支持情况，暂时不要使用Map结构）*/
+        /** @type {Object<cc.Prefab>} panel存储object（考虑到ES6的支持情况，暂时不要使用Map结构）*/
         this.object_panel = {}
-        /** @type {{string:cc.Node}} 新建的panel节点 */
+        /** @type {Object<cc.Node>} 新建的panel节点 */
         this.object_node = {}
-
-        // 保存脚本运行实例
-        MPanel.ins = this
     }
 
     /** 数据转换 */
@@ -103,8 +100,8 @@ export default class MPanel extends cc.Component {
 
     /**
      * 统一的窗口默认显示方式，在MPanel中调用，不需要在各个子窗口中调用
-     * @static
      * @param {cc.Node} panel_node
+     * @static
      */
     static open(panel_node) {
         MPanel.open_with_nothing(panel_node)
@@ -112,8 +109,8 @@ export default class MPanel extends cc.Component {
 
     /**
      * 统一的窗口默认隐藏方式，在MPanel中调用，不需要在各个子窗口中调用
-     * @static
      * @param {cc.Node} panel_node
+     * @static
      */
     static close(panel_node) {
         MPanel.close_with_nothing(panel_node)
@@ -125,8 +122,8 @@ export default class MPanel extends cc.Component {
 
     /** 
      * 打开panel：没有任何动画
-     * @static
      * @param {cc.Node} panel_node
+     * @static
      */
     static open_with_nothing(panel_node) {
         panel_node.active = true
@@ -134,8 +131,8 @@ export default class MPanel extends cc.Component {
 
     /** 
      * 关闭panel：没有任何动画
-     * @static
      * @param {cc.Node} panel_node
+     * @static
      */
     static close_with_nothing(panel_node) {
         panel_node.active = false
@@ -145,9 +142,9 @@ export default class MPanel extends cc.Component {
 
     /** 
      * 打开panel：放大缩小动画
-     * @static
      * @param {cc.Node} panel_node
-     * @returns {number} action time
+     * @returns {number} 动画持续时间
+     * @static
      */
     static open_with_scale(panel_node) {
         panel_node.scale = 0
@@ -158,9 +155,9 @@ export default class MPanel extends cc.Component {
 
     /** 
      * 关闭panel：放大缩小动画
-     * @static
      * @param {cc.Node} panel_node
-     * @returns {number} action time
+     * @returns {number} 动画持续时间
+     * @static
      */
     static close_with_scale(panel_node) {
         panel_node.runAction(cc.sequence(
@@ -174,9 +171,9 @@ export default class MPanel extends cc.Component {
 
     /** 
      * 打开panel：透明度改变动画
-     * @static
      * @param {cc.Node} panel_node
-     * @returns {number} action time
+     * @returns {number} 动画持续时间
+     * @static
      */
     static open_with_fade(panel_node) {
         panel_node.opacity = 0
@@ -187,9 +184,9 @@ export default class MPanel extends cc.Component {
 
     /** 
      * 关闭panel：透明度改变动画
-     * @static
      * @param {cc.Node} panel_node
-     * @returns {number} action time
+     * @returns {number} 动画持续时间
+     * @static
      */
     static close_with_fade(panel_node) {
         panel_node.runAction(cc.sequence(

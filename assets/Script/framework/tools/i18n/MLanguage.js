@@ -1,12 +1,12 @@
 import LanguageZH from "./LanguageZH";
-import LanguageEN from "./LanguageEn";
+import LanguageEN from "./LanguageEN";
 import L from "../../L";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 
 /**
  * 框架文件：Label本地化组件
- * - 用法：修改LanguageZH.js中的内容，key-value格式，并将此组件挂载在对应的Label所在节点下，修改key
+ * - 【用法】修改LanguageZH.js中的内容，key-value格式，并将此组件挂载在对应的Label所在节点下，修改key
  */
 @ccclass
 @executeInEditMode
@@ -14,16 +14,15 @@ const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 export default class MLanguage extends cc.Component {
 
     /** 预览（点击后刷新编辑器） */
-    @property({ tooltip: "预览" })
+    @property({ tooltip: '预览' })
     preview = false
 
     /** key */
     @property({
-        tooltip: "本地key",
-        multiline: true,
+        tooltip: '本地化key', multiline: true,
         // notify: () => { }, // 会报错：not yet support notify attribute for ES6 Classes
     })
-    key = "输入一个key"
+    key = '输入一个key'
 
     start() {
         this.update_label()
@@ -51,6 +50,7 @@ export default class MLanguage extends cc.Component {
      * 获取text数值
      * @param {string} key 
      * @returns {undefined | string}
+     * @static
      */
     static get_text(key) {
         let value;
