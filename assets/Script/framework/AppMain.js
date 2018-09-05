@@ -1,6 +1,7 @@
 import L from "./L";
 import MRes from "./MRes";
 import MPanel from "./MPanel";
+import MAudio from "./MAudio";
 
 const { ccclass, property } = cc._decorator
 
@@ -37,6 +38,7 @@ class AppMain extends cc.Component {
             this.init_test_local_data()
             // 2、针对资源进行二次存储（修改存储结构）
             MPanel.ins.trans_array_to_object()
+            MAudio.ins.trans_array_to_object()
             // 3、关闭loading界面，显示游戏界面
             this.scheduleOnce(() => {
                 // 定制渐隐效果
