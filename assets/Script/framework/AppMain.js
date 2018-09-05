@@ -1,4 +1,4 @@
-import L from "./LocalData";
+import L from "./L";
 import MRes from "./MRes";
 import MPanel from "./MPanel";
 

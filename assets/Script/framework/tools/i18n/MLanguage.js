@@ -1,6 +1,6 @@
 import LanguageZH from "./LanguageZH";
 import LanguageEN from "./LanguageEn";
-import L from "../../LocalData";
+import L from "../../L";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 
