@@ -1,4 +1,5 @@
 import L from "./L";
+import MRes from "./MRes";
 
 const { ccclass, property } = cc._decorator
 
