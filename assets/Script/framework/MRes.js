@@ -5,8 +5,6 @@ const { ccclass, property } = cc._decorator
 const C = {
     /** panel资源路径参数 */
     PATH_PANEL: "panel",
-    /** audio资源路径参数 */
-    PATH_AUDIO: "audio",
 }
 
 /**
@@ -19,7 +17,7 @@ const C = {
  */
 @ccclass
 export default class MRes extends cc.Component {
-    
+
     /** @type {MRes} */
     static ins
 
@@ -27,8 +25,6 @@ export default class MRes extends cc.Component {
         // 初始化存储
         /** @type {Array<cc.Prefab>} panel数组 */
         this.array_panel = Array.of()
-        /** @type {Array<cc.AudioClip>} audio数组 */
-        this.array_audio = Array.of()
 
         // 链式加载
         // 在AppMain中显式加载
@@ -44,7 +40,6 @@ export default class MRes extends cc.Component {
      */
     load_chain() {
         return G.run_promise_chain(Array.of(
-            () => { return this.load_res(C.PATH_AUDIO, cc.AudioClip, this.array_audio) },
             () => { return this.load_res(C.PATH_PANEL, cc.Prefab, this.array_panel) },
         ))
     }

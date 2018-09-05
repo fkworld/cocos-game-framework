@@ -1,11 +1,16 @@
 import L from "./L";
-import MRes from "./MRes";
 
 const { ccclass, property } = cc._decorator
+const C = {
+    /** audio所在的path */
+    AUDIO_PATH: 'audio',
+}
+Object.freeze(C)
 
 /**
  * 框架文件：音频管理类
  * - 封装调用的方法
+ * - 【注意】AudioClip与Prefab不同，由于引擎原因（个人觉得是bug），载入的是一串字符串url，因此不适合统一载入
  */
 @ccclass
 export default class MAudio extends cc.Component {
@@ -14,17 +19,7 @@ export default class MAudio extends cc.Component {
     static ins
 
     onLoad() {
-        /** @type {Object<cc.AudioClip>} audio存储 */
-        this.object_audio = {}
-
         MAudio.ins = this
-    }
-
-    /** 数据转换（由于需要等待音频资源载入完成，因此不直接调用，而在AppMain中调用） */
-    trans_array_to_object() {
-        for (let audio of MRes.ins.array_audio) {
-            this.object_audio[audio.name] = audio
-        }
     }
 
     /** 
@@ -78,25 +73,14 @@ export default class MAudio extends cc.Component {
      * @param {string} name
      */
     play_audio(name) {
-        // 检查
-        if (!this.check_name(name)) { return }
-        // 播放
         cc.audioEngine.stopAll()
-        cc.audioEngine.play(this.object_audio[name])
+        cc.loader.loadRes(C.AUDIO_PATH + '/' + name, cc.AudioClip, (err, audio) => {
+            if (err) {
+                cc.error('载入audio资源失败，audio_name=', name, 'error=', err)
+                return
+            }
+            cc.loader.setAutoRelease(audio, true)
+            cc.audioEngine.play(audio, false)
+        })
     }
-
-    /**
-     * 检查名称是否存在
-     * @param {string} name 
-     * @returns {boolean}
-     */
-    check_name(name) {
-        let audio = this.object_audio[name]
-        if (audio === undefined) {
-            cc.error("需要播放的audio不存在，audio_name=", name)
-            return false
-        }
-        return true
-    }
-
 }
