@@ -12,7 +12,9 @@ const C = {
     FAKE_BAR_DELAY: 0.5,
     /** loading界面渐隐时间 */
     LAODING_FADE_TIME: 1,
+    SCREEN_RATIO: 1136 / 640,
 }
+Object.freeze(C)
 
 /**
  * 框架文件，游戏启动主入口
@@ -20,6 +22,10 @@ const C = {
  */
 @ccclass
 class AppMain extends cc.Component {
+
+    /** @type {cc.Canvas} */
+    @property(cc.Canvas)
+    canvas = null
 
     /** @type {cc.Node} */
     @property(cc.Node)
@@ -30,6 +36,8 @@ class AppMain extends cc.Component {
     pb = null
 
     start() {
+        this.adjust_screen()
+
         this.pb.progress = 0
         MRes.ins.load_chain().then(() => {
             // 1、初始化本地数据
@@ -81,5 +89,14 @@ class AppMain extends cc.Component {
         //////////
         // 这里是各个项目在测试环境中的本地数据初始化过程
         //////////
+    }
+
+    /** 调整屏幕适配 */
+    adjust_screen() {
+        if (cc.winSize.height / cc.winSize.width > C.SCREEN_RATIO) {
+            [this.canvas.fitHeight, this.canvas.fitWidth] = [false, true]
+        } else {
+            [this.canvas.fitHeight, this.canvas.fitWidth] = [true, false]
+        }
     }
 }
