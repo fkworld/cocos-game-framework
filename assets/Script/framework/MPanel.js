@@ -57,7 +57,8 @@ export default class MPanel extends cc.Component {
         let node = cc.instantiate(panel)
         node.parent = this.panel_parent
         node.active = false
-        node.position = cc.Vec2.ZERO
+        node.position = cc.Vec2.ZERO;
+        [node.width, node.height] = [cc.winSize.width, cc.winSize.height];
         node.stopAllActions()
         // 打开节点
         try {
