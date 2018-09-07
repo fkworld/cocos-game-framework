@@ -82,4 +82,24 @@ export default class G {
     static get_node_world_position(node) {
         return node.parent.convertToWorldSpaceAR(node.position)
     }
+
+    /**
+     * 将角度转换为弧度
+     * @param {number} angle 
+     * @returns {number}
+     * @static
+     */
+    static trans_angle_to_radian(angle) {
+        return angle * (Math.PI / 180)
+    }
+
+    /**
+     * 将弧度转换为角度
+     * @param {number} radian 
+     * @returns {number}
+     * @static
+     */
+    static trans_radian_to_angle(radian) {
+        return radian / (Math.PI / 180)
+    }
 }
