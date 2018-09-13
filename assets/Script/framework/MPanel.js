@@ -53,6 +53,13 @@ export default class MPanel extends cc.Component {
             cc.error("需要显示的panel不存在，panel_name=", panel_name)
             return
         }
+        // 删除同名节点
+        let old_node = this.object_node[panel_name]
+        if (old_node != undefined) {
+            old_node.stopAllActions()
+            old_node.removeFromParent()
+            old_node.destroy()
+        }
         // 创建节点
         let node = cc.instantiate(panel)
         node.parent = this.panel_parent
