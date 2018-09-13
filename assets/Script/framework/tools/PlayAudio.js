@@ -11,7 +11,7 @@ const C = {
     /** 音效类型 */
     AUDIO: cc.Enum({
         None: 0,
-        Button: 1,
+        Test: 1,
     }),
     TOOLIP: {
         TRIGGER: '触发类型：点击click触发，触摸touch触发，拖拽touchmove触发',
@@ -21,7 +21,7 @@ const C = {
 Object.freeze(C)
 
 /**
- * 框架文件：工具类：根据触发类型播放统一化音效
+ * [framework/tools] 根据触发类型播放统一化音效
  */
 @ccclass
 export default class PlayAudio extends cc.Component {
@@ -63,7 +63,7 @@ export default class PlayAudio extends cc.Component {
         if (!this.check_able_to_clike()) { return }
         let name = this.get_audio_name(this.audio)
         if (name === null) { return }
-        MAudio.ins.play_sound(name)
+        MAudio.play_sound(name)
     }
 
     /**
@@ -84,7 +84,7 @@ export default class PlayAudio extends cc.Component {
      */
     get_audio_name(audio_type) {
         switch (audio_type) {
-            case C.AUDIO.Button: return 'test_button'
+            case C.AUDIO.Test: return 'test'
             default: return null
         }
     }
