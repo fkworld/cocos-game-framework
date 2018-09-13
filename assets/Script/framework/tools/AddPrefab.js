@@ -9,7 +9,7 @@ const C = {
 Object.freeze(C)
 
 /**
- * 游戏框架：游戏开始时添加prefab
+ * 【框架-工具】游戏开始时添加prefab
  */
 @ccclass
 export default class AddPrefab extends cc.Component {

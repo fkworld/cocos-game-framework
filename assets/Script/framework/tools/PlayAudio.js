@@ -21,7 +21,7 @@ const C = {
 Object.freeze(C)
 
 /**
- * [framework/tools] 根据触发类型播放统一化音效
+ * 【框架-工具】根据触发类型播放统一化音效
  */
 @ccclass
 export default class PlayAudio extends cc.Component {

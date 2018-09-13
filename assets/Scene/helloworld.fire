@@ -481,11 +481,11 @@
     "_lineHeight": 35,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "f0b7f15b-51ea-4dd3-9c0c-bc7795a88675"
+      "__uuid__": "369a8758-9e36-4bba-b02f-78a15c17d232"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$string": "健康游戏忠告\n\n抵制不良游戏，拒绝盗版游戏。\n注意自我保护，谨防受骗上当。\n适度游戏益脑，沉迷游戏伤身。\n合理安排时间，享受健康生活。",
+    "_N$string": "Health Game Advice",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -750,11 +750,11 @@
     "_lineHeight": 0,
     "_enableWrapText": false,
     "_N$file": {
-      "__uuid__": "f0b7f15b-51ea-4dd3-9c0c-bc7795a88675"
+      "__uuid__": "369a8758-9e36-4bba-b02f-78a15c17d232"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$string": "游戏正在初始化，请稍后",
+    "_N$string": "Loading...",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "",

@@ -1,15 +1,15 @@
 import G from "./G";
 
-const { ccclass, property } = cc._decorator
+const { ccclass } = cc._decorator
 /** 配置参数 */
 const C = {
     /** panel资源路径参数 */
-    PATH_PANEL: "panel",
+    PATH_PANEL: 'panel',
 }
 Object.freeze(C)
 
 /**
- * 框架文件：资源管理器
+ * 【框架】动态资源管理
  * - 针对变动的动态文件
  * - 资源路径写在模块开头的C中
  * - 资源路径需要在resource文件夹下
@@ -26,10 +26,6 @@ export default class MRes extends cc.Component {
 
         /** @type {Array<cc.Prefab>} panel数组 */
         this.array_panel = Array.of()
-
-        // 链式加载
-        // 在AppMain中显式加载
-        // this.load_chain()
     }
 
     /**
@@ -47,20 +43,21 @@ export default class MRes extends cc.Component {
      * @param {string} path 路径
      * @param {cc.Asset} type 类型
      * @param {Array} array 资源数组
+     * @returns {Promise}
      */
     load_res(path, type, array) {
         return new Promise((resolve, reject) => {
             cc.loader.loadResDir(path, type, (err, res) => {
                 // 载入失败
                 if (err) {
-                    cc.log("载入资源失败，path&type=", path, type.toString(), "err=", err)
+                    cc.warn('资源载入失败，path&type=', path, type.toString(), 'error=', err)
                     reject()
                     return
                 }
                 // 写入数据
                 for (let r of res) { array.push(r) }
                 // 载入成功
-                cc.log("资源载入成功，path=", path)
+                cc.warn('资源载入成功，path=', path)
                 resolve()
             })
         })

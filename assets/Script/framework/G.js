@@ -1,5 +1,5 @@
 /**
- * 框架文件：全局类
+ * 【框架】全局方法类
  * - 封装一些重要的/常用的方法
  */
 export default class G {
@@ -36,7 +36,7 @@ export default class G {
         if (array.length === 0) {
             return
         } else {
-            let rn = this.random_int(0, array.length)
+            let rn = G.random_int(0, array.length)
             return array[rn]
         }
     }
@@ -70,7 +70,7 @@ export default class G {
         if (promise_array.length === 0) { return }
         let a = promise_array.shift()
         a().then(() => {
-            this.run_promise_chain_with_recursive(promise_array)
+            G.run_promise_chain_with_recursive(promise_array)
         })
     }
 

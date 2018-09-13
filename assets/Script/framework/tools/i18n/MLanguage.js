@@ -5,7 +5,7 @@ import L from "../../L";
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 
 /**
- * 框架文件：Label本地化组件
+ * 【框架-工具】多语言
  * - 【用法】修改LanguageZH.js中的内容，key-value格式，并将此组件挂载在对应的Label所在节点下，修改key
  */
 @ccclass
@@ -24,7 +24,7 @@ export default class MLanguage extends cc.Component {
     })
     key = '输入一个key'
 
-    start() {
+    onLoad() {
         this.update_label()
     }
 
@@ -62,12 +62,12 @@ export default class MLanguage extends cc.Component {
                 value = LanguageEN[key]
                 break
             default:
-                // 默认为中文
-                value = LanguageZH[key]
+                // 默认为英文
+                value = LanguageEN[key]
                 break
         }
         if (value === undefined) {
-            cc.warn("[注意] 获取了一个不存在的本地字符串，key=", key)
+            cc.warn('[注意] 获取了一个不存在的本地字符串，key=', key)
         }
         return value
     }
