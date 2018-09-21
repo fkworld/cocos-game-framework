@@ -12,6 +12,9 @@ class PanelTest extends cc.Component {
     }
 
     start() {
-        MPanel.ins.panel_open('PanelWait')
+        MPanel.panel_open('PanelWait')
+        this.scheduleOnce(() => {
+            MPanel.panel_close('PanelWait')
+        }, 3)
     }
 }

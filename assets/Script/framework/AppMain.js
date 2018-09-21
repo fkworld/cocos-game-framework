@@ -46,7 +46,7 @@ class AppMain extends cc.Component {
             this.inin_local_data()
             this.init_test_local_data()
             // 2、针对资源进行二次存储（修改存储结构）
-            MPanel.ins.trans_array_to_object()
+            
             // 3、关闭loading界面，显示游戏界面
             this.scheduleOnce(() => {
                 // 定制渐隐效果
@@ -54,7 +54,7 @@ class AppMain extends cc.Component {
                     cc.fadeOut(C.LAODING_FADE_TIME),
                     cc.callFunc(() => {
                         // 渐隐结束后调用主窗口
-                        MPanel.ins.panel_open('PanelTest')
+                        MPanel.panel_open('PanelTest')
                     })
                 ))
             }, C.FAKE_BAR_DELAY + 1 / C.FAKE_BAR_V)

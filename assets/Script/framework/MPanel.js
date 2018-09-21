@@ -3,14 +3,18 @@ import MRes from "./MRes";
 const { ccclass, property } = cc._decorator
 /** 配置参数 */
 const C = {
+    /** 资源所在路径 */
+    PATH: 'panel',
     /** 默认动作时间 */
     DEFAULT_TIME: 0.2,
+    /** 默认缓动动画 */
+    DEFAULT_EASE: cc.easeExponentialOut(),
 }
 Object.freeze(C)
 
 /**
- * 框架文件：游戏panel管理类
- * - 封装load，show，hide的外部接口
+ * 【框架】游戏窗口管理
+ * - 封装open、close的外部接口
  * - 将所有的panel prefab资源创建为node，并保存在传入的父节点下
  * - 游戏窗口有多种打开方式：默认打开方式、其他规定的打开方式，规定之外的自定义打开方式
  */
@@ -27,70 +31,68 @@ export default class MPanel extends cc.Component {
     onLoad() {
         MPanel.ins = this
 
-        /** 当前的渲染 */
+        /** 当前的渲染层级 */
         this.now_z_index = 0
-        /** @type {Object<cc.Prefab>} panel存储object（考虑到ES6的支持情况，暂时不要使用Map结构）*/
-        this.object_panel = {}
         /** @type {Object<cc.Node>} 新建的panel节点 */
         this.object_node = {}
     }
 
-    /** 数据转换 */
-    trans_array_to_object() {
-        for (let prefab of MRes.ins.array_panel) {
-            this.object_panel[prefab.name] = prefab
-        }
-    }
-
     /**
      * 打开panel
+     * - 为了格式统一改成static函数，实际上在函数内部使用到了MPanel.ins，因此需要在场景中挂载并激活
      * @param {string} panel_name 窗口名
+     * @static
      */
-    panel_open(panel_name) {
-        // 获取prefab
-        let panel = this.object_panel[panel_name]
-        if (panel === undefined) {
+    static panel_open(panel_name) {
+        // 载入资源
+        MRes.load_res(
+            C.PATH + '/' + panel_name,
+            cc.Prefab
+        ).then((v) => {
+            let panel_prefab = v
+            // 删除同名节点
+            let old_node = MPanel.ins.object_node[panel_name]
+            if (old_node != undefined) {
+                old_node.stopAllActions()
+                old_node.removeFromParent()
+                old_node.destroy()
+            }
+            // 创建节点
+            let node = cc.instantiate(panel_prefab)
+            node.parent = MPanel.ins.panel_parent
+            node.active = false
+            node.position = cc.Vec2.ZERO;
+            [node.width, node.height] = [cc.winSize.width, cc.winSize.height];
+            node.stopAllActions()
+            // 打开节点
+            try {
+                // 优先采用窗口自带的显示方式
+                node.getComponent(panel_name).open()
+            } catch (error) {
+                // 如果没有自带的显示方式，则调用默认显示方式
+                MPanel.open(node)
+            }
+            // 修改渲染深度，使其置于顶部
+            MPanel.ins.now_z_index += 1
+            node.zIndex = MPanel.ins.now_z_index
+            // 保存节点
+            MPanel.ins.object_node[panel_name] = node
+        }).catch(() => {
             cc.error("需要显示的panel不存在，panel_name=", panel_name)
-            return
-        }
-        // 删除同名节点
-        let old_node = this.object_node[panel_name]
-        if (old_node != undefined) {
-            old_node.stopAllActions()
-            old_node.removeFromParent()
-            old_node.destroy()
-        }
-        // 创建节点
-        let node = cc.instantiate(panel)
-        node.parent = this.panel_parent
-        node.active = false
-        node.position = cc.Vec2.ZERO;
-        [node.width, node.height] = [cc.winSize.width, cc.winSize.height];
-        node.stopAllActions()
-        // 打开节点
-        try {
-            // 优先采用窗口自带的显示方式
-            node.getComponent(panel_name).open()
-        } catch (error) {
-            // 如果没有自带的显示方式，则调用默认显示方式
-            MPanel.open(node)
-        }
-        // 修改渲染深度，使其置于顶部
-        this.now_z_index += 1
-        node.zIndex = this.now_z_index
-        // 保存节点
-        this.object_node[panel_name] = node
+        })
     }
 
     /**
      * 关闭panel
+     * - 为了格式统一改成static函数，实际上在函数内部使用到了MPanel.ins，因此需要在场景中挂载并激活
      * @param {string} panel_name 
+     * @static
      */
-    panel_close(panel_name) {
+    static panel_close(panel_name) {
         // 获取节点
-        let node = this.object_node[panel_name]
+        let node = MPanel.ins.object_node[panel_name]
         if (node === undefined) {
-            cc.error("需要关闭的panel不存在，panel_name=", panel_name)
+            cc.warn("需要关闭的panel不存在，panel_name=", panel_name)
             return
         }
         node.stopAllActions()
@@ -100,6 +102,8 @@ export default class MPanel extends cc.Component {
         } catch (error) {
             MPanel.close(node)
         }
+        // 删除节点存储
+        delete MPanel.ins.object_node[panel_name]
     }
 
     //////////
