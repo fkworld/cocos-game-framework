@@ -6,9 +6,12 @@ const C = {
     /** 资源所在路径 */
     PATH: 'panel',
     /** 默认动作时间 */
-    DEFAULT_TIME: 0.2,
+    DEFAULT_TIME: 0.4,
     /** 默认缓动动画 */
     DEFAULT_EASE: cc.easeExponentialOut(),
+    /** 某些组件在scale=0时会出现一些错位等问题，因此将初始值设为0.001 */
+    SCALE_0: 0.001,
+    SCALE_1: 1,
 }
 Object.freeze(C)
 
@@ -113,19 +116,21 @@ export default class MPanel extends cc.Component {
     /**
      * 统一的窗口默认显示方式，在MPanel中调用，不需要在各个子窗口中调用
      * @param {cc.Node} panel_node
+     * @returns {Promise}
      * @static
      */
     static open(panel_node) {
-        MPanel.open_with_nothing(panel_node)
+        return MPanel.open_with_nothing(panel_node)
     }
 
     /**
      * 统一的窗口默认隐藏方式，在MPanel中调用，不需要在各个子窗口中调用
      * @param {cc.Node} panel_node
+     * @returns {Promise}
      * @static
      */
     static close(panel_node) {
-        MPanel.close_with_nothing(panel_node)
+        return MPanel.close_with_nothing(panel_node)
     }
 
     //////////
@@ -135,78 +140,107 @@ export default class MPanel extends cc.Component {
     /** 
      * 打开panel：没有任何动画
      * @param {cc.Node} panel_node
+     * @returns {Promise}
      * @static
      */
     static open_with_nothing(panel_node) {
-        panel_node.active = true
+        return new Promise((resolve, reject) => {
+            panel_node.active = true
+            resolve()
+        })
     }
 
     /** 
      * 关闭panel：没有任何动画
      * @param {cc.Node} panel_node
+     * @returns {Promise}
      * @static
      */
     static close_with_nothing(panel_node) {
-        panel_node.active = false
-        panel_node.removeFromParent()
-        panel_node.destroy()
+        return new Promise((resolve, reject) => {
+            panel_node.active = false
+            panel_node.removeFromParent()
+            panel_node.destroy()
+            resolve()
+        })
     }
 
     /** 
      * 打开panel：放大缩小动画
      * @param {cc.Node} panel_node
-     * @returns {number} 动画持续时间
+     * @param {number} time
+     * @param {*} ease
+     * @returns {Promise}
      * @static
      */
-    static open_with_scale(panel_node) {
-        panel_node.scale = 0
-        panel_node.active = true // 特别注意：只有当node.active为true时，才可以执行动作；因此在前摇结束后需要保证node.active为true
-        panel_node.runAction(cc.scaleTo(C.DEFAULT_TIME, 1))
-        return C.DEFAULT_TIME
+    static open_with_scale(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+        return new Promise((resolve, reject) => {
+            panel_node.scale = C.SCALE_0
+            panel_node.active = true
+            panel_node.runAction(cc.sequence(
+                cc.scaleTo(time, C.SCALE_1).easing(ease),
+                cc.callFunc(resolve),
+            ))
+        })
     }
 
     /** 
      * 关闭panel：放大缩小动画
      * @param {cc.Node} panel_node
-     * @returns {number} 动画持续时间
+     * @param {number} time
+     * @param {*} ease
+     * @returns {Promise}
      * @static
      */
-    static close_with_scale(panel_node) {
-        panel_node.runAction(cc.sequence(
-            cc.scaleTo(C.DEFAULT_TIME, 0),
-            cc.callFunc(() => {
-                MPanel.close_with_nothing(panel_node)
-            })
-        ))
-        return C.DEFAULT_TIME
+    static close_with_scale(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+        return new Promise((resolve, reject) => {
+            panel_node.runAction(cc.sequence(
+                cc.scaleTo(time, C.SCALE_0).easing(ease),
+                cc.callFunc(() => {
+                    MPanel.close_with_nothing(panel_node)
+                }),
+                cc.callFunc(resolve),
+            ))
+        })
+
     }
 
     /** 
      * 打开panel：透明度改变动画
      * @param {cc.Node} panel_node
-     * @returns {number} 动画持续时间
+     * @param {number} time
+     * @param {*} ease
+     * @returns {Promise}
      * @static
      */
-    static open_with_fade(panel_node) {
-        panel_node.opacity = 0
-        panel_node.active = true // 特别注意：只有当node.active为true时，才可以执行动作；因此在前摇结束后需要保证node.active为true
-        panel_node.runAction(cc.fadeIn(C.DEFAULT_TIME))
-        return C.DEFAULT_TIME
+    static open_with_fade(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+        return new Promise((resolve, reject) => {
+            panel_node.opacity = 0
+            panel_node.active = true
+            panel_node.runAction(cc.sequence(
+                cc.fadeIn(time).easing(ease),
+                cc.callFunc(resolve),
+            ))
+        })
     }
 
     /** 
      * 关闭panel：透明度改变动画
      * @param {cc.Node} panel_node
-     * @returns {number} 动画持续时间
+     * @param {number} time
+     * @param {*} ease
+     * @returns {Promise}
      * @static
      */
-    static close_with_fade(panel_node) {
-        panel_node.runAction(cc.sequence(
-            cc.fadeOut(C.DEFAULT_TIME),
-            cc.callFunc(() => {
-                MPanel.close_with_nothing(panel_node)
-            })
-        ))
-        return C.DEFAULT_TIME
+    static close_with_fade(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+        return new Promise((resolve, reject) => {
+            panel_node.runAction(cc.sequence(
+                cc.fadeOut(time).easing(ease),
+                cc.callFunc(() => {
+                    MPanel.close_with_nothing(panel_node)
+                }),
+                cc.callFunc(resolve),
+            ))
+        })
     }
 }

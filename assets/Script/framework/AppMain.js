@@ -46,17 +46,13 @@ class AppMain extends cc.Component {
             this.inin_local_data()
             this.init_test_local_data()
             // 2、针对资源进行二次存储（修改存储结构）
-            
+
             // 3、关闭loading界面，显示游戏界面
             this.scheduleOnce(() => {
                 // 定制渐隐效果
-                this.panel_loading.runAction(cc.sequence(
-                    cc.fadeOut(C.LAODING_FADE_TIME),
-                    cc.callFunc(() => {
-                        // 渐隐结束后调用主窗口
-                        MPanel.panel_open('PanelTest')
-                    })
-                ))
+                MPanel.close_with_fade(this.panel_loading, C.LAODING_FADE_TIME).then(() => {
+                    MPanel.panel_open('PanelTest')
+                })
             }, C.FAKE_BAR_DELAY + 1 / C.FAKE_BAR_V)
         })
     }
@@ -110,5 +106,6 @@ class AppMain extends cc.Component {
         } else {
             [this.canvas.fitHeight, this.canvas.fitWidth] = [true, false]
         }
+        this.canvas.alignWithScreen()
     }
 }
