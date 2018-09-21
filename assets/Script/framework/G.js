@@ -36,7 +36,7 @@ export default class G {
         if (array.length === 0) {
             return
         } else {
-            let rn = G.random_int(0, array.length)
+            let rn = G.get_random_int(0, array.length)
             return array[rn]
         }
     }
