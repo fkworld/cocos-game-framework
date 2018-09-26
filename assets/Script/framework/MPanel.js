@@ -51,6 +51,9 @@ export default class MPanel extends cc.Component {
      * @static
      */
     static panel_open(panel_name) {
+        // 由于是异步过程，所以在异步过程前记录MPanel.ins.now_z_index
+        MPanel.ins.now_z_index += 1
+        let z_index = MPanel.ins.now_z_index
         // 载入资源
         MRes.load_res(
             C.PATH + '/' + panel_name,
@@ -80,8 +83,7 @@ export default class MPanel extends cc.Component {
                 MPanel.open(node)
             }
             // 修改渲染深度，使其置于顶部
-            MPanel.ins.now_z_index += 1
-            node.zIndex = MPanel.ins.now_z_index
+            node.zIndex = z_index
             // 保存节点
             MPanel.ins.object_node[panel_name] = node
         }).catch(() => {
