@@ -74,6 +74,44 @@ export default class G {
         })
     }
 
+    /**
+     * 将一个多次执行的方法放到多帧中执行，避免单帧中消耗过多性能造成卡顿
+     * - 【思路】使用cc.Component.schedule()方法，在interval参数为0时表示逐帧调用
+     * @param {Function} f 需要执行的方法
+     * @param {cc.Component} nc 执行方法的节点脚本
+     * @param {number} all_count 执行的总数
+     * @param {number} each_count 每帧执行的次数
+     * @static
+     */
+    static run_by_each_frame(f, nc, all_count, each_count = 1) {
+        nc.schedule(() => {
+            for (let i = 0; i < each_count; i++) {
+                f()
+            }
+        }, 0, all_count - 1)
+    }
+
+    /**
+     * 间隔帧执行
+     * @param {Function} f 
+     * @param {cc.Component} nc
+     * @param {number} all_count 执行的总数 
+     * @param {number} interval 间隔帧，最低为1，表示连续帧
+     * @static
+     */
+    static run_by_interval_frame(f, nc, all_count, interval = 1) {
+        let c = 0
+        nc.schedule(() => {
+            if (c === 0) {
+                f()
+            }
+            c += 1
+            if (c >= interval) {
+                c = 0
+            }
+        }, 0, (all_count - 1) * interval)
+    }
+
     /** 
      * 获取节点的世界坐标
      * @param {cc.Node} node
