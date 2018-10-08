@@ -80,14 +80,11 @@ export default class G {
      * @param {Function} f 需要执行的方法
      * @param {cc.Component} nc 执行方法的节点脚本
      * @param {number} all_count 执行的总数
-     * @param {number} each_count 每帧执行的次数
      * @static
      */
-    static run_by_each_frame(f, nc, all_count, each_count = 1) {
+    static run_by_each_frame(f, nc, all_count) {
         nc.schedule(() => {
-            for (let i = 0; i < each_count; i++) {
-                f()
-            }
+            f()
         }, 0, all_count - 1)
     }
 
