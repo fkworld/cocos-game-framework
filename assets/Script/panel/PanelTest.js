@@ -1,4 +1,5 @@
 import MPanel from "../framework/MPanel";
+import SMWait from "../system/SMWait";
 
 const { ccclass, property } = cc._decorator
 
@@ -17,9 +18,9 @@ class PanelTest extends cc.Component {
     }
 
     start() {
-        MPanel.panel_open('PanelWait')
+        SMWait.panel_open()
         this.scheduleOnce(() => {
-            MPanel.panel_close('PanelWait')
+            SMWait.panel_close()
         }, 3)
         this.scheduleOnce(() => {
             MPanel.panel_close('PanelTest')
