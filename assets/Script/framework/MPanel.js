@@ -1,4 +1,5 @@
 import MRes from "./MRes";
+import G from "./G";
 
 const { ccclass, property } = cc._decorator
 /** 配置参数 */
@@ -7,8 +8,6 @@ const C = {
     PATH: 'panel',
     /** 默认动作时间 */
     DEFAULT_TIME: 0.4,
-    /** 默认缓动动画（平缓） */
-    DEFAULT_EASE: cc.easeCubicActionInOut(),
     /** 默认进入场景缓动动画（激烈） */
     DEFAULT_EASE_IN: cc.easeExponentialOut(),
     /** 默认离开场景缓动动画（激烈） */
@@ -16,6 +15,8 @@ const C = {
     /** 某些组件在scale=0时会出现一些错位等问题，因此将初始值设为0.001 */
     SCALE_0: 0.001,
     SCALE_1: 1,
+    /** 链式行为的默认间隔时间 */
+    CHAIN_INTERVAL: 0.1,
 }
 Object.freeze(C)
 
@@ -30,11 +31,6 @@ export default class MPanel extends cc.Component {
 
     /** @type {MPanel} */
     static ins;
-
-    /** @type {cc.Node} panel挂载的父节点 */
-    @property(cc.Node)
-    panel_parent = null
-
     onLoad() {
         MPanel.ins = this
 
@@ -44,10 +40,15 @@ export default class MPanel extends cc.Component {
         this.object_node = {}
     }
 
+    /** @type {cc.Node} panel挂载的父节点 */
+    @property(cc.Node)
+    panel_parent = null
+
     /**
      * 打开panel
      * - 为了格式统一改成static函数，实际上在函数内部使用到了MPanel.ins，因此需要在场景中挂载并激活
      * @param {string} panel_name 窗口名
+     * @returns {Promise}
      * @static
      */
     static panel_open(panel_name) {
@@ -55,10 +56,11 @@ export default class MPanel extends cc.Component {
         MPanel.ins.now_z_index += 1
         let z_index = MPanel.ins.now_z_index
         // 载入资源
-        MRes.load_res(
+        return MRes.load_res(
             C.PATH + '/' + panel_name,
             cc.Prefab
         ).then((v) => {
+            /** @type {cc.Prefab} */
             let panel_prefab = v
             // 删除同名节点
             let old_node = MPanel.ins.object_node[panel_name]
@@ -71,8 +73,9 @@ export default class MPanel extends cc.Component {
             let node = cc.instantiate(panel_prefab)
             node.parent = MPanel.ins.panel_parent
             node.active = false
-            node.position = cc.Vec2.ZERO;
-            [node.width, node.height] = [cc.winSize.width, cc.winSize.height];
+            node.position = cc.Vec2.ZERO
+            node.width = cc.winSize.width
+            node.height = cc.winSize.height
             node.stopAllActions()
             // 打开节点
             try {
@@ -115,21 +118,40 @@ export default class MPanel extends cc.Component {
         delete MPanel.ins.object_node[panel_name]
     }
 
+    /**
+     * 链式打开多个panel
+     * - 传入的最后一个数字类型的参数将会被视为interval
+     * - 还未实现interval
+     * @param {...string} array_panel_name 多个panel的name
+     * @param {number} interval 时间间隔；默认为0.1
+     */
+    static panel_open_chain(...array_panel_name) {
+        let array = []
+        let interval = C.CHAIN_INTERVAL
+        for (let i = 0; i < array_panel_name.length; i++) {
+            if (typeof array_panel_name[i] === 'number') {
+                interval = array_panel_name
+            } else {
+                array.push(() => {
+                    return MPanel.panel_open(array_panel_name[i])
+                })
+            }
+        }
+        return G.run_promise_chain(array)
+    }
+
     //////////
     // 默认方法
     //////////
 
     /** 获取文件中C的default time */
-    static get_default_time() { return C.DEFAULT_TIME }
-
-    /** 获取文件中C的default ease */
-    static get_default_ease() { return C.DEFAULT_EASE }
+    static get default_time() { return C.DEFAULT_TIME }
 
     /** 获取文件中C的default ease in */
-    static get_default_ease_in() { return C.DEFAULT_EASE_IN }
+    static get default_ease_in() { return C.DEFAULT_EASE_IN }
 
     /** 获取文件中C的default ease out */
-    static get_default_ease_out() { return C.DEFAULT_EASE_OUT }
+    static get default_ease_out() { return C.DEFAULT_EASE_OUT }
 
     /**
      * 统一的窗口默认显示方式，在MPanel中调用，不需要在各个子窗口中调用
@@ -191,7 +213,7 @@ export default class MPanel extends cc.Component {
      * @returns {Promise}
      * @static
      */
-    static open_with_scale(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+    static open_with_scale(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_IN) {
         return new Promise((resolve, reject) => {
             panel_node.scale = C.SCALE_0
             panel_node.active = true
@@ -210,16 +232,13 @@ export default class MPanel extends cc.Component {
      * @returns {Promise}
      * @static
      */
-    static close_with_scale(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+    static close_with_scale(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_OUT) {
         return new Promise((resolve, reject) => {
             panel_node.runAction(cc.sequence(
                 cc.scaleTo(time, C.SCALE_0).easing(ease),
-                cc.callFunc(() => {
-                    MPanel.close_with_nothing(panel_node)
-                }),
                 cc.callFunc(resolve),
             ))
-        })
+        }).then(() => { MPanel.close_with_nothing(panel_node) })
     }
 
     /** 
@@ -230,7 +249,7 @@ export default class MPanel extends cc.Component {
      * @returns {Promise}
      * @static
      */
-    static open_with_fade(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+    static open_with_fade(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_IN) {
         return new Promise((resolve, reject) => {
             panel_node.opacity = 0
             panel_node.active = true
@@ -249,16 +268,13 @@ export default class MPanel extends cc.Component {
      * @returns {Promise}
      * @static
      */
-    static close_with_fade(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+    static close_with_fade(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_OUT) {
         return new Promise((resolve, reject) => {
             panel_node.runAction(cc.sequence(
                 cc.fadeOut(time).easing(ease),
-                cc.callFunc(() => {
-                    MPanel.close_with_nothing(panel_node)
-                }),
                 cc.callFunc(resolve),
             ))
-        })
+        }).then(() => { MPanel.close_with_nothing(panel_node) })
     }
 
     //////////
@@ -273,7 +289,7 @@ export default class MPanel extends cc.Component {
      * @returns {Promise}
      * @static
      */
-    static open_with_scale_rotate(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+    static open_with_scale_rotate(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_IN) {
         return new Promise((resolve, reject) => {
             panel_node.scale = C.SCALE_0
             panel_node.active = true
@@ -295,18 +311,15 @@ export default class MPanel extends cc.Component {
      * @returns {Promise}
      * @static
      */
-    static close_with_scale_rotate(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE) {
+    static close_with_scale_rotate(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_OUT) {
         return new Promise((resolve, reject) => {
             panel_node.runAction(cc.sequence(
                 cc.spawn(
                     cc.scaleTo(time, C.SCALE_0).easing(ease),
                     cc.rotateBy(time, 360).easing(ease),
                 ),
-                cc.callFunc(() => {
-                    MPanel.close_with_nothing(panel_node)
-                }),
                 cc.callFunc(resolve),
             ))
-        })
+        }).then(() => { MPanel.close_with_nothing() })
     }
 }

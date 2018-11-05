@@ -18,12 +18,6 @@ class PanelTest extends cc.Component {
     }
 
     start() {
-        SMWait.panel_open()
-        this.scheduleOnce(() => {
-            SMWait.panel_close()
-        }, 3)
-        this.scheduleOnce(() => {
-            MPanel.panel_close('PanelTest')
-        }, 6)
+
     }
 }

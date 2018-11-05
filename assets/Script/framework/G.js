@@ -47,30 +47,28 @@ export default class G {
      * - 默认每个promise，resolve一个无关的返回值；如果返回值是有用的，则无法使用这个方法
      * - 我也不知道为啥这样写就能成功。。。嗯。。。
      * - 实际使用起来感觉也挺复杂的（参考MRes.load_chain()），以后再改动吧。
-     * @param {Array<Function>} promise_array 由于promise建立后立即执行的特性（坑），因此需要使用一个箭头函数进行包装
+     * @param {Function[]} array_f 由于promise建立后立即执行的特性（坑），因此需要使用一个箭头函数进行包装
      * @returns {Promise}
      */
-    static run_promise_chain(promise_array) {
+    static run_promise_chain(array_f) {
         let p = Promise.resolve()
-        for (let promise of promise_array) {
-            p = p.then(promise)
-        }
+        for (let f of array_f) { p = p.then(f) }
         return p
     }
 
     /**
      * 依次运行多个promise（有缺点）
      * - 使用递归算法
-     * - 【注意】 异步操作无法使用尾递归优化
+     * - 【注意】 异步操作可能无法使用尾递归优化；我也不知道有没有尾递归优化
      * - 【注意】 异步操作无法返回一个正常的返回值（异步函数会直接返回undefined）,应该无法在此函数后使用then()
-     * @param {Array<Function>} promise_array
+     * @param {Function[]} array_f
      * @returns {undefined}
      */
-    static run_promise_chain_with_recursive(promise_array) {
-        if (promise_array.length === 0) { return }
-        let a = promise_array.shift()
-        a().then(() => {
-            G.run_promise_chain_with_recursive(promise_array)
+    static run_promise_chain_with_recursive(array_f) {
+        if (array_f.length === 0) { return }
+        let f = array_f.shift()
+        f().then(() => {
+            return G.run_promise_chain_with_recursive(array_f)
         })
     }
 

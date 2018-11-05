@@ -51,7 +51,7 @@ class AppMain extends cc.Component {
             this.scheduleOnce(() => {
                 // 定制渐隐效果
                 MPanel.close_with_fade(this.panel_loading, C.LAODING_FADE_TIME).then(() => {
-                    MPanel.panel_open('PanelTest')
+                    MPanel.panel_open_chain('PanelTest', 'PanelWait')
                 })
             }, C.FAKE_BAR_DELAY + 1 / C.FAKE_BAR_V)
         })
