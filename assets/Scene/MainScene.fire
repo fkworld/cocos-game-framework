@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.5676249939617283,
-      "y": 0.5676249939617283,
+      "x": 0.4806338028169014,
+      "y": 0.4806338028169014,
       "z": 1
     },
     "_quat": {
@@ -219,7 +219,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "HangNode",
+    "_name": "N_HangNode",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -309,7 +309,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "PanelNodeRoot",
+    "_name": "N_PanelNodeRoot",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -402,7 +402,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "PanelLoading",
+    "_name": "N_PanelLoading",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -472,7 +472,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "GameIcon",
+    "_name": "Sp_GameIcon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11
@@ -542,7 +542,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "a23235d1-15db-4b95-8439-a2e005bfff91"
+      "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -561,7 +561,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "HealthGameAdvice",
+    "_name": "Lab_HealthGameAdvice",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11
@@ -664,7 +664,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "ProgressBar",
+    "_name": "Pb_Loading",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11
@@ -732,7 +732,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Bar",
+    "_name": "bar",
     "_objFlags": 0,
     "_parent": {
       "__id__": 17
@@ -866,7 +866,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "LoadingLog",
+    "_name": "Lab_LoadingLog",
     "_objFlags": 0,
     "_parent": {
       "__id__": 11

@@ -24,7 +24,7 @@ Object.freeze(C)
  * 【框架-工具】根据触发类型播放统一化音效
  */
 @ccclass
-export default class PlayAudio extends cc.Component {
+export default class TPlayAudio extends cc.Component {
 
     /** @typedef {C.TRIGGER} 触发类型 */
     @property({ tooltip: C.TOOLIP.TRIGGER, type: C.TRIGGER })
@@ -34,7 +34,7 @@ export default class PlayAudio extends cc.Component {
     @property({ tooltip: C.TOOLIP.AUDIO, type: C.AUDIO })
     audio = C.AUDIO.None
 
-    start() {
+    onLoad(){
         this.set_event()
     }
 
