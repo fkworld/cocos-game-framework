@@ -39,11 +39,11 @@ export default class TSize extends cc.Component {
     preview = false
 
     /** 初始size；x-width；y-height */
-    @property({ tooltip: C.TOOLTIP.SOURCE_SIZE })
+    @property({ tooltip: C.TOOLTIP.SOURCE_SIZE, readonly: true })
     source_size = cc.v2(1, 1)
 
     /** 当前size；x-width；y-height */
-    @property({ tooltip: C.TOOLTIP.CURRENT_SIZE })
+    @property({ tooltip: C.TOOLTIP.CURRENT_SIZE, editorOnly: true })
     current_size = cc.v2(1, 1)
 
     update() {
