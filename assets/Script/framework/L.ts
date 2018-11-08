@@ -1,5 +1,5 @@
 /**
- * 【框架】本地数据存储（LocalData）管理类
+ * [framework] 本地数据存储（LocalData）管理类
  * - 【注意】key不能重复
  * - 【注意】get函数的返回值，由于游戏引擎原因，均返回string，这里不做类型转换，实际使用过程中需要注意
  * - 【注意】当没有key的对应值时，会返回null
@@ -7,12 +7,12 @@
 export default class L {
 
     /** 封装设置item */
-    static set_item(key, value) {
+    static set_item(key: string, value) {
         cc.sys.localStorage.setItem(key, value)
     }
 
     /** 封装获取item */
-    static get_item(key) {
+    static get_item(key: string) {
         return cc.sys.localStorage.getItem(key)
     }
 

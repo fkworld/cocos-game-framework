@@ -1,10 +1,10 @@
 import MPanel from "../framework/MPanel";
-import SMWait from "../system/SMWait";
+import SWait from "../system/SWait";
 
 const { ccclass, property } = cc._decorator
 
 /**
- * [panel] Test
+ * [framework-Panel] Test
  */
 @ccclass
 class PanelTest extends cc.Component {
@@ -18,6 +18,6 @@ class PanelTest extends cc.Component {
     }
 
     start() {
-
+        SWait.panel_open()
     }
 }

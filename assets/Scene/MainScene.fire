@@ -1067,7 +1067,7 @@
       "__id__": 25
     },
     "_enabled": true,
-    "alignMode": 0,
+    "alignMode": 1,
     "_target": {
       "__id__": 2
     },

@@ -1,44 +1,40 @@
 /**
- * 【框架】全局方法类
+ * [framework] 全局方法类
  * - 封装一些重要的/常用的方法
  */
 export default class G {
     /**
      * 获取一个随机整数，范围：[min,max)
-     * @param {number} min
-     * @param {number} max
-     * @returns {number}
+     * @param min 
+     * @param max 
      * @static
      */
-    static get_random_int(min, max) {
-        let rn = Math.floor(Math.random() * (max - min) + min)
-        return rn
+    static get_random_int(min: number, max: number): number {
+        return Math.floor(Math.random() * (max - min) + min)
     }
 
     /**
      * 获取一个随机小数，范围：[min,max)
-     * @param {number} min 
-     * @param {number} max 
-     * @returns {number}
+     * @param min 
+     * @param max 
      * @static
      */
-    static get_random_float(min, max) {
-        let rn = Math.random() * (max - min) + min
-        return rn
+    static get_random_float(min: number, max: number): number {
+        return Math.random() * (max - min) + min
     }
 
     /**
      * 从数组中获取一个随机值，概率相等
-     * @param {Array} array 
-     * @returns {undefined | any}
+     * - 当数组长度为0时，返回undefined
+     * @param array 
+     * @static
      */
-    static get_random_item_form_array(array) {
+    static get_random_array_item(array: any[]): any | undefined {
         if (array.length === 0) {
-            return
-        } else {
-            let rn = G.get_random_int(0, array.length)
-            return array[rn]
+            cc.warn('[注意] 获取了一个长度为0的数组，无法获取数组中的随机值')
+            return undefined
         }
+        return array[G.get_random_int(0, array.length)]
     }
 
     /**
@@ -47,10 +43,10 @@ export default class G {
      * - 默认每个promise，resolve一个无关的返回值；如果返回值是有用的，则无法使用这个方法
      * - 我也不知道为啥这样写就能成功。。。嗯。。。
      * - 实际使用起来感觉也挺复杂的（参考MRes.load_chain()），以后再改动吧。
-     * @param {Function[]} array_f 由于promise建立后立即执行的特性（坑），因此需要使用一个箭头函数进行包装
-     * @returns {Promise}
+     * @param array_f 由于promise建立后立即执行的特性（坑），因此需要使用一个箭头函数进行包装
+     * @static
      */
-    static run_promise_chain(array_f) {
+    static run_promise_chain(array_f: Array<Function>): Promise<any> {
         let p = Promise.resolve()
         for (let f of array_f) { p = p.then(f) }
         return p
@@ -61,10 +57,10 @@ export default class G {
      * - 使用递归算法
      * - 【注意】 异步操作可能无法使用尾递归优化；我也不知道有没有尾递归优化
      * - 【注意】 异步操作无法返回一个正常的返回值（异步函数会直接返回undefined）,应该无法在此函数后使用then()
-     * @param {Function[]} array_f
-     * @returns {undefined}
+     * @param array_f 
+     * @static
      */
-    static run_promise_chain_with_recursive(array_f) {
+    static run_promise_chain_with_recursive(array_f: Function[]): undefined {
         if (array_f.length === 0) { return }
         let f = array_f.shift()
         f().then(() => {
@@ -75,64 +71,56 @@ export default class G {
     /**
      * 将一个多次执行的方法放到多帧中执行，避免单帧中消耗过多性能造成卡顿
      * - 【思路】使用cc.Component.schedule()方法，在interval参数为0时表示逐帧调用
-     * @param {Function} f 需要执行的方法
-     * @param {cc.Component} nc 执行方法的节点脚本
-     * @param {number} all_count 执行的总数
+     * @param f 需要执行的方法
+     * @param nc 执行方法的节点脚本
+     * @param all_count 执行的总数
      * @static
      */
-    static run_by_each_frame(f, nc, all_count) {
-        nc.schedule(() => {
-            f()
-        }, 0, all_count - 1)
+    static run_by_each_frame(f: Function, nc: cc.Component, all_count: number) {
+        nc.schedule(f, 0, all_count - 1)
     }
 
     /**
      * 间隔帧执行
-     * @param {Function} f 
-     * @param {cc.Component} nc
-     * @param {number} all_count 执行的总数 
-     * @param {number} interval 间隔帧，最低为1，表示连续帧
+     * @param f 
+     * @param nc 
+     * @param all_count 
+     * @param interval 间隔帧；默认为1，表示连续帧
      * @static
      */
-    static run_by_interval_frame(f, nc, all_count, interval = 1) {
+    static run_by_interval_frame(f: Function, nc: cc.Component, all_count: number, interval: number = 1) {
         let c = 0
         nc.schedule(() => {
-            if (c === 0) {
-                f()
-            }
+            if (c === 0) { f() }
             c += 1
-            if (c >= interval) {
-                c = 0
-            }
+            if (c >= interval) { c = 0 }
         }, 0, (all_count - 1) * interval)
     }
 
-    /** 
+    /**
      * 获取节点的世界坐标
-     * @param {cc.Node} node
-     * @returns {cc.Vec2}
+     * @param node 
+     * @static
      */
-    static get_node_world_position(node) {
-        return node.parent.convertToWorldSpaceAR(node.position)
+    static get_node_world_position(node: cc.Node): cc.Vec2 {
+        return node.getParent().convertToWorldSpaceAR(node.position)
     }
 
     /**
      * 将角度转换为弧度
-     * @param {number} angle 
-     * @returns {number}
+     * @param angle 
      * @static
      */
-    static trans_angle_to_radian(angle) {
+    static trans_angle_to_radian(angle: number): number {
         return angle * (Math.PI / 180)
     }
 
     /**
      * 将弧度转换为角度
-     * @param {number} radian 
-     * @returns {number}
+     * @param radian 
      * @static
      */
-    static trans_radian_to_angle(radian) {
+    static trans_radian_to_angle(radian: number): number {
         return radian / (Math.PI / 180)
     }
 }

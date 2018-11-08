@@ -6,10 +6,10 @@ const C = {
 Object.freeze(C)
 
 /**
- * [system] wait系统
+ * [framework-S] wait系统
  * - 一个通用的等待界面
  */
-export default class SMWait {
+export default class SWait {
 
     /** 打开wait界面 */
     static panel_open() {
