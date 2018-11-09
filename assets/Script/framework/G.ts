@@ -45,27 +45,12 @@ export default class G {
      * - 实际使用起来感觉也挺复杂的（参考MRes.load_chain()），以后再改动吧。
      * @param array_f 由于promise建立后立即执行的特性（坑），因此需要使用一个箭头函数进行包装
      * @static
+     * @async
      */
-    static run_promise_chain(array_f: Array<Function>): Promise<any> {
-        let p = Promise.resolve()
-        for (let f of array_f) { p = p.then(f) }
-        return p
-    }
-
-    /**
-     * 依次运行多个promise（有缺点）
-     * - 使用递归算法
-     * - 【注意】 异步操作可能无法使用尾递归优化；我也不知道有没有尾递归优化
-     * - 【注意】 异步操作无法返回一个正常的返回值（异步函数会直接返回undefined）,应该无法在此函数后使用then()
-     * @param array_f 
-     * @static
-     */
-    static run_promise_chain_with_recursive(array_f: Function[]): undefined {
-        if (array_f.length === 0) { return }
-        let f = array_f.shift()
-        f().then(() => {
-            return G.run_promise_chain_with_recursive(array_f)
-        })
+    static async run_promise_chain(...array_f: Function[]): Promise<any> {
+        for (let i = 0; i < array_f.length; i++) {
+            await array_f[i]()
+        }
     }
 
     /**

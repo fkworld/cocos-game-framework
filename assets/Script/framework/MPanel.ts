@@ -50,13 +50,14 @@ export default class MPanel extends cc.Component {
      * - 为了格式统一改成static函数，实际上在函数内部使用到了MPanel.ins，因此需要在场景中挂载并激活
      * @param panel_name
      * @static
+     * @async
      */
-    static panel_open(panel_name: string): Promise<any> {
+    static async panel_open(panel_name: string): Promise<void> {
         // 由于是异步过程，所以在异步过程前记录MPanel.ins.now_z_index
         MPanel.ins.now_z_index += 1
         let z_index = MPanel.ins.now_z_index
         // 载入资源
-        return MRes.load_res(C.PATH + '/' + panel_name, cc.Prefab).then((v) => {
+        return await MRes.load_res(C.PATH + '/' + panel_name, cc.Prefab).then((v) => {
             let panel_prefab: cc.Prefab = v
             // 删除同名节点
             let old_node: cc.Node = MPanel.ins.object_node[panel_name]
@@ -85,6 +86,8 @@ export default class MPanel extends cc.Component {
             node.zIndex = z_index
             // 保存节点
             MPanel.ins.object_node[panel_name] = node
+        }).then(() => {
+            // cc.log('显示成功', panel_name)
         }).catch(() => {
             cc.error("需要显示的panel不存在，panel_name=", panel_name)
         })
@@ -95,8 +98,9 @@ export default class MPanel extends cc.Component {
      * - 为了格式统一改成static函数，实际上在函数内部使用到了MPanel.ins，因此需要在场景中挂载并激活
      * @param panel_name
      * @static
+     * @async
      */
-    static panel_close(panel_name: string) {
+    static async panel_close(panel_name: string) {
         // 获取节点
         let node = MPanel.ins.object_node[panel_name]
         if (node === undefined) {
@@ -120,14 +124,10 @@ export default class MPanel extends cc.Component {
      * - 还未实现interval
      * @param array_panel_name 多个panel的name
      */
-    static panel_open_chain(...array_panel_name: string[]) {
-        let array = []
+    static async panel_open_chain(...array_panel_name: string[]) {
         for (let i = 0; i < array_panel_name.length; i++) {
-            array.push(() => {
-                return MPanel.panel_open(array_panel_name[i])
-            })
+            await MPanel.panel_open(array_panel_name[i])
         }
-        return G.run_promise_chain(array)
     }
 
     //////////
@@ -147,18 +147,20 @@ export default class MPanel extends cc.Component {
      * 统一的窗口默认显示方式，在MPanel中调用，不需要在各个子窗口中调用
      * @param panel_node 
      * @static
+     * @async
      */
-    static open(panel_node: cc.Node) {
-        return MPanel.open_with_nothing(panel_node)
+    static async open(panel_node: cc.Node) {
+        MPanel.open_with_nothing(panel_node)
     }
 
     /**
      * 统一的窗口默认隐藏方式，在MPanel中调用，不需要在各个子窗口中调用
      * @param panel_node
      * @static
+     * @async
      */
-    static close(panel_node: cc.Node) {
-        return MPanel.close_with_nothing(panel_node)
+    static async close(panel_node: cc.Node) {
+        MPanel.close_with_nothing(panel_node)
     }
 
     //////////
@@ -169,26 +171,22 @@ export default class MPanel extends cc.Component {
      * 打开panel：没有任何动画
      * @param panel_node
      * @static
+     * @async
      */
-    static open_with_nothing(panel_node: cc.Node) {
-        return new Promise((resolve, reject) => {
-            panel_node.active = true
-            resolve()
-        })
+    static async open_with_nothing(panel_node: cc.Node) {
+        panel_node.active = true
     }
 
     /** 
      * 关闭panel：没有任何动画
      * @param panel_node
      * @static
+     * @async
      */
-    static close_with_nothing(panel_node: cc.Node) {
-        return new Promise((resolve, reject) => {
-            panel_node.active = false
-            panel_node.removeFromParent()
-            panel_node.destroy()
-            resolve()
-        })
+    static async close_with_nothing(panel_node: cc.Node) {
+        panel_node.active = false
+        panel_node.removeFromParent()
+        panel_node.destroy()
     }
 
     /** 
@@ -197,9 +195,10 @@ export default class MPanel extends cc.Component {
      * @param time
      * @param ease
      * @static
+     * @async
      */
-    static open_with_scale(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_IN) {
-        return new Promise((resolve, reject) => {
+    static async open_with_scale(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_IN) {
+        return await new Promise((resolve, reject) => {
             panel_node.scale = C.SCALE_0
             panel_node.active = true
             panel_node.runAction(cc.sequence(
@@ -215,14 +214,16 @@ export default class MPanel extends cc.Component {
      * @param time
      * @param ease
      * @static
+     * @async
      */
-    static close_with_scale(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_OUT) {
-        return new Promise((resolve, reject) => {
+    static async close_with_scale(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_OUT) {
+        await new Promise((resolve, reject) => {
             panel_node.runAction(cc.sequence(
                 cc.scaleTo(time, C.SCALE_0).easing(ease),
                 cc.callFunc(resolve),
             ))
-        }).then(() => { MPanel.close_with_nothing(panel_node) })
+        })
+        await MPanel.close_with_nothing(panel_node)
     }
 
     /** 
@@ -231,9 +232,10 @@ export default class MPanel extends cc.Component {
      * @param time
      * @param ease
      * @static
+     * @async
      */
-    static open_with_fade(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_IN) {
-        return new Promise((resolve, reject) => {
+    static async open_with_fade(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_IN) {
+        return await new Promise((resolve, reject) => {
             panel_node.opacity = 0
             panel_node.active = true
             panel_node.runAction(cc.sequence(
@@ -249,14 +251,16 @@ export default class MPanel extends cc.Component {
      * @param time
      * @param ease
      * @static
+     * @async
      */
-    static close_with_fade(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_OUT) {
-        return new Promise((resolve, reject) => {
+    static async close_with_fade(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_OUT) {
+        await new Promise((resolve, reject) => {
             panel_node.runAction(cc.sequence(
                 cc.fadeOut(time).easing(ease),
                 cc.callFunc(resolve),
             ))
-        }).then(() => { MPanel.close_with_nothing(panel_node) })
+        })
+        await MPanel.close_with_nothing(panel_node)
     }
 
     //////////
@@ -265,14 +269,14 @@ export default class MPanel extends cc.Component {
 
     /** 
      * 打开panel：放大缩小带旋转
-     * @param {cc.Node} panel_node
-     * @param {number} time
-     * @param {*} ease
-     * @returns {Promise}
+     * @param panel_node
+     * @param time
+     * @param ease
      * @static
+     * @async
      */
-    static open_with_scale_rotate(panel_node, time = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_IN) {
-        return new Promise((resolve, reject) => {
+    static async open_with_scale_rotate(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease = C.DEFAULT_EASE_IN) {
+        return await new Promise((resolve, reject) => {
             panel_node.scale = C.SCALE_0
             panel_node.active = true
             panel_node.runAction(cc.sequence(
@@ -291,9 +295,10 @@ export default class MPanel extends cc.Component {
      * @param time
      * @param ease
      * @static
+     * @async
      */
-    static close_with_scale_rotate(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_OUT) {
-        return new Promise((resolve, reject) => {
+    static async close_with_scale_rotate(panel_node: cc.Node, time: number = C.DEFAULT_TIME, ease: any = C.DEFAULT_EASE_OUT) {
+        await new Promise((resolve, reject) => {
             panel_node.runAction(cc.sequence(
                 cc.spawn(
                     cc.scaleTo(time, C.SCALE_0).easing(ease),
@@ -301,6 +306,7 @@ export default class MPanel extends cc.Component {
                 ),
                 cc.callFunc(resolve),
             ))
-        }).then(() => { MPanel.close_with_nothing(panel_node) })
+        })
+        await MPanel.close_with_nothing(panel_node)
     }
 }

@@ -21,4 +21,17 @@ export default class SWait {
         MPanel.panel_close('PanelWait')
     }
 
+    async test() {
+        await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                cc.log(33)
+                resolve()
+            }, 2000);
+        })
+    }
+
 }
+
+let a = new SWait().test()
+cc.log(a)
+cc.log(11)

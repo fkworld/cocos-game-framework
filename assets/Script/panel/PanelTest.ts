@@ -18,6 +18,6 @@ class PanelTest extends cc.Component {
     }
 
     start() {
-        SWait.panel_open()
+        // SWait.panel_open()
     }
 }

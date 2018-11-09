@@ -85,7 +85,7 @@ class AppMain extends cc.Component {
     panel_loading_close() {
         this.scheduleOnce(() => {
             MPanel.close_with_fade(this.panel_loading, C.LAODING_FADE_TIME).then(() => {
-                MPanel.panel_open_chain('PanelTest')
+                MPanel.panel_open_chain('PanelWait', 'PanelTest')
             })
         }, C.FAKE_DELAY)
     }

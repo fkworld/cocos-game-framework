@@ -28,26 +28,20 @@ export default class MRes extends cc.Component {
     array_test: any[] = []
 
     /** 资源载入链 */
-    load_chain(): Promise<any> {
-        return G.run_promise_chain([
-            () => {
-                return MRes.load_res_dir(C.PANEL_TEST, cc.Prefab).then((v) => {
-                    this.array_test = [...v]
-                })
-            },
-        ])
+    async load_chain(): Promise<void> {
+        this.array_test = await MRes.load_res_dir(C.PANEL_TEST, cc.Prefab)
     }
 
     /**
      * 载入单个资源
-     * - 使用Promise进行封装
      * - 输出log
      * @param path 
      * @param type 
      * @static
+     * @async
      */
-    static load_res(path: string, type: typeof cc.Asset): Promise<any> {
-        return new Promise((resolve, reject) => {
+    static async load_res(path: string, type: typeof cc.Asset): Promise<any> {
+        return await new Promise((resolve, reject) => {
             cc.loader.loadRes(path, type, (err, res) => {
                 // 载入失败
                 if (err) {
@@ -56,7 +50,6 @@ export default class MRes extends cc.Component {
                     return
                 }
                 // 载入成功
-                // cc.warn('[MRes] 资源载入成功，path=', path)
                 resolve(res)
             })
         })
@@ -69,9 +62,10 @@ export default class MRes extends cc.Component {
      * @param path 
      * @param type 
      * @static
+     * @async
      */
-    static load_res_dir(path: string, type: typeof cc.Asset): Promise<any[]> {
-        return new Promise((resolve, reject) => {
+    static async load_res_dir(path: string, type: typeof cc.Asset): Promise<any> {
+        return await new Promise((resolve, reject) => {
             cc.loader.loadResDir(path, type, (err, res) => {
                 // 载入失败
                 if (err) {
@@ -81,14 +75,11 @@ export default class MRes extends cc.Component {
                 }
                 // 载入成功
                 cc.warn('[MRes] 资源载入成功，path=', path, 'length=', res.length)
-                if (res.length === 0) {
-                    cc.error('[MRes] 注意，资源个数为0，请检查path，=', path)
-                }
+                if (res.length === 0) { cc.warn('[MRes] 注意，资源个数为0，请检查path，=', path) }
                 // 写入数据
-                let array = []
-                for (let r of res) { array.push(r) }
-                resolve(array)
+                resolve(res)
             })
         })
     }
 }
+
