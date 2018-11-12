@@ -47,7 +47,7 @@ export default class G {
      * @static
      * @async
      */
-    static async run_promise_chain(...array_f: Function[]): Promise<any> {
+    static async run_promise_chain(...array_f: Function[]): Promise<void> {
         for (let i = 0; i < array_f.length; i++) {
             await array_f[i]()
         }

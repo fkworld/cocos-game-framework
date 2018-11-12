@@ -9,14 +9,12 @@ const C = {
     /** 默认动作时间 */
     DEFAULT_TIME: 0.4,
     /** 默认进入场景缓动动画（激烈） */
-    DEFAULT_EASE_IN: cc.easeExponentialOut(),
+    DEFAULT_EASE_IN: cc.easeBounceOut(),
     /** 默认离开场景缓动动画（激烈） */
     DEFAULT_EASE_OUT: cc.easeExponentialIn(),
     /** 某些组件在scale=0时会出现一些错位等问题，因此将初始值设为0.001 */
     SCALE_0: 0.001,
     SCALE_1: 1,
-    /** 链式行为的默认间隔时间 */
-    CHAIN_INTERVAL: 0.1,
 }
 Object.freeze(C)
 
@@ -57,40 +55,36 @@ export default class MPanel extends cc.Component {
         MPanel.ins.now_z_index += 1
         let z_index = MPanel.ins.now_z_index
         // 载入资源
-        return await MRes.load_res(C.PATH + '/' + panel_name, cc.Prefab).then((v) => {
-            let panel_prefab: cc.Prefab = v
-            // 删除同名节点
-            let old_node: cc.Node = MPanel.ins.object_node[panel_name]
-            if (old_node != undefined) {
-                old_node.stopAllActions()
-                old_node.removeFromParent()
-                old_node.destroy()
-            }
-            // 创建节点
-            let node = cc.instantiate(panel_prefab)
-            node.setParent(MPanel.ins.panel_parent)
-            node.active = false
-            node.position = cc.Vec2.ZERO
-            node.width = cc.winSize.width
-            node.height = cc.winSize.height
-            node.stopAllActions()
-            // 打开节点
-            try {
-                // 优先采用窗口自带的显示方式
-                node.getComponent(panel_name).open()
-            } catch (error) {
-                // 如果没有自带的显示方式，则调用默认显示方式
-                MPanel.open(node)
-            }
-            // 修改渲染深度，使其置于顶部
-            node.zIndex = z_index
-            // 保存节点
-            MPanel.ins.object_node[panel_name] = node
-        }).then(() => {
-            // cc.log('显示成功', panel_name)
-        }).catch(() => {
-            cc.error("需要显示的panel不存在，panel_name=", panel_name)
-        })
+        return await MRes.load_res(C.PATH + '/' + panel_name, cc.Prefab)
+            .then(v => {
+                let panel_prefab: cc.Prefab = v
+                // 删除同名节点
+                let old_node: cc.Node = MPanel.ins.object_node[panel_name]
+                if (old_node != undefined) {
+                    old_node.stopAllActions()
+                    old_node.removeFromParent()
+                    old_node.destroy()
+                }
+                // 创建节点
+                let node = cc.instantiate(panel_prefab)
+                node.setParent(MPanel.ins.panel_parent)
+                node.active = false
+                node.position = cc.Vec2.ZERO
+                node.width = cc.winSize.width
+                node.height = cc.winSize.height
+                node.zIndex = z_index
+                // 保存节点
+                MPanel.ins.object_node[panel_name] = node
+                // 打开节点；优先采用窗口自带的显示方式；如果没有自带的方式，则调用默认方式
+                try {
+                    node.getComponent(panel_name).open()
+                } catch{
+                    MPanel.open(node)
+                }
+            })
+            .catch(() => {
+                cc.error("需要显示的panel不存在，panel_name=", panel_name)
+            })
     }
 
     /**
@@ -100,7 +94,7 @@ export default class MPanel extends cc.Component {
      * @static
      * @async
      */
-    static async panel_close(panel_name: string) {
+    static async panel_close(panel_name: string): Promise<void> {
         // 获取节点
         let node = MPanel.ins.object_node[panel_name]
         if (node === undefined) {
@@ -124,7 +118,7 @@ export default class MPanel extends cc.Component {
      * - 还未实现interval
      * @param array_panel_name 多个panel的name
      */
-    static async panel_open_chain(...array_panel_name: string[]) {
+    static async panel_open_chain(...array_panel_name: string[]): Promise<void> {
         for (let i = 0; i < array_panel_name.length; i++) {
             await MPanel.panel_open(array_panel_name[i])
         }
@@ -135,13 +129,13 @@ export default class MPanel extends cc.Component {
     //////////
 
     /** 获取文件中C的default time */
-    static get default_time() { return C.DEFAULT_TIME }
+    static get DEFAULT_TIME() { return C.DEFAULT_TIME }
 
     /** 获取文件中C的default ease in */
-    static get default_ease_in() { return C.DEFAULT_EASE_IN }
+    static get DEFAULT_EASE_IN() { return C.DEFAULT_EASE_IN }
 
     /** 获取文件中C的default ease out */
-    static get default_ease_out() { return C.DEFAULT_EASE_OUT }
+    static get DEFAULT_EASE_OUT() { return C.DEFAULT_EASE_OUT }
 
     /**
      * 统一的窗口默认显示方式，在MPanel中调用，不需要在各个子窗口中调用
@@ -150,7 +144,7 @@ export default class MPanel extends cc.Component {
      * @async
      */
     static async open(panel_node: cc.Node) {
-        MPanel.open_with_nothing(panel_node)
+        return await MPanel.open_with_nothing(panel_node)
     }
 
     /**
@@ -160,7 +154,7 @@ export default class MPanel extends cc.Component {
      * @async
      */
     static async close(panel_node: cc.Node) {
-        MPanel.close_with_nothing(panel_node)
+        return await MPanel.close_with_nothing(panel_node)
     }
 
     //////////
@@ -223,7 +217,7 @@ export default class MPanel extends cc.Component {
                 cc.callFunc(resolve),
             ))
         })
-        await MPanel.close_with_nothing(panel_node)
+        return await MPanel.close_with_nothing(panel_node)
     }
 
     /** 
@@ -260,7 +254,7 @@ export default class MPanel extends cc.Component {
                 cc.callFunc(resolve),
             ))
         })
-        await MPanel.close_with_nothing(panel_node)
+        return await MPanel.close_with_nothing(panel_node)
     }
 
     //////////
@@ -307,6 +301,6 @@ export default class MPanel extends cc.Component {
                 cc.callFunc(resolve),
             ))
         })
-        await MPanel.close_with_nothing(panel_node)
+        return await MPanel.close_with_nothing(panel_node)
     }
 }

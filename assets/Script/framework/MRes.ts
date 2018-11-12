@@ -1,5 +1,3 @@
-import G from "./G";
-
 const { ccclass } = cc._decorator
 /** 配置参数 */
 const C = {

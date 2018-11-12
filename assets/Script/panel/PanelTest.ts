@@ -10,7 +10,7 @@ const { ccclass, property } = cc._decorator
 class PanelTest extends cc.Component {
 
     open() {
-        MPanel.open_with_scale_rotate(this.node, 1)
+        MPanel.open_with_scale(this.node, 1)
     }
 
     close() {
