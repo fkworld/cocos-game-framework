@@ -1,18 +1,6 @@
-import G from "../G";
-
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
-
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
-    DEFAULT_R: 50,
+    DEFAULT_R: 5,
     DEFAULT_RATIO: 0.95,
     /** 像素状态；使用像素的alpha代替 */
     PIXEL_STATE: {
@@ -38,21 +26,9 @@ export default class TErase extends cc.Component {
      * @param node 
      * @static
      */
-    static get_component(node: cc.Node): TErase {
+    static get(node: cc.Node): TErase {
         return node.getComponent(TErase)
     }
-
-    /** cc.Mask组件 */
-    mask: cc.Mask
-
-    /** 擦除半径 */
-    r: number = C.DEFAULT_R
-
-    /** 源像素数组；从左上角开始；每个像素用4个数值描述 */
-    array_pixel_source: Uint8Array
-
-    /** 简化像素数组；同源像素数组，但是不包含像素的RGB信息，每个像素用1个数值描述 */
-    array_pixel_simplify: number[] = []
 
     onLoad() {
         this.init_mask()
@@ -64,33 +40,32 @@ export default class TErase extends cc.Component {
         this.draw_mask()
     }
 
-    /**
-     * 设置擦除半径
-     * @param r 
-     */
-    set_r(r) { this.r = r }
-
-    /** 完成后回调 */
-    array_function_finish = []
-
-    /**
-     * 设置擦除完成回调
-     * @param rect 
-     * @param callback 
-     * @param ratio 
-     */
-    set_finish_callback(rect, callback, ratio: number = C.DEFAULT_RATIO) {
-        this.array_function_finish.push({
-            /** 区域描述 */
-            rect: rect,
-            /** 完成比例 */
-            ratio: ratio,
-            /** 完成回调 */
-            callback: callback,
-            /** 完成回调是否执行 */
-            over: false,
-        })
+    update() {
+        // 更改机制：考虑实际使用过程中的多点触摸，由触发式重绘改成帧重绘
+        // 目前是单帧重；如果依然有性能压力，则可以改为间隔帧重绘
+        if (this.change_flag) {
+            this.change_flag = false
+            this.draw_mask()
+            this.do_finish_f()
+        }
     }
+
+    /** cc.Mask组件 */
+    mask: cc.Mask
+
+    /** 擦除半径 */
+    get r() { return this._r }
+    set r(v) { this._r = v }
+    private _r = C.DEFAULT_R
+
+    /** 源像素数组；从左上角开始；每个像素用4个数值描述 */
+    array_pixel_source: Uint8Array
+
+    /** 简化像素数组；同源像素数组，但是不包含像素的RGB信息，每个像素用1个数值描述 */
+    array_pixel_simplify: number[] = []
+
+    /** 是否更改 */
+    change_flag: boolean = false
 
     /** 保存touch点，start */
     p_start: cc.Vec2
@@ -98,17 +73,21 @@ export default class TErase extends cc.Component {
     /** 保存touch点，end */
     p_end: cc.Vec2
 
+    @property(cc.Node)
+    touch_area: cc.Node = null
+
     /**
-     * 设置点击时间
+     * 设置点击事件
+     * - 为了解决触摸溢出，则需要放一个超过Mask大小的touch_area
      */
-    set_touch_event() {
-        this.node.on(cc.Node.EventType.TOUCH_START, (e: cc.Touch) => {
+    set_touch_event(n: cc.Node = this.touch_area) {
+        n.on(cc.Node.EventType.TOUCH_START, (e: cc.Touch) => {
             // 保存起点
             this.p_start = this.node.convertToNodeSpaceAR(e.getLocation())
             // 起点触摸draw circle
             this.draw_circle(this.p_start)
         })
-        this.node.on(cc.Node.EventType.TOUCH_MOVE, (e: cc.Touch) => {
+        n.on(cc.Node.EventType.TOUCH_MOVE, (e: cc.Touch) => {
             // 保存临时点
             this.p_end = this.node.convertToNodeSpaceAR(e.getLocation())
             // draw line
@@ -116,8 +95,8 @@ export default class TErase extends cc.Component {
             // 修改存储
             this.p_start = this.p_end
         })
-        this.node.on(cc.Node.EventType.TOUCH_END || cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => {
-
+        n.on(cc.Node.EventType.TOUCH_END || cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => {
+            cc.log(11)
         })
     }
 
@@ -160,16 +139,17 @@ export default class TErase extends cc.Component {
     }
 
     /**
-     * 绘制单个像素
-     * - 使用到实例化的this.array_pixel_simplify this.array_pixel_source
+     * 修改单个像素
+     * - 修改像素透明度
+     * - 修改实例化的this.array_pixel_simplify，this.array_pixel_source，
      * - 处理id溢出情况：不进行溢出id绘制
      * - 返回true表示有修改，false表示无修改
      * @param pixel_id 
      */
-    draw_single_pixel(pixel_id: number): boolean {
+    change_single_pixel(pixel_id: number): boolean {
         // id溢出处理
         if (pixel_id < 0 || pixel_id >= this.array_pixel_simplify.length) { return false }
-        // 0改动处理
+        // 无改动处理
         if (this.array_pixel_simplify[pixel_id] === C.PIXEL_STATE.EMPTY) { return false }
         // 更改存储数值
         this.array_pixel_simplify[pixel_id] = C.PIXEL_STATE.EMPTY
@@ -179,19 +159,19 @@ export default class TErase extends cc.Component {
 
     /**
      * 绘制多个点
-     * @param array_p 要绘制的点
+     * @param array_p 要绘制的点数组
      */
     draw_array_point(array_p: cc.Vec2[]) {
         // 更改存储
         let change_flag = false
         for (let p of array_p) {
-            let flag = this.draw_single_pixel(this.trans_p_to_pixel_id(p))
+            let flag = this.change_single_pixel(this.trans_p_to_pixel_id(p))
             change_flag = change_flag || flag
         }
         // 如果无更改，则直接return
         if (!change_flag) { return }
-        this.draw_mask()
-        this.do_finish_callback()
+        // 有更改则修改flag，进行重绘
+        this.change_flag = true
     }
 
     /**
@@ -318,13 +298,61 @@ export default class TErase extends cc.Component {
         return row * width + col
     }
 
+    /** 完成后回调 */
+    array_finish_f = []
+
+    /**
+     * 设置区域擦除完毕后的执行方法
+     * - 传入rect来描述区域
+     * @param rect 
+     * @param f 
+     * @param ratio 
+     */
+    set_finish_f_by_rect(rect: cc.Rect, f: Function, ratio: number = C.DEFAULT_RATIO) {
+        this.array_finish_f.push({
+            /** 区域描述 */
+            rect: rect,
+            /** 完成比例 */
+            ratio: ratio,
+            /** 完成回调 */
+            f: f,
+            /** 完成回调是否执行 */
+            over: false,
+        })
+    }
+
+    /**
+     * 设置区域擦除完毕后的执行方法
+     * - 传入center/width/height来描述区域
+     * @param p_center 区域中心点
+     * @param width 区域宽度
+     * @param height 区域高度
+     * @param f 
+     * @param ratio 
+     */
+    set_finish_f_by_center(p_center: cc.Vec2, width: number, height: number, f: Function, ratio: number = C.DEFAULT_RATIO) {
+        this.array_finish_f.push({
+            /** 区域描述 */
+            rect: cc.rect(p_center.x - width / 2, p_center.y - height / 2, width, height),
+            /** 完成比例 */
+            ratio: ratio,
+            /** 完成回调 */
+            f: f,
+            /** 完成回调是否执行 */
+            over: false,
+        })
+    }
+
     /** 执行完成回调 */
-    do_finish_callback() {
-        for (let info of this.array_function_finish) {
-            if (info['over']) { continue }
-            if (!this.is_area_finish(info['rect'], info['ratio'])) { return }
-            info['over'] = true
-            info['callback']()
+    do_finish_f() {
+        for (let i = 0; i < this.array_finish_f.length; i++) {
+            let f_info = this.array_finish_f[i]
+            if (!f_info) { continue }
+            if (f_info['over']) { delete this.array_finish_f[i]; continue }
+            if (!this.is_area_finish(f_info['rect'], f_info['ratio'])) { return }
+            f_info['over'] = true
+            delete this.array_finish_f[i]
+            f_info['f']()
         }
     }
 
@@ -334,28 +362,5 @@ export default class TErase extends cc.Component {
      */
     hide_mask(time: number) {
         this.mask.node.runAction(cc.fadeOut(time))
-    }
-
-    /**
-     * 自动擦除
-     * - 擦除一条线
-     * - 间隔帧绘制
-     * @param p0 线的起点
-     * @param p1 线的终点
-     * @param t 时间
-     * @param r 线宽
-     * @param interval 刷新间隔（默认为1/20s）
-     */
-    auto_erase_line(p0: cc.Vec2, p1: cc.Vec2, time: number, r: number = this.r, interval: number = 0.05) {
-        let fuzzy_interval = time / Math.floor(time / interval)
-        let old_p = p0
-        let new_p = null
-        let i = 0
-        this.schedule(() => {
-            new_p = p0.lerp(p1, i / Math.floor(time / interval))
-            this.draw_circle_line(old_p, new_p, r)
-            old_p = new_p
-            i += 1
-        }, fuzzy_interval, Math.floor(time / interval))
     }
 }
