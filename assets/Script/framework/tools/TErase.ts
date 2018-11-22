@@ -1,21 +1,24 @@
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
-    DEFAULT_R: 5,
+    DEFAULT_R: 25,
     DEFAULT_RATIO: 0.95,
     /** 像素状态；使用像素的alpha代替 */
     PIXEL_STATE: {
         EMPTY: 0,
         FULL: 255,
     },
+    MIN_LINE_HEIGHT: 10,
 }
 Object.freeze(C)
 
 /**
  * [framework-T] 橡皮擦效果实现
  * - 通过动态修改mask图片的像素来实现
- * - 单点圆，多点直线
+ * - 单点画圆，多点画直线
  * - [注意] 图片的像素数组从左上角开始
  * - [注意] 节点的width和height需要为整数；并且最好为奇数
+ * - [注意] r最好为整数
+ * - [注意] 传入的p会进行整数处理
  */
 @ccclass
 @requireComponent(cc.Mask)
@@ -33,11 +36,13 @@ export default class TErase extends cc.Component {
     onLoad() {
         this.init_mask()
         this.init_array_pixel()
-        this.set_touch_event()
+        if (this.is_auto_touch) { this.set_touch_event() }
     }
 
     start() {
         this.draw_mask()
+
+
     }
 
     update() {
@@ -58,6 +63,9 @@ export default class TErase extends cc.Component {
     set r(v) { this._r = v }
     private _r = C.DEFAULT_R
 
+    get width() { return this.node.width }
+    get height() { return this.node.height }
+
     /** 源像素数组；从左上角开始；每个像素用4个数值描述 */
     array_pixel_source: Uint8Array
 
@@ -73,8 +81,13 @@ export default class TErase extends cc.Component {
     /** 保存touch点，end */
     p_end: cc.Vec2
 
+    /** 触摸区域（建议大于mask区域） */
     @property(cc.Node)
     touch_area: cc.Node = null
+
+    /** 是否自动设置touch事件 */
+    @property()
+    is_auto_touch: boolean = true
 
     /**
      * 设置点击事件
@@ -96,7 +109,7 @@ export default class TErase extends cc.Component {
             this.p_start = this.p_end
         })
         n.on(cc.Node.EventType.TOUCH_END || cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => {
-            cc.log(11)
+            cc.log('end or cancel')
         })
     }
 
@@ -144,9 +157,10 @@ export default class TErase extends cc.Component {
      * - 修改实例化的this.array_pixel_simplify，this.array_pixel_source，
      * - 处理id溢出情况：不进行溢出id绘制
      * - 返回true表示有修改，false表示无修改
-     * @param pixel_id 
+     * @param p 
      */
-    change_single_pixel(pixel_id: number): boolean {
+    change_single_pixel(p: cc.Vec2): boolean {
+        const pixel_id = this.trans_p_to_pixel_id(p)
         // id溢出处理
         if (pixel_id < 0 || pixel_id >= this.array_pixel_simplify.length) { return false }
         // 无改动处理
@@ -154,6 +168,11 @@ export default class TErase extends cc.Component {
         // 更改存储数值
         this.array_pixel_simplify[pixel_id] = C.PIXEL_STATE.EMPTY
         this.array_pixel_source[pixel_id * 4 + 3] = C.PIXEL_STATE.EMPTY
+        // 判断是否修改了区域内的点
+        for (let i = 0; i < this.array_finish_f.length; i++) {
+            let f_info = this.array_finish_f[i]
+            if (f_info['rect'].contains(p)) { f_info['count'] += 1 }
+        }
         return true
     }
 
@@ -165,7 +184,7 @@ export default class TErase extends cc.Component {
         // 更改存储
         let change_flag = false
         for (let p of array_p) {
-            let flag = this.change_single_pixel(this.trans_p_to_pixel_id(p))
+            let flag = this.change_single_pixel(p)
             change_flag = change_flag || flag
         }
         // 如果无更改，则直接return
@@ -180,6 +199,8 @@ export default class TErase extends cc.Component {
      * @param r 
      */
     draw_circle(p: cc.Vec2, r = this.r) {
+        // 整数化p
+        // TErase.reset_p(p)
         // 计算点
         let array_result = []
         for (let x = p.x - r; x <= p.x + r; x++) {
@@ -194,6 +215,8 @@ export default class TErase extends cc.Component {
     }
 
     draw_circle_line(p0: cc.Vec2, p1: cc.Vec2, r = this.r) {
+        // 整数化p
+        // TErase.reset_p(p0, p1)
         // 计算点
         let min_p = cc.v2(Math.min(p0.x, p1.x) - r, Math.min(p0.y, p1.y) - r)
         let max_p = cc.v2(Math.max(p0.x, p1.x) + r, Math.max(p0.y, p1.y) + r)
@@ -210,7 +233,19 @@ export default class TErase extends cc.Component {
     }
 
     /**
+     * 将多个p重置为整数
+     * @param p 
+     */
+    static reset_p(...p: cc.Vec2[]) {
+        for (let i = 0; i < p.length; i++) {
+            p[i].x = Math.round(p[i].x)
+            p[i].y = Math.round(p[i].y)
+        }
+    }
+
+    /**
      * 获取area的擦除进
+     * - 弃用
      * - [0,1]
      * @param rect area的描述，采用一个cc.Rect进行描述
      */
@@ -230,6 +265,7 @@ export default class TErase extends cc.Component {
 
     /**
      * area是否已经擦除完毕
+     * - 弃用
      * @param rect 
      * @param ratio 
      */
@@ -298,6 +334,18 @@ export default class TErase extends cc.Component {
         return row * width + col
     }
 
+    /**
+     * 将像素id转换为像素坐标
+     * @param id 
+     * @param width 
+     * @param height 
+     */
+    trans_pixel_id_to_p(id: number, width: number = this.node.width, height: number = this.node.height): cc.Vec2 {
+        let row = Math.floor(id / height)
+        let col = id % height
+        return cc.v2(-width / 2 + col, height / 2 - row)
+    }
+
     /** 完成后回调 */
     array_finish_f = []
 
@@ -318,6 +366,10 @@ export default class TErase extends cc.Component {
             f: f,
             /** 完成回调是否执行 */
             over: false,
+            /** 修改计数 */
+            count: 0,
+            /** 总计数 */
+            all_count: rect.width * rect.height,
         })
     }
 
@@ -340,6 +392,10 @@ export default class TErase extends cc.Component {
             f: f,
             /** 完成回调是否执行 */
             over: false,
+            /** 修改计数 */
+            count: 0,
+            /** 总计数 */
+            all_count: width * height,
         })
     }
 
@@ -348,10 +404,9 @@ export default class TErase extends cc.Component {
         for (let i = 0; i < this.array_finish_f.length; i++) {
             let f_info = this.array_finish_f[i]
             if (!f_info) { continue }
-            if (f_info['over']) { delete this.array_finish_f[i]; continue }
-            if (!this.is_area_finish(f_info['rect'], f_info['ratio'])) { return }
+            if (f_info['over']) { continue }
+            if (f_info['count'] / f_info['all_count'] < f_info['ratio']) { continue }
             f_info['over'] = true
-            delete this.array_finish_f[i]
             f_info['f']()
         }
     }
