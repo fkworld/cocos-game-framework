@@ -50,19 +50,12 @@ class AppMain extends cc.Component {
         }, this, C.FAKE_FRAME)
     }
 
-    update(dt) {
-
-    }
-
-    /** 载入完毕个数；目前有bar和data */
-    public get flag_loading() { return this._flag_loading; }
-    public set flag_loading(value) {
-        this._flag_loading = value;
-        // 均载入完毕
-        if (this._flag_loading === 2) {
-            this.panel_loading_close()
-        }
-    }
+    /** 
+     * 载入完毕计数
+     * - 目前有进度条bar的读条完毕和数据data的载入完毕，执行回调在setter函数中
+     */
+    get flag_loading() { return this._flag_loading; }
+    set flag_loading(v) { this._flag_loading = v; if (v === 2) { this.panel_loading_close() } }
     private _flag_loading = 0;
 
     /** 游戏主Canvas */
@@ -84,8 +77,9 @@ class AppMain extends cc.Component {
      */
     panel_loading_close() {
         this.scheduleOnce(() => {
-            MPanel.close_with_fade(this.panel_loading, C.LAODING_FADE_TIME).then(() => {
-                MPanel.panel_open_chain('PanelWait', 'PanelTest')
+            MPanel.out_fade(this.panel_loading, C.LAODING_FADE_TIME, cc.easeCircleActionInOut()).then(() => {
+                this.panel_loading.active = false
+                MPanel.chain('PanelWait')
             })
         }, C.FAKE_DELAY)
     }
@@ -93,11 +87,11 @@ class AppMain extends cc.Component {
     /** 初始化本地数据 */
     inin_local_data() {
         // 输出log
-        if (L.is_init === true.toString()) {
-            cc.warn('检测到本地用户数据')
+        if (L.is_init === 'true') {
+            cc.warn('get user\'s local data')
             return
         } else {
-            cc.warn('未检测到本地用户数据，正在进行进行用户数据初始化')
+            cc.warn('unget user\'s local data, init now...')
         }
 
         //////////
@@ -132,6 +126,6 @@ class AppMain extends cc.Component {
     ) {
         canvas.fitHeight = !(now_screen_radio > design_screen_radio)
         canvas.fitWidth = now_screen_radio > design_screen_radio
-        canvas.alignWithScreen() // 本方法不在代码提示中，也不在文档中，但是就是不能删除，只能说一句666；我都忘记自己为啥要写这一串代码。。。
+        canvas.alignWithScreen() //!! 本方法不在代码提示中，也不在文档中，但是就是不能删除，只能说一句666；我都忘记自己为啥要写这一串代码。。。
     }
 }

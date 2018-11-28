@@ -302,10 +302,10 @@
       "__id__": 5
     },
     "_enabled": true,
-    "panel_parent": {
+    "parent": {
       "__id__": 8
     },
-    "_id": "6cLsM/i/BLMYUAT2AY/rld"
+    "_id": "6c2iSSvW5Esp8x0PQ8Shaf"
   },
   {
     "__type__": "cc.Node",

@@ -1,6 +1,6 @@
 import MPanel from "../framework/MPanel";
 
-const { ccclass } = cc._decorator
+const { ccclass, property } = cc._decorator
 
 /**
  * [framework-Panel] Wait
@@ -8,12 +8,21 @@ const { ccclass } = cc._decorator
 @ccclass
 export default class PanelWait extends cc.Component {
 
-    open() {
-        MPanel.open_with_fade(this.node)
+    async open() {
+        for (let n of this.array_ui_item) {
+            MPanel.in_scale(n)
+        }
     }
 
-    close() {
-        MPanel.close_with_fade(this.node)
+    async close() {
+        let anima = []
+        for (let n of this.array_ui_item) {
+            anima.push(MPanel.out_scale(n))
+        }
+        return await Promise.all(anima)
     }
+
+    @property(cc.Node)
+    array_ui_item: cc.Node[] = []
 
 }
