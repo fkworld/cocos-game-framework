@@ -79,7 +79,7 @@ class AppMain extends cc.Component {
         this.scheduleOnce(() => {
             MPanel.out_fade(this.panel_loading, C.LAODING_FADE_TIME, cc.easeCircleActionInOut()).then(() => {
                 this.panel_loading.active = false
-                MPanel.chain('PanelWait')
+                MPanel.chain('PanelGuide')
             })
         }, C.FAKE_DELAY)
     }

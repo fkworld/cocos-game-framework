@@ -1,8 +1,7 @@
 const { ccclass } = cc._decorator
 /** 配置参数 */
 const C = {
-    /** test资源路径参数（假路径） */
-    PANEL_TEST: '__test',
+    FAKE_PATH: '__fake_path__',
 }
 Object.freeze(C)
 
@@ -22,12 +21,11 @@ export default class MRes extends cc.Component {
         MRes.ins = this
     }
 
-    /** test数组 */
-    array_test: any[] = []
+    array_fake: any[] = []
 
     /** 资源载入链 */
-    async load_chain(): Promise<void> {
-        this.array_test = await MRes.load_res_dir(C.PANEL_TEST, cc.Prefab)
+    async load_chain() {
+        this.array_fake = await MRes.load_res_dir(C.FAKE_PATH, cc.Prefab)
     }
 
     /**
@@ -38,12 +36,12 @@ export default class MRes extends cc.Component {
      * @static
      * @async
      */
-    static async load_res(path: string, type: typeof cc.Asset): Promise<any> {
+    static async load_res(path: string, type: typeof cc.Asset) {
         return await new Promise((resolve, reject) => {
             cc.loader.loadRes(path, type, (err, res) => {
                 // 载入失败
                 if (err) {
-                    cc.error('[MRes] 资源载入失败，error=', err, 'path=', path, 'type=', type)
+                    cc.error(`[MRes] resource load fail,path=${path},type=${type},error=${err}`)
                     reject()
                     return
                 }
@@ -67,13 +65,13 @@ export default class MRes extends cc.Component {
             cc.loader.loadResDir(path, type, (err, res) => {
                 // 载入失败
                 if (err) {
-                    cc.error('[MRes] 资源载入失败，error=', err, 'path=', path, 'type=', type)
+                    cc.error(`[MRes] resource load fail,path=${path},type=${type},error=${err}`)
                     reject()
                     return
                 }
                 // 载入成功
-                cc.warn('[MRes] 资源载入成功，path=', path, 'length=', res.length)
-                if (res.length === 0) { cc.warn('[MRes] 注意，资源个数为0，请检查path，=', path) }
+                cc.warn(`[MRes] resource load success,length=${res.length}`)
+                if (res.length === 0) { cc.warn(`[MRes] resource length=0,please check again`) }
                 // 写入数据
                 resolve(res)
             })

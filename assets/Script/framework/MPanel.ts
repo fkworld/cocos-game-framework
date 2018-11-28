@@ -57,7 +57,6 @@ export default class MPanel extends cc.Component {
     static async open(panel_name: string) {
         const z_index = MPanel.ins.now_z_index += 1
         const show_panel = (prefab: cc.Prefab) => {
-            cc.log(prefab)
             // 删除同名节点
             if (MPanel.ins.obj_node[panel_name]) {
                 MPanel.ins.obj_node[panel_name].destroy()
