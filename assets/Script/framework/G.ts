@@ -125,4 +125,14 @@ export default class G {
         const reg = /\{([0-9]+?)\}/g
         return template.replace(reg, (match, index) => params[index])
     }
+
+    /**
+     * 异步函数中等待一段时间
+     * @param time 单位s
+     * @static
+     * @async
+     */
+    static async wait_time(time: number) {
+        return new Promise((resolve, reject) => { setTimeout(resolve, time * 1000) })
+    }
 }

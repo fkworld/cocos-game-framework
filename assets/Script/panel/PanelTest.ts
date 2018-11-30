@@ -11,11 +11,12 @@ const { ccclass, property } = cc._decorator
 @ccclass
 class PanelTest extends cc.Component {
 
-    open() {
+    open(param1, param2) {
         MPanel.in_scale(this.node, 1)
     }
 
-    close() {
-        MPanel.out_scale(this.node, 1)
+    async close(param1, param2) {
+        await MPanel.out_scale(this.node, 1)
     }
+
 }
