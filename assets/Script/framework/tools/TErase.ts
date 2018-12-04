@@ -1,13 +1,14 @@
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
-    DEFAULT_R: 25,
-    DEFAULT_RATIO: 0.95,
+    /** 默认擦除半径 */
+    R: 25,
+    /** 默认擦除回调完成比例 */
+    RATIO: 0.95,
     /** 像素状态；使用像素的alpha代替 */
     PIXEL_STATE: {
         EMPTY: 0,
         FULL: 255,
     },
-    MIN_LINE_HEIGHT: 10,
 }
 Object.freeze(C)
 
@@ -16,9 +17,9 @@ Object.freeze(C)
  * - 通过动态修改mask图片的像素来实现
  * - 单点画圆，多点画直线
  * - [注意] 图片的像素数组从左上角开始
- * - [注意] 节点的width和height需要为整数；并且最好为奇数
- * - [注意] r最好为整数
- * - [注意] 传入的p会进行整数处理
+ * - [注意] 节点的width和height最好为整数
+ * - [注意] 由于像素和坐标的对应关系有偏差，因此擦除进度无法达到100%
+ * - 完成回调实现逻辑：使用一系列参数确定一个完成回调；包括：区域描述，回调方法，执行次数，执行间隔；写入计数，总计数，是否完成
  */
 @ccclass
 @requireComponent(cc.Mask)
@@ -41,8 +42,6 @@ export default class TErase extends cc.Component {
 
     start() {
         this.draw_mask()
-
-
     }
 
     update() {
@@ -55,13 +54,16 @@ export default class TErase extends cc.Component {
         }
     }
 
+    /** 触摸区域（建议大于mask区域） */
+    @property(cc.Node)
+    touch_area: cc.Node = null
+
+    /** 是否自动设置touch事件 */
+    @property()
+    is_auto_touch: boolean = true
+
     /** cc.Mask组件 */
     mask: cc.Mask
-
-    /** 擦除半径 */
-    get r() { return this._r }
-    set r(v) { this._r = v }
-    private _r = C.DEFAULT_R
 
     get width() { return this.node.width }
     get height() { return this.node.height }
@@ -81,13 +83,8 @@ export default class TErase extends cc.Component {
     /** 保存touch点，end */
     p_end: cc.Vec2
 
-    /** 触摸区域（建议大于mask区域） */
-    @property(cc.Node)
-    touch_area: cc.Node = null
-
-    /** 是否自动设置touch事件 */
-    @property()
-    is_auto_touch: boolean = true
+    /** 完成回调 */
+    array_finish_f: FInfo[] = []
 
     /**
      * 设置点击事件
@@ -109,7 +106,7 @@ export default class TErase extends cc.Component {
             this.p_start = this.p_end
         })
         n.on(cc.Node.EventType.TOUCH_END || cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => {
-            cc.log('end or cancel')
+            // 
         })
     }
 
@@ -169,9 +166,8 @@ export default class TErase extends cc.Component {
         this.array_pixel_simplify[pixel_id] = C.PIXEL_STATE.EMPTY
         this.array_pixel_source[pixel_id * 4 + 3] = C.PIXEL_STATE.EMPTY
         // 判断是否修改了区域内的点
-        for (let i = 0; i < this.array_finish_f.length; i++) {
-            let f_info = this.array_finish_f[i]
-            if (f_info['rect'].contains(p)) { f_info['count'] += 1 }
+        for (let finfo of this.array_finish_f) {
+            finfo.save_change(p, pixel_id)
         }
         return true
     }
@@ -198,9 +194,7 @@ export default class TErase extends cc.Component {
      * @param p 
      * @param r 
      */
-    draw_circle(p: cc.Vec2, r = this.r) {
-        // 整数化p
-        // TErase.reset_p(p)
+    draw_circle(p: cc.Vec2, r = C.R) {
         // 计算点
         let array_result = []
         for (let x = p.x - r; x <= p.x + r; x++) {
@@ -214,9 +208,7 @@ export default class TErase extends cc.Component {
         this.draw_array_point(array_result)
     }
 
-    draw_circle_line(p0: cc.Vec2, p1: cc.Vec2, r = this.r) {
-        // 整数化p
-        // TErase.reset_p(p0, p1)
+    draw_circle_line(p0: cc.Vec2, p1: cc.Vec2, r = C.R) {
         // 计算点
         let min_p = cc.v2(Math.min(p0.x, p1.x) - r, Math.min(p0.y, p1.y) - r)
         let max_p = cc.v2(Math.max(p0.x, p1.x) + r, Math.max(p0.y, p1.y) + r)
@@ -241,36 +233,6 @@ export default class TErase extends cc.Component {
             p[i].x = Math.round(p[i].x)
             p[i].y = Math.round(p[i].y)
         }
-    }
-
-    /**
-     * 获取area的擦除进
-     * - 弃用
-     * - [0,1]
-     * @param rect area的描述，采用一个cc.Rect进行描述
-     */
-    get_area_ratio(rect: cc.Rect): number {
-        let erase_count = 0
-        let all_count = 0
-        for (let x = rect.xMin; x < rect.xMax; x++) {
-            for (let y = rect.yMin; y < rect.yMax; y++) {
-                all_count += 1
-                if (this.array_pixel_simplify[this.trans_p_to_pixel_id(cc.v2(x, y))] === C.PIXEL_STATE.EMPTY) {
-                    erase_count += 1
-                }
-            }
-        }
-        return erase_count / all_count
-    }
-
-    /**
-     * area是否已经擦除完毕
-     * - 弃用
-     * @param rect 
-     * @param ratio 
-     */
-    is_area_finish(rect: cc.Rect, ratio: number = C.DEFAULT_RATIO) {
-        return this.get_area_ratio(rect) >= ratio
     }
 
     /**
@@ -346,69 +308,55 @@ export default class TErase extends cc.Component {
         return cc.v2(-width / 2 + col, height / 2 - row)
     }
 
-    /** 完成后回调 */
-    array_finish_f = []
-
     /**
-     * 设置区域擦除完毕后的执行方法
-     * - 传入rect来描述区域
-     * @param rect 
-     * @param f 
-     * @param ratio 
+     * 设置区域擦除完毕后的执行方法；传入rect来描述区域
+     * @param rect 区域描述
+     * @param f 执行方法
+     * @param ratio 判断擦除完毕的比例
+     * @param count 执行次数
+     * @param interval 多次执行时的执行间隔；默认为0.5
      */
-    set_finish_f_by_rect(rect: cc.Rect, f: Function, ratio: number = C.DEFAULT_RATIO) {
-        this.array_finish_f.push({
-            /** 区域描述 */
-            rect: rect,
-            /** 完成比例 */
-            ratio: ratio,
-            /** 完成回调 */
-            f: f,
-            /** 完成回调是否执行 */
-            over: false,
-            /** 修改计数 */
-            count: 0,
-            /** 总计数 */
-            all_count: rect.width * rect.height,
-        })
+    set_finish_f_by_rect(
+        rect: cc.Rect,
+        f: Function,
+        ratio: number = C.RATIO,
+        count: number = 1,
+        interval: number = 1.5
+    ) {
+        this.array_finish_f.push(new FInfo(rect, f, ratio, count, interval))
     }
 
     /**
-     * 设置区域擦除完毕后的执行方法
-     * - 传入center/width/height来描述区域
-     * @param p_center 区域中心点
-     * @param width 区域宽度
-     * @param height 区域高度
+     * 设置区域擦除完毕后的执行方法；传入center、width、height来描述区域
+     * @param p_center
+     * @param width 
+     * @param height 
      * @param f 
      * @param ratio 
+     * @param count 
+     * @param interval 
      */
-    set_finish_f_by_center(p_center: cc.Vec2, width: number, height: number, f: Function, ratio: number = C.DEFAULT_RATIO) {
-        this.array_finish_f.push({
-            /** 区域描述 */
-            rect: cc.rect(p_center.x - width / 2, p_center.y - height / 2, width, height),
-            /** 完成比例 */
-            ratio: ratio,
-            /** 完成回调 */
-            f: f,
-            /** 完成回调是否执行 */
-            over: false,
-            /** 修改计数 */
-            count: 0,
-            /** 总计数 */
-            all_count: width * height,
-        })
+    set_finish_f_by_center(
+        p_center: cc.Vec2,
+        width: number,
+        height: number,
+        f: Function,
+        ratio: number = C.RATIO,
+        count: number = 1,
+        interval: number = 1.5
+    ) {
+        this.set_finish_f_by_rect(
+            cc.rect(p_center.x - width / 2, p_center.y - height / 2, width, height),
+            f,
+            ratio,
+            count,
+            interval
+        )
     }
 
     /** 执行完成回调 */
     do_finish_f() {
-        for (let i = 0; i < this.array_finish_f.length; i++) {
-            let f_info = this.array_finish_f[i]
-            if (!f_info) { continue }
-            if (f_info['over']) { continue }
-            if (f_info['count'] / f_info['all_count'] < f_info['ratio']) { continue }
-            f_info['over'] = true
-            f_info['f']()
-        }
+        for (let finfo of this.array_finish_f) { finfo.do(this) }
     }
 
     /**
@@ -417,5 +365,93 @@ export default class TErase extends cc.Component {
      */
     hide_mask(time: number) {
         this.mask.node.runAction(cc.fadeOut(time))
+    }
+}
+
+/**
+ * 完成回调信息类
+ */
+class FInfo {
+
+    /**
+     * 构造函数
+     * @param rect 
+     * @param f 
+     * @param ratio 
+     * @param count 
+     * @param interval 
+     */
+    constructor(rect: cc.Rect, f: Function, ratio: number, count: number, interval: number) {
+        this.rect = rect
+        this.f = f
+        this.ratio = ratio
+        this.count = count
+        this.interval = interval
+        this.is_over = false
+        this.is_cd = false
+        this.finish_count = 0
+        this.all_count = rect.width * rect.height
+        this.id_set = new Set()
+    }
+
+    /** 区域描述 */
+    rect: cc.Rect
+    /** 执行函数 */
+    f: Function
+    /** 完成比例 */
+    ratio: number
+    /** 执行次数 */
+    count: number
+    /** 执行间隔 */
+    interval: number
+    /** 是否执行完毕 */
+    is_over: boolean
+    /** 是否执行cd */
+    is_cd: boolean
+    /** 点修改计数 */
+    finish_count: number
+    /** 点总计数 */
+    all_count: number
+    /** 保存当前区域内点对应的id；通过Set实现 */
+    id_set: Set<number>
+
+    /**
+     * 执行回调；包括回调判定
+     * @param t_erase 传入TErase组件
+     */
+    do(t_erase: TErase) {
+        // 不满足执行条件
+        if (this.is_over) { return }
+        if (this.is_cd) { return }
+        if (this.finish_count / this.all_count < this.ratio) { return }
+        // 满足执行条件
+        this.f()
+        this.is_cd = true
+        this.count -= 1
+        if (this.count <= 0) {
+            this.is_over = true
+            return
+        } else {
+            t_erase.scheduleOnce(() => {
+                this.id_set.forEach(id => t_erase.array_pixel_simplify[id] = C.PIXEL_STATE.FULL)
+                this.finish_count = 0
+                this.is_cd = false
+            }, this.interval)
+        }
+    }
+
+    /**
+     * 保存区域内点的变化
+     * - 判断点是否在区域内
+     * - 保存点的id
+     * - finish_count+=1
+     * @param p 
+     * @param id 
+     */
+    save_change(p, id) {
+        if (this.rect.contains(p)) {
+            this.id_set.add(id)
+            this.finish_count += 1
+        }
     }
 }

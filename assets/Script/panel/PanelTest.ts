@@ -22,6 +22,5 @@ class PanelTest extends cc.Component {
 
     start() {
         // SGuide.open(SGuide.TYPE.test1)
-        SWait.open_panel()
     }
 }
