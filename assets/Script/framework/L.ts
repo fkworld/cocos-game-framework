@@ -17,19 +17,15 @@ export default class L {
     }
 
     /** 是否初始化 */
-    static set is_init(value) { L.set_item("IsInit", value) }
+    static set is_init(v) { L.set_item("IsInit", v) }
     static get is_init() { return L.get_item("IsInit") }
 
-    /** 音乐 */
-    static set music(value) { L.set_item("Music", value) }
-    static get music() { return L.get_item("Music") }
-
     /** 音效 */
-    static set sound(value) { L.set_item("Sound", value) }
+    static set sound(v) { L.set_item("Sound", v) }
     static get sound() { return L.get_item("Sound") }
 
     /** 语言 */
-    static set language(value) { L.set_item("Language", value) }
+    static set language(v) { L.set_item("Language", v) }
     static get language() { return L.get_item("Language") }
 
     //////////
