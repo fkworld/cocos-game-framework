@@ -1,8 +1,8 @@
 import L from "./L";
 import MRes from "./MRes";
 import MPanel from "./MPanel";
-import MLanguage from "./tools/i18n/MLanguage";
 import G from "./G";
+import MLanguage from "./tools/i18n/MLanguage";
 
 const { ccclass, property } = cc._decorator
 const C = {
@@ -100,7 +100,7 @@ class AppMain extends cc.Component {
 
         L.music = true
         L.sound = true
-        L.language = MLanguage.TYPE.ENGLISH
+        MLanguage.init_l()
 
         // 初始化完毕之后，置is_init为true
         L.is_init = true

@@ -110,23 +110,6 @@ export default class G {
     }
 
     /**
-     * 显示一个多参数的模板字符串
-     * @param template 伪模板字符串，使用{index}来表示参数，index表示参数序号
-     * @param params 多个参数；注意排序
-     * @example
-        ```ts
-        const s = 'this is {0}, and {this1} is {1}, {1}, {2}'
-        const r = G.fake_template_string(s, 'param0', 'param1')
-        console.log(r)
-        => 'this is param0, and {this1} is param1, param1, undefined'
-        ```
-     */
-    static fake_template_string(template: string, ...params: any[]): string {
-        const reg = /\{([0-9]+?)\}/g
-        return template.replace(reg, (match, index) => params[index])
-    }
-
-    /**
      * 异步函数中等待一段时间
      * @param time 单位s
      * @static
