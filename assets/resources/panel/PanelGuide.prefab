@@ -828,11 +828,11 @@
     "_useOriginalSize": false,
     "_string": "This is a line for guide info.\nThis is another line.",
     "_N$string": "This is a line for guide info.\nThis is another line.",
-    "_fontSize": 20,
+    "_fontSize": 25,
     "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "7825e2a3-4696-4dfb-b703-2f5d7cc8b30c"
+      "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
