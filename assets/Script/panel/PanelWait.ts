@@ -12,6 +12,7 @@ export default class PanelWait extends cc.Component {
         for (let n of this.array_ui_item) {
             MPanel.in_scale(n)
         }
+        this.set_anima()
     }
 
     async close() {
@@ -24,5 +25,13 @@ export default class PanelWait extends cc.Component {
 
     @property(cc.Node)
     array_ui_item: cc.Node[] = []
+
+    @property(cc.Node)
+    n_load_icon: cc.Node = null
+
+    /** 设置动画 */
+    set_anima() {
+        this.schedule(() => { this.n_load_icon.rotation += 45 }, 0.1, cc.macro.REPEAT_FOREVER)
+    }
 
 }

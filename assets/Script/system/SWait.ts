@@ -6,7 +6,7 @@ import MPanel from "../framework/MPanel";
  */
 export default class SWait {
 
-    static open_panel() { MPanel.open('PanelWait') }
+    static open() { MPanel.open('PanelWait') }
 
-    static close_panel() { MPanel.close('PanelWait') }
+    static close() { MPanel.close('PanelWait') }
 }
