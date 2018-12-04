@@ -1,15 +1,5 @@
 import MPanel from "../framework/MPanel";
 
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
-
 const { ccclass, property } = cc._decorator;
 
 /**
@@ -18,12 +8,15 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class PanelGuide extends cc.Component {
 
-    open() {
-        MPanel.in_fade(this.node)
+    async open(mask_world_position: cc.Vec2, mask_width: number, mask_height: number, info: string) {
+        this.init(mask_world_position, mask_width, mask_height, info)
+        await MPanel.in_fade(this.node)
+        cc.director.pause()
     }
 
     async close() {
-        return await MPanel.out_fade(this.node)
+        cc.director.resume()
+        await MPanel.out_fade(this.node)
     }
 
     @property(cc.Node)
@@ -32,18 +25,30 @@ export default class PanelGuide extends cc.Component {
     @property(cc.Node)
     n_info: cc.Node = null
 
+    @property(cc.Widget)
+    mask_bg: cc.Widget = null
+
+    @property(cc.Widget)
+    mask_arrow: cc.Widget = null
+
     /**
      * 初始化界面
-     * @param mask_position 
+     * @param mask_world_position mask的世界坐标
      * @param mask_width 
      * @param mask_height 
      * @param info 
      */
-    init(mask_position: cc.Vec2, mask_width: number, mask_height: number, info: string) {
-        this.n_mask.position = mask_position
+    init(mask_world_position: cc.Vec2, mask_width: number, mask_height: number, info: string) {
+        this.n_mask.position = this.n_mask.convertToNodeSpaceAR(mask_world_position)
         this.n_mask.width = mask_width
         this.n_mask.height = mask_height
+        this.mask_bg.updateAlignment()
+        this.mask_arrow.updateAlignment()
         this.n_info.getComponent(cc.Label).string = info
-        this.n_info.position = mask_position.y >= 0 ? cc.v2(0, -400) : cc.v2(0, 400)
+    }
+
+    /** click event close */
+    event_close() {
+        MPanel.close('PanelGuide')
     }
 }

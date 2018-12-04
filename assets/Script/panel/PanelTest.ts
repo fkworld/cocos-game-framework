@@ -2,6 +2,7 @@ import MPanel from "../framework/MPanel";
 import SWait from "../system/SWait";
 import TErase from "../framework/tools/TErase";
 import G from "../framework/G";
+import SGuide from "../system/SGuide";
 
 const { ccclass, property } = cc._decorator
 
@@ -19,4 +20,7 @@ class PanelTest extends cc.Component {
         await MPanel.out_scale(this.node, 1)
     }
 
+    start() {
+        SGuide.open(SGuide.TYPE.test1)
+    }
 }
