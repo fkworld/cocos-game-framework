@@ -61,9 +61,7 @@ export default class MPanel extends cc.Component {
         const z_index = MPanel.ins.now_z_index += 1
         const show_panel = (prefab: cc.Prefab) => {
             // 删除同名节点
-            if (MPanel.ins.obj_node[panel_name]) {
-                MPanel.ins.obj_node[panel_name].destroy()
-            }
+            if (MPanel.ins.obj_node[panel_name]) { MPanel.ins.obj_node[panel_name].destroy() }
             // 创建新节点
             let node = cc.instantiate(prefab)
             node.setParent(MPanel.ins.parent)
@@ -81,10 +79,10 @@ export default class MPanel extends cc.Component {
         }
         // 优先从prefab存储中寻找
         if (MPanel.ins.obj_prefab[panel_name]) {
-            return show_panel(MPanel.ins.obj_prefab[panel_name])
+            show_panel(MPanel.ins.obj_prefab[panel_name])
         }
         // 如果找不到则从resource中载入
-        return await MRes.load_res(`${C.PATH}/${panel_name}`, cc.Prefab).then((v: cc.Prefab) => {
+        await MRes.load_res(`${C.PATH}/${panel_name}`, cc.Prefab).then((v: cc.Prefab) => {
             // 保存prefab
             MPanel.ins.obj_prefab[v.name] = v
             show_panel(v)
