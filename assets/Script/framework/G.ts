@@ -62,7 +62,8 @@ export default class G {
         let c = 0
         nc.schedule(() => {
             if (c === 0) { f() }
-            if ((c += 1) >= interval) { c = 0 }
+            c += 1
+            if (c >= interval) { c = 0 }
         }, 0, (all_count - 1) * interval)
     }
 

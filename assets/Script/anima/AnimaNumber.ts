@@ -1,21 +1,11 @@
-import G from "../framework/G";
-
-// Learn TypeScript:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+import MLanguage from "../framework/tools/i18n/MLanguage";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
     TOOLTIP: {
         TIME: '动画持续总时间；默认为1s',
         INTERVAL: '动画间隔；默认为0.05s',
-        TEMPLATE: '显示字符串模板；默认为{0}；如果为空也会视为{0}',
+        TEMPLATE: '显示字符串模板；参考MLanguage.fake_template_string()；；默认为{0}；如果为空也会视为{0}',
     },
     TIME: 1,
     INTERVAL: 0.05,
@@ -56,9 +46,7 @@ export default class AnimaNumber extends cc.Component {
 
     /** 重置template */
     reset_template() {
-        if (this.template === '') {
-            this.template = '{0}'
-        }
+        if (this.template === '') { this.template = '{0}' }
     }
 
     /**
@@ -70,13 +58,13 @@ export default class AnimaNumber extends cc.Component {
      */
     play_anima(from_value, to_value, time: number = this.time, interval: number = this.interval) {
         if (from_value === to_value) { return }
-        this.unscheduleAllCallbacks() // 避免重复调用时的bug，但是可能会导致取消了其他调度导致的异常
+        this.unscheduleAllCallbacks()
         let i = 0
         let count = Math.floor(time / interval)
         this.schedule(() => {
             i += 1
             let value = from_value + Math.trunc(i * (to_value - from_value) / count)
-            this.label.string = G.fake_template_string(this.template, value)
+            this.label.string = MLanguage.fake_template_string(this.template, value)
         }, interval, count - 1)
     }
 }
