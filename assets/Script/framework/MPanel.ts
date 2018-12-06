@@ -4,14 +4,10 @@ import G from "./G";
 const { ccclass, property } = cc._decorator
 enum MOVE_DIRECTION { LEFT, RIGHT, TOP, BOTTOM }
 const C = {
-    TOOLTIP: {
-        PARENT: 'panel所挂载的父节点',
-    },
     PATH: 'panel',
     TIME: 0.4,
     EASE_IN: cc.easeExponentialOut(),
     EASE_OUT: cc.easeExponentialOut(),
-    MOVE_DIRECTION: MOVE_DIRECTION,
     /** 某些组件在scale=0时会出现一些错位等问题，因此将初始值设为0.001 */
     SCALE_0: 0.001,
     SCALE_1: 1,
@@ -37,7 +33,7 @@ export default class MPanel extends cc.Component {
         MPanel.ins = this
     }
 
-    @property({ tooltip: C.TOOLTIP.PARENT, type: cc.Node })
+    @property({ tooltip: 'panel所挂载的父节点', type: cc.Node })
     parent: cc.Node = null
 
     /** 当前的渲染层级 */
@@ -135,7 +131,7 @@ export default class MPanel extends cc.Component {
     static get TIME() { return C.TIME }
     static get EASE_IN() { return C.EASE_IN }
     static get EASE_OUT() { return C.EASE_OUT }
-    static get MOVE_DIRECTION() { return C.MOVE_DIRECTION }
+    static get MOVE_DIRECTION() { return MOVE_DIRECTION }
 
     //////////
     // UI方法
@@ -235,20 +231,20 @@ export default class MPanel extends cc.Component {
      * @static
      * @async
      */
-    static async in_move(node: cc.Node, direction: MOVE_DIRECTION = C.MOVE_DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
+    static async in_move(node: cc.Node, direction: MOVE_DIRECTION = MOVE_DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
         return await new Promise((resolve, reject) => {
             let start_position: cc.Vec2
             switch (direction) {
-                case C.MOVE_DIRECTION.LEFT:
+                case MOVE_DIRECTION.LEFT:
                     start_position = cc.v2(-cc.winSize.width, 0)
                     break;
-                case C.MOVE_DIRECTION.RIGHT:
+                case MOVE_DIRECTION.RIGHT:
                     start_position = cc.v2(cc.winSize.width, 0)
                     break;
-                case C.MOVE_DIRECTION.TOP:
+                case MOVE_DIRECTION.TOP:
                     start_position = cc.v2(0, cc.winSize.height)
                     break;
-                case C.MOVE_DIRECTION.BOTTOM:
+                case MOVE_DIRECTION.BOTTOM:
                     start_position = cc.v2(0, cc.winSize.height)
                     break;
                 default:
@@ -271,20 +267,20 @@ export default class MPanel extends cc.Component {
      * @static
      * @async
      */
-    static async out_move(node: cc.Node, direction: MOVE_DIRECTION = C.MOVE_DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
+    static async out_move(node: cc.Node, direction: MOVE_DIRECTION = MOVE_DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
         return await new Promise((resolve, reject) => {
             let end_postion;
             switch (direction) {
-                case C.MOVE_DIRECTION.LEFT:
+                case MOVE_DIRECTION.LEFT:
                     end_postion = cc.v2(-cc.winSize.width, 0)
                     break;
-                case C.MOVE_DIRECTION.RIGHT:
+                case MOVE_DIRECTION.RIGHT:
                     end_postion = cc.v2(cc.winSize.width, 0)
                     break;
-                case C.MOVE_DIRECTION.TOP:
+                case MOVE_DIRECTION.TOP:
                     end_postion = cc.v2(0, cc.winSize.height)
                     break;
-                case C.MOVE_DIRECTION.BOTTOM:
+                case MOVE_DIRECTION.BOTTOM:
                     end_postion = cc.v2(0, cc.winSize.height)
                     break;
                 default:

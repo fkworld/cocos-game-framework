@@ -3,7 +3,7 @@ import MRes from "../MRes";
 
 const { ccclass, property } = cc._decorator
 /** 触发类型 */
-enum TYPE_TRIGGER { touch_end, touch_start, touch_move }
+enum TYPE_TRIGGER { TOUCH_END, TOUCH_START, TOUCH_MOVE }
 /** 音效类型 */
 enum TYPE_SOUND { none, test }
 /** 音效对应的文件名 */
@@ -11,10 +11,6 @@ const SOUND_DATA = [null, 'test']
 const C = {
     /** sound所在的path */
     PATH: 'sound',
-    TOOLIP: {
-        TRIGGER: '触发类型：点击click触发，触摸touch触发，拖拽touchmove触发',
-        SOUND: '音频类型',
-    },
 }
 Object.freeze(C)
 
@@ -48,23 +44,23 @@ export default class TPlaySound extends cc.Component {
     }
 
     /** 触发类型 */
-    @property({ tooltip: C.TOOLIP.TRIGGER, type: cc.Enum(TYPE_TRIGGER) })
-    trigger: TYPE_TRIGGER = TYPE_TRIGGER.touch_end
+    @property({ tooltip: '触发类型', type: cc.Enum(TYPE_TRIGGER) })
+    trigger: TYPE_TRIGGER = TYPE_TRIGGER.TOUCH_END
 
     /** 音频类型 */
-    @property({ tooltip: C.TOOLIP.SOUND, type: cc.Enum(TYPE_SOUND) })
+    @property({ tooltip: '音频类型', type: cc.Enum(TYPE_SOUND) })
     sound: TYPE_SOUND = TYPE_SOUND.none
 
     /** 根据触摸类型设置点击事件 */
     set_event() {
         switch (this.trigger) {
-            case TYPE_TRIGGER.touch_end:
+            case TYPE_TRIGGER.TOUCH_END:
                 this.node.on(cc.Node.EventType.TOUCH_END, () => { this.play_sound() })
                 break;
-            case TYPE_TRIGGER.touch_start:
+            case TYPE_TRIGGER.TOUCH_START:
                 this.node.on(cc.Node.EventType.TOUCH_START, () => { this.play_sound() })
                 break;
-            case TYPE_TRIGGER.touch_move:
+            case TYPE_TRIGGER.TOUCH_MOVE:
                 this.node.on(cc.Node.EventType.TOUCH_MOVE, () => { this.play_sound() })
                 break;
             default:

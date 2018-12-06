@@ -8,10 +8,6 @@ enum LANGUAGE_TYPE { CHINESE, ENGLISH }
 /** 语言类型对应的语言数据脚本 */
 const LANGUAGE_DATA = [MLanguage_zh, MLanguage_en]
 const C = {
-    TOOLTIP: {
-        PREVIEW: '预览1次；预览完毕后置于false',
-        KEY: '多语言对应的key',
-    },
     /** 默认语言类型 */
     DEFAULT_TYPE: LANGUAGE_TYPE.ENGLISH,
     DEFAULT_KEY: 'enter_a_key_and_set_preview_true',
@@ -81,11 +77,11 @@ export default class MLanguage extends cc.Component {
     }
 
     /** 预览（点击后刷新编辑器） */
-    @property({ tooltip: C.TOOLTIP.PREVIEW })
+    @property({ tooltip: '预览1次；预览完毕后置于false' })
     preview: boolean = false
 
     /** key；无法使用notify() */
-    @property({ tooltip: C.TOOLTIP.KEY, multiline: true })
+    @property({ tooltip: '对应的key', multiline: true })
     key: string = C.DEFAULT_KEY
 
     /**

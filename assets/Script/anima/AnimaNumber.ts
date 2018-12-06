@@ -2,11 +2,6 @@ import MLanguage from "../framework/tools/i18n/MLanguage";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
-    TOOLTIP: {
-        TIME: '动画持续总时间；默认为1s',
-        INTERVAL: '动画间隔；默认为0.05s',
-        TEMPLATE: '显示字符串模板；参考MLanguage.fake_template_string()；；默认为{0}；如果为空也会视为{0}',
-    },
     TIME: 1,
     INTERVAL: 0.05,
     TEMPLATE: '{0}',
@@ -35,13 +30,13 @@ export default class AnimaNumber extends cc.Component {
 
     label: cc.Label
 
-    @property({ tooltip: C.TOOLTIP.TIME })
+    @property({ tooltip: '动画持续总时间；默认为1s' })
     time: number = C.TIME
 
-    @property({ tooltip: C.TOOLTIP.INTERVAL })
+    @property({ tooltip: '动画间隔；默认为0.05s' })
     interval: number = C.INTERVAL
 
-    @property({ tooltip: C.TOOLTIP.TEMPLATE })
+    @property({ tooltip: '显示字符串模板；参考MLanguage.fake_template_string()；；默认为{0}；如果为空也会视为{0}' })
     template: string = C.TEMPLATE
 
     /** 重置template */

@@ -1,11 +1,4 @@
 const { ccclass, property, executeInEditMode } = cc._decorator
-const C = {
-    TOOLTIP: {
-        NOW_Z_INDEX: '当前的zIndex',
-        Z_INDEX: '更改的zIndex',
-        PREVIEW: '预览',
-    },
-}
 
 /**
  * [framework-T] z轴顺序（zIndex）工具
@@ -15,13 +8,13 @@ const C = {
 @executeInEditMode
 export default class TZIndex extends cc.Component {
 
-    @property({ tooltip: C.TOOLTIP.NOW_Z_INDEX, readonly: true })
+    @property({ tooltip: '当前的zIndex', readonly: true })
     now_z_index = 0
 
-    @property({ tooltip: C.TOOLTIP.Z_INDEX })
+    @property({ tooltip: '更改的zIndex' })
     z_index = 0
 
-    @property({ tooltip: C.TOOLTIP.PREVIEW })
+    @property({ tooltip: '预览' })
     preview = false
 
     update() {
@@ -35,4 +28,5 @@ export default class TZIndex extends cc.Component {
         this.node.zIndex = this.z_index
         this.now_z_index = this.node.zIndex
     }
+
 }
