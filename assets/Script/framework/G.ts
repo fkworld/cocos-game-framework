@@ -3,59 +3,44 @@
  * - 封装一些重要的/常用的方法
  */
 export default class G {
+
     /**
-     * 获取一个随机整数，范围：[min,max)
+     * 获取一个随机整数
+     * - [min,max)
      * @param min 
      * @param max 
      * @static
      */
-    static get_random_int(min: number, max: number): number {
+    static random_int(min: number, max: number) {
         return Math.floor(Math.random() * (max - min) + min)
     }
 
     /**
-     * 获取一个随机小数，范围：[min,max)
+     * 获取一个随机小数
+     * - [min,max)
      * @param min 
      * @param max 
      * @static
      */
-    static get_random_float(min: number, max: number): number {
+    static random_float(min: number, max: number) {
         return Math.random() * (max - min) + min
     }
 
     /**
-     * 从数组中获取一个随机值，概率相等
-     * - 当数组长度为0时，返回undefined
+     * 从数组中获取一个量
+     * - 概率相等
+     * - 当数组长度为0时，会输出log并返回一个undefined
      * @param array 
      * @static
      */
-    static get_random_array_item(array: any[]): any | undefined {
-        if (array.length === 0) {
-            cc.warn('[注意] 获取了一个长度为0的数组，无法获取数组中的随机值')
-            return undefined
-        }
-        return array[G.get_random_int(0, array.length)]
-    }
-
-    /**
-     * 依次运行多个promise
-     * - 考虑到async/await各个平台的支持情况不同，尽量不要在代码中使用
-     * - 默认每个promise，resolve一个无关的返回值；如果返回值是有用的，则无法使用这个方法
-     * - 我也不知道为啥这样写就能成功。。。嗯。。。
-     * - 实际使用起来感觉也挺复杂的（参考MRes.load_chain()），以后再改动吧。
-     * @param array_f 由于promise建立后立即执行的特性（坑），因此需要使用一个箭头函数进行包装
-     * @static
-     * @async
-     */
-    static async run_promise_chain(...array_f: Function[]): Promise<void> {
-        for (let i = 0; i < array_f.length; i++) {
-            await array_f[i]()
-        }
+    static random_array_item(array: any[]) {
+        if (array.length === 0) { cc.warn('[G] 获取了一个长度为0的数组') }
+        return array[G.random_int(0, array.length)]
     }
 
     /**
      * 将一个多次执行的方法放到多帧中执行，避免单帧中消耗过多性能造成卡顿
-     * - 【思路】使用cc.Component.schedule()方法，在interval参数为0时表示逐帧调用
+     * - 使用cc.Component.schedule()方法，在interval参数为0时表示逐帧调用
      * @param f 需要执行的方法
      * @param nc 执行方法的节点脚本
      * @param all_count 执行的总数
@@ -77,8 +62,7 @@ export default class G {
         let c = 0
         nc.schedule(() => {
             if (c === 0) { f() }
-            c += 1
-            if (c >= interval) { c = 0 }
+            if ((c += 1) >= interval) { c = 0 }
         }, 0, (all_count - 1) * interval)
     }
 
