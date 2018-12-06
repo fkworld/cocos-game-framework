@@ -1,4 +1,5 @@
 import MPanel from "../framework/MPanel";
+import PanelWait from "./PanelWait";
 
 const { ccclass, property } = cc._decorator
 
@@ -16,7 +17,17 @@ class PanelTest extends cc.Component {
         await MPanel.out_fade(this.node)
     }
 
-    start() {
+    @property(cc.Sprite)
+    sp: cc.Sprite = null
 
+    start() {
+        PanelWait.open()
+        let tx = this.sp.spriteFrame.getTexture()
+        cc.log(this.sp)
+        let rt = new cc.RenderTexture()
+        rt.initWithSize(2, 2);
+        (<any>rt).drawTextureAt(tx, 0, 0)
+
+        cc.log(rt.readPixels(null, 0, 0, 100, 100))
     }
 }
