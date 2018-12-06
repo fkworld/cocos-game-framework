@@ -5,7 +5,7 @@ const { ccclass, property } = cc._decorator
 enum MOVE_DIRECTION { LEFT, RIGHT, TOP, BOTTOM }
 const C = {
     PATH: 'panel',
-    TIME: 0.4,
+    TIME: 0.5,
     EASE_IN: cc.easeExponentialOut(),
     EASE_OUT: cc.easeExponentialOut(),
     /** 某些组件在scale=0时会出现一些错位等问题，因此将初始值设为0.001 */
@@ -233,19 +233,20 @@ export default class MPanel extends cc.Component {
      */
     static async in_move(node: cc.Node, direction: MOVE_DIRECTION = MOVE_DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
         return await new Promise((resolve, reject) => {
-            let start_position: cc.Vec2
+            let start_position: cc.Vec2;
+            let end_postion: cc.Vec2 = node.position
             switch (direction) {
                 case MOVE_DIRECTION.LEFT:
-                    start_position = cc.v2(-cc.winSize.width, 0)
+                    start_position = end_postion.add(cc.v2(-cc.winSize.width, 0))
                     break;
                 case MOVE_DIRECTION.RIGHT:
-                    start_position = cc.v2(cc.winSize.width, 0)
+                    start_position = end_postion.add(cc.v2(cc.winSize.width, 0))
                     break;
                 case MOVE_DIRECTION.TOP:
-                    start_position = cc.v2(0, cc.winSize.height)
+                    start_position = end_postion.add(cc.v2(0, cc.winSize.height))
                     break;
                 case MOVE_DIRECTION.BOTTOM:
-                    start_position = cc.v2(0, cc.winSize.height)
+                    start_position = end_postion.add(cc.v2(0, -cc.winSize.height))
                     break;
                 default:
                     break;
@@ -253,7 +254,7 @@ export default class MPanel extends cc.Component {
             node.position = start_position
             node.active = true
             node.runAction(cc.sequence(
-                cc.moveTo(time, cc.Vec2.ZERO).easing(ease),
+                cc.moveTo(time, end_postion).easing(ease),
                 cc.callFunc(resolve),
             ))
         })
@@ -269,19 +270,20 @@ export default class MPanel extends cc.Component {
      */
     static async out_move(node: cc.Node, direction: MOVE_DIRECTION = MOVE_DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
         return await new Promise((resolve, reject) => {
-            let end_postion;
+            let start_position: cc.Vec2 = node.position
+            let end_postion: cc.Vec2
             switch (direction) {
                 case MOVE_DIRECTION.LEFT:
-                    end_postion = cc.v2(-cc.winSize.width, 0)
+                    end_postion = start_position.add(cc.v2(-cc.winSize.width, 0))
                     break;
                 case MOVE_DIRECTION.RIGHT:
-                    end_postion = cc.v2(cc.winSize.width, 0)
+                    end_postion = start_position.add(cc.v2(cc.winSize.width, 0))
                     break;
                 case MOVE_DIRECTION.TOP:
-                    end_postion = cc.v2(0, cc.winSize.height)
+                    end_postion = start_position.add(cc.v2(0, cc.winSize.height))
                     break;
                 case MOVE_DIRECTION.BOTTOM:
-                    end_postion = cc.v2(0, cc.winSize.height)
+                    end_postion = start_position.add(cc.v2(0, -cc.winSize.height))
                     break;
                 default:
                     break;
