@@ -1,9 +1,9 @@
-import L from "./L";
-import MRes from "./MRes";
-import MPanel from "./MPanel";
-import G from "./G";
-import MLanguage from "./tools/i18n/MLanguage";
-import TPlaySound from "./tools/TPlaySound";
+import { L } from "./L";
+import { G } from "./G";
+import { MRes } from "./MRes";
+import { MLanguage } from "./tools/i18n/MLanguage";
+import { MPanel } from "./MPanel";
+import { TPlaySound } from "./tools/TPlaySound";
 
 const { ccclass, property } = cc._decorator
 const C = {

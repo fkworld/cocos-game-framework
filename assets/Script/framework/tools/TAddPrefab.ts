@@ -1,18 +1,10 @@
 const { ccclass, property } = cc._decorator
-const C = {
-    TOOLIP: {
-        PREFAB: '需要添加的prefab',
-        PLAY_ONLOAD: '是否在onLoad()时自动添加；默认自动添加',
-        RESET_POSITION: '是否初始化位置为(0,0)',
-    },
-}
-Object.freeze(C)
 
 /**
  * [framework-T] 游戏开始时添加prefab
  */
 @ccclass
-export default class TAddPrefab extends cc.Component {
+export class TAddPrefab extends cc.Component {
 
     /**
      * 获取当前脚本
@@ -30,15 +22,15 @@ export default class TAddPrefab extends cc.Component {
         return node.getComponent(TAddPrefab).prefab_node
     }
 
-    @property({ tooltip: C.TOOLIP.PREFAB, type: cc.Prefab })
+    @property({ tooltip: '需要添加的prefab', type: cc.Prefab })
     prefab: cc.Prefab = null
 
     /** 是否在onLoad()时自动创建 */
-    @property({ tooltip: C.TOOLIP.PLAY_ONLOAD })
+    @property({ tooltip: '是否在onLoad()时自动添加；默认自动添加' })
     is_play_onload: boolean = true
 
     /** 创建时是否重置位置为0 */
-    @property({ tooltip: C.TOOLIP.RESET_POSITION })
+    @property({ tooltip: '是否初始化位置为(0,0)' })
     is_reset_position: boolean = true
 
     /** prefab创建成功后对应的node */

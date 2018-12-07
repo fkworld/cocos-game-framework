@@ -1,4 +1,4 @@
-import MLanguage from "../framework/tools/i18n/MLanguage";
+import { MLanguage } from "../framework/tools/i18n/MLanguage";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
@@ -13,7 +13,7 @@ const C = {
  */
 @ccclass
 @requireComponent(cc.Label)
-export default class AnimaNumber extends cc.Component {
+export class AnimaNumber extends cc.Component {
 
     /**
      * 获取节点组件7

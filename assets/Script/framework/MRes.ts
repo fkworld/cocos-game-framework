@@ -13,7 +13,7 @@ Object.freeze(C)
  * - 脚本需要挂载在尽量靠前的位置
  */
 @ccclass
-export default class MRes extends cc.Component {
+export class MRes extends cc.Component {
 
     static ins: MRes
 

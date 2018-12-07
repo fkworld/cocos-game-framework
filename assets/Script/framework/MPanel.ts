@@ -1,5 +1,5 @@
-import MRes from "./MRes";
-import G from "./G";
+import { G } from "./G";
+import { MRes } from "./MRes";
 
 const { ccclass, property } = cc._decorator
 enum MOVE_DIRECTION { LEFT, RIGHT, TOP, BOTTOM }
@@ -25,7 +25,7 @@ Object.freeze(C)
  * - [注意] 场景中仅有一个MPanel脚本生效，只挂载1次即可
  */
 @ccclass
-export default class MPanel extends cc.Component {
+export class MPanel extends cc.Component {
 
     static ins: MPanel
 

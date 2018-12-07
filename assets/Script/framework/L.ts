@@ -4,7 +4,7 @@
  * - 【注意】get函数的返回值，由于游戏引擎原因，均返回string，这里不做类型转换，实际使用过程中需要注意
  * - 【注意】当没有key的对应值时，会返回null
  */
-export default class L {
+export class L {
 
     /** 封装设置item */
     static set_item(key: string, value) {

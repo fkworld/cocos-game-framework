@@ -10,7 +10,7 @@ enum TYPE { WIDTH, HEIGHT }
  */
 @ccclass
 @executeInEditMode
-export default class TSize extends cc.Component {
+export class TSize extends cc.Component {
 
     update() {
         if (this.preview) {

@@ -3,7 +3,7 @@
  * - 一个适合游戏中使用的简单状态机实现
  * - 只有状态和行为，触发由change_state()方法触发
  */
-export default class TSimpleFSM {
+export class TSimpleFSM {
 
     obj_state: object
 

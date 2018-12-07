@@ -6,7 +6,7 @@ const { ccclass, property, executeInEditMode } = cc._decorator
  */
 @ccclass
 @executeInEditMode
-export default class TZIndex extends cc.Component {
+export class TZIndex extends cc.Component {
 
     @property({ tooltip: '当前的zIndex', readonly: true })
     now_z_index = 0

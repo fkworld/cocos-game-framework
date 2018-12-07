@@ -23,7 +23,7 @@ Object.freeze(C)
  */
 @ccclass
 @requireComponent(cc.Mask)
-export default class TErase extends cc.Component {
+export class TErase extends cc.Component {
 
     /**
      * 获取节点的对应组件

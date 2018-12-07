@@ -1,4 +1,4 @@
-import MPanel from "../framework/MPanel";
+import { MPanel } from "../framework/MPanel";
 
 const { ccclass, property } = cc._decorator;
 
@@ -6,7 +6,7 @@ const { ccclass, property } = cc._decorator;
  * [framework-panel] Message+system
  */
 @ccclass
-export default class PanelMessage extends cc.Component {
+export class PanelMessage extends cc.Component {
 
     static open(message: string) {
         MPanel.open('PanelMessage', message)

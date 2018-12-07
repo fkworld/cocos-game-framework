@@ -8,7 +8,7 @@ const { ccclass, property } = cc._decorator
  * - [注意] 观察的子节点名称需要不同
  */
 @ccclass
-export default class TChildNode extends cc.Component {
+export class TChildNode extends cc.Component {
 
     /**
      * 获取节点中被观察的子节点

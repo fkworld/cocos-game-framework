@@ -1,6 +1,6 @@
-import L from "../../L";
 import { MLanguage_en } from "./MLanguageEn";
 import { MLanguage_zh } from "./MLanguageZh";
+import { L } from "../../L";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 /** 语言类型 */
@@ -21,7 +21,7 @@ const C = {
 @ccclass
 @executeInEditMode
 @requireComponent(cc.Label)
-export default class MLanguage extends cc.Component {
+export class MLanguage extends cc.Component {
 
     /** 类型 */
     static get TYPE() { return LANGUAGE_TYPE }

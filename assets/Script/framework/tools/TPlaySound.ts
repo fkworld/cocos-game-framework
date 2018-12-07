@@ -1,5 +1,5 @@
-import L from "../L";
-import MRes from "../MRes";
+import { L } from "../L";
+import { MRes } from "../MRes";
 
 const { ccclass, property } = cc._decorator
 /** 触发类型 */
@@ -19,7 +19,7 @@ Object.freeze(C)
  * @todo 保存已经load的音效资源来避免重复load
  */
 @ccclass
-export default class TPlaySound extends cc.Component {
+export class TPlaySound extends cc.Component {
 
     /** 初始化本地存储 */
     static init_l() {

@@ -2,7 +2,7 @@
  * [framework] 全局方法类
  * - 封装一些重要的/常用的方法
  */
-export default class G {
+export class G {
 
     /**
      * 获取一个随机整数
