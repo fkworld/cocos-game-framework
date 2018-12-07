@@ -26,11 +26,8 @@ Object.freeze(C)
 @ccclass
 class AppMain extends cc.Component {
 
-    onLoad() {
-        this.adjust_screen()
-    }
-
     start() {
+        this.adjust_screen()
         this.init_local_data()
         MRes.ins.load_chain().then(() => { this.check_load_finish() })
         this.pb.progress = 0
@@ -40,16 +37,19 @@ class AppMain extends cc.Component {
         }, this, C.FAKE_FRAME)
     }
 
+    /** 载入完毕计数 */
     load_count = 0
+
+    /** 载入完毕总计数 */
     max_load_count = 2
 
     /**
      * 检查载入计数，执行载入完毕逻辑
      * - 目前有两个计数：MRes的资源载入完毕；进度条载入完毕
      */
-    async check_load_finish(max: number = this.max_load_count) {
+    async check_load_finish() {
         this.load_count += 1
-        if (this.load_count < max) { return }
+        if (this.load_count < this.max_load_count) { return }
         await G.wait_time(C.FAKE_DELAY)
         await MPanel.out_fade(this.panel_loading, C.LAODING_FADE_TIME, cc.easeExponentialIn())
         this.panel_loading.active = false
@@ -73,8 +73,8 @@ class AppMain extends cc.Component {
         // 测试阶段每次打开时均需要初始化，正是上线后注释掉
         L.is_init = false
         // 输出log
-        if (L.is_init === 'true') { cc.warn('get user\'s local data'); return }
-        else { cc.warn('unget user\'s local data, init now...') }
+        if (L.is_init === 'true') { cc.warn(`[${AppMain.name}] get user\'s local data`); return }
+        else { cc.warn(`[${AppMain.name}] unget user\'s local data, init now...`) }
 
         //////////
         // 这里是各个项目的本地数据初始化过程
@@ -89,9 +89,13 @@ class AppMain extends cc.Component {
 
     /** 调整屏幕适配 */
     adjust_screen() {
-        let f = cc.winSize.width / cc.winSize.height > this.canvas.designResolution.width / this.canvas.designResolution.height
-        this.canvas.fitHeight = !f
-        this.canvas.fitWidth = f
-        this.canvas.alignWithScreen() // 注意本方法不在文档中，但是需要应用
+        // 注意cc.winSize只有在适配后（修改fitHeight\fitWidth后）才能获取到正确的值
+        // 因此使用cc.getFrameSize()来获取初始的屏幕大小
+        let f = cc.view.getFrameSize().width / cc.view.getFrameSize().height >= this.canvas.designResolution.width / this.canvas.designResolution.height
+        this.canvas.fitHeight = f
+        this.canvas.fitWidth = !f
+        // 注意本方法不在文档中，但是需要应用
+        // 在下一个creator版本中有修复，会在fitHeight\fitWidth修改时自动调用
+        this.canvas.alignWithScreen()
     }
 }
