@@ -31,12 +31,18 @@ export class TPlaySound extends cc.Component {
      * @param name 
      */
     static play_sound(name: string) {
+        if (L.sound != `${true}`) { return }
         MRes.load_res(`${C.PATH}/${name}`, cc.AudioClip).then((v: cc.AudioClip) => {
             cc.loader.setAutoRelease(v, true)
             cc.audioEngine.play(v, false, 1)
         }).catch(() => {
-            cc.error(`sound is not exist, name=${name}`)
+            cc.error(`[${TPlaySound.name}] sound is not exist, name=${name}`)
         })
+    }
+
+    /** 修改音效flag */
+    static change_sound() {
+        L.sound = L.sound === `${true}` ? false : true
     }
 
     onLoad() {
@@ -69,8 +75,7 @@ export class TPlaySound extends cc.Component {
     }
 
     /** 播放音频 */
-    play_sound(name = SOUND_DATA[this.sound], is_able_to_play = L.sound === 'true') {
-        if (!is_able_to_play) { return }
+    play_sound(name = SOUND_DATA[this.sound]) {
         if (typeof name != 'string') { return }
         TPlaySound.play_sound(name)
     }
