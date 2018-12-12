@@ -1,4 +1,5 @@
 import { MPanel } from "../framework/MPanel";
+import { MSound } from "../framework/MSound";
 
 const { ccclass, property } = cc._decorator
 
@@ -21,5 +22,9 @@ class PanelTest extends cc.Component {
 
     start() {
 
+    }
+
+    event_test() {
+        MSound.play(MSound.SOUND.test_effect)
     }
 }

@@ -3,7 +3,7 @@ import { G } from "./G";
 import { MRes } from "./MRes";
 import { MLanguage } from "./tools/i18n/MLanguage";
 import { MPanel } from "./MPanel";
-import { TPlaySound } from "./tools/TPlaySound";
+import { MSound } from "./MSound";
 
 const { ccclass, property } = cc._decorator
 const C = {
@@ -80,7 +80,7 @@ class AppMain extends cc.Component {
         // 这里是各个项目的本地数据初始化过程
         //////////
 
-        TPlaySound.init_l()
+        MSound.init_l()
         MLanguage.init_l()
 
         // 初始化完毕之后，置is_init为true
