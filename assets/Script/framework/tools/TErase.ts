@@ -39,15 +39,10 @@ export class TErase extends cc.Component {
     }
 
     onLoad() {
-        this.init_mask()
         this.init_array_pixel()
-        if (this.is_auto_touch) { this.set_touch_event() }
-    }
-
-    start() {
+        this.init_mask()
         this.draw_mask()
-
-        this.draw_circle_line(cc.v2(0, 0), cc.v2(100, 0))
+        if (this.is_auto_touch) { this.set_touch_event() }
     }
 
     update() {
@@ -101,23 +96,26 @@ export class TErase extends cc.Component {
      * - 为了解决触摸溢出，则需要放一个超过Mask大小的touch_area
      */
     set_touch_event(n: cc.Node = this.touch_area) {
-        n.on(cc.Node.EventType.TOUCH_START, (e: cc.Touch) => {
-            // 保存起点
+        /** touch start 逻辑 */
+        const f_start = (e: cc.Touch) => {
             this.p_start = this.node.convertToNodeSpaceAR(e.getLocation())
-            // 起点触摸draw circle
             this.draw_circle(this.p_start)
-        })
-        n.on(cc.Node.EventType.TOUCH_MOVE, (e: cc.Touch) => {
-            // 保存临时点
+        }
+        /** touch move逻辑 */
+        const f_move = (e: cc.Touch) => {
             this.p_end = this.node.convertToNodeSpaceAR(e.getLocation())
-            // draw line
             this.draw_circle_line(this.p_start, this.p_end)
-            // 修改存储
             this.p_start = this.p_end
-        })
-        n.on(cc.Node.EventType.TOUCH_END || cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => {
+        }
+        /** touch end & cancel 逻辑 */
+        const f_end_cancel = (e: cc.Touch) => {
             // 
-        })
+        }
+
+        n.on(cc.Node.EventType.TOUCH_START, (e: cc.Touch) => { f_start(e) })
+        n.on(cc.Node.EventType.TOUCH_MOVE, (e: cc.Touch) => { f_move(e) })
+        n.on(cc.Node.EventType.TOUCH_END, (e: cc.Touch) => { f_end_cancel(e) })
+        n.on(cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => { f_end_cancel(e) })
     }
 
     /**
