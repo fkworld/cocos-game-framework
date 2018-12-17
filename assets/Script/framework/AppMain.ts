@@ -4,13 +4,10 @@ import { MRes } from "./MRes";
 import { MLanguage } from "./tools/i18n/MLanguage";
 import { MPanel } from "./MPanel";
 import { MSound } from "./MSound";
+import { TNull } from "./tools/TNull";
 
 const { ccclass, property } = cc._decorator
 const C = {
-    /** 伪帧数之内进度条读满 */
-    FAKE_FRAME: 100,
-    /** 进度条满之后的等待时间 */
-    FAKE_DELAY: 0.5,
     /** loading界面渐隐时间 */
     LAODING_FADE_TIME: 2,
 }
@@ -19,28 +16,27 @@ Object.freeze(C)
 /**
  * [framework] 游戏启动主入口
  * - 调整屏幕适配方案
- * - 显式调用本地存储初始化、游戏资源的初始化、声音初始化
+ * - 显式调用本地存储初始化、游戏资源的初始化、声音初始化、界面初始化
  * - Loading界面的相关逻辑
  */
 @ccclass
 class AppMain extends cc.Component {
 
     start() {
+        TNull.get(this.panel_loading).schedule(() => {
+            this.load_icon.rotation += 45
+        }, 0.1, cc.macro.REPEAT_FOREVER)
         this.adjust_screen()
         this.init_local_data()
-        MRes.ins.load_chain().then(() => { this.check_load_finish() })
-        MSound.ins.init_data()
-        this.pb.progress = 0
-        G.run_by_each_frame(() => {
-            this.pb.progress += 1 / C.FAKE_FRAME
-            if (this.pb.progress >= 1) { this.check_load_finish() }
-        }, this, C.FAKE_FRAME)
+        MSound.init().init_data()
+        MPanel.init(this.panel_parent)
+        MRes.init().load_chain().then(() => { this.check_load_finish() })
     }
 
     /** 载入完毕计数 */
     load_count = 0
     /** 载入完毕总计数 */
-    max_load_count = 2
+    max_load_count = 1
 
     /**
      * 检查载入计数，执行载入完毕逻辑
@@ -49,23 +45,23 @@ class AppMain extends cc.Component {
     async check_load_finish() {
         this.load_count += 1
         if (this.load_count < this.max_load_count) { return }
-        await G.wait_time(C.FAKE_DELAY)
+        await G.wait_time(10)
         await MPanel.out_fade(this.panel_loading, C.LAODING_FADE_TIME, cc.easeExponentialIn())
         this.panel_loading.active = false
-        MPanel.open('PanelTest')
+        MPanel.chain('PanelTest')
     }
 
-    /** 游戏主Canvas */
-    @property(cc.Canvas)
+    @property({ tooltip: '游戏主Canvas', type: cc.Canvas })
     canvas: cc.Canvas = null
 
-    /** 游戏Loading界面 */
-    @property(cc.Node)
+    @property({ tooltip: '游戏loading界面', type: cc.Node })
     panel_loading: cc.Node = null
 
-    /** 游戏Loading界面进度条 */
-    @property(cc.ProgressBar)
-    pb: cc.ProgressBar = null
+    @property({ tooltip: 'panel所挂载的父节点', type: cc.Node })
+    panel_parent: cc.Node = null
+
+    @property({ tooltip: 'load过程的icon', type: cc.Node })
+    load_icon = null
 
     /** 初始化本地数据 */
     init_local_data() {
@@ -90,7 +86,7 @@ class AppMain extends cc.Component {
     adjust_screen() {
         // 注意cc.winSize只有在适配后（修改fitHeight\fitWidth后）才能获取到正确的值
         // 因此使用cc.getFrameSize()来获取初始的屏幕大小
-        let f = cc.view.getFrameSize().width / cc.view.getFrameSize().height >= this.canvas.designResolution.width / this.canvas.designResolution.height
+        const f = cc.view.getFrameSize().width / cc.view.getFrameSize().height >= this.canvas.designResolution.width / this.canvas.designResolution.height
         this.canvas.fitHeight = f
         this.canvas.fitWidth = !f
         // 注意本方法不在文档中，但是需要应用

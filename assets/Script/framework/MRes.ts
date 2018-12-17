@@ -1,4 +1,3 @@
-const { ccclass } = cc._decorator
 /** 配置参数 */
 const C = {
     FAKE_PATH: '__fake_path__',
@@ -12,13 +11,13 @@ Object.freeze(C)
  * - 脚本需要挂载在尽量靠前的位置
  * - [注意天坑] 编辑器中的载入顺序与打包之后的载入顺序不同（不同的打包平台顺序也不同），因此在载入完成后需要对数组进行排序。排序算法是依据资源的name属性，选取资源name属性的第1个字符转换为数字后进行排序
  */
-@ccclass
-export class MRes extends cc.Component {
+export class MRes {
 
     static ins: MRes
 
-    onLoad() {
-        MRes.ins = this
+    static init() {
+        MRes.ins = new MRes()
+        return MRes.ins
     }
 
     array_fake: any[] = []

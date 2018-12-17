@@ -1,8 +1,6 @@
 import { L } from "./L";
 import { MRes } from "./MRes";
 
-const { ccclass, property } = cc._decorator;
-
 /** 声音类别：音乐/音效 */
 enum TYPE { MUSIC, EFFECT }
 /** 声音具体区分名称 */
@@ -17,13 +15,13 @@ const C = {
  * - 保存已经播放的声音id
  * - 实现对音乐（唯一、循环）和音效（多个、单次）的统一API（play、stop）的播放管理
  */
-@ccclass
-export class MSound extends cc.Component {
+export class MSound {
 
     static ins: MSound
 
-    onLoad() {
-        MSound.ins = this
+    static init() {
+        MSound.ins = new MSound()
+        return MSound.ins
     }
 
     /** 与SOUND一一对应的具体声音信息 */
@@ -33,7 +31,6 @@ export class MSound extends cc.Component {
     init_data() {
         this.array_sound_info[SOUND.test_music] = new ControllerSound('test', TYPE.MUSIC, 1)
         this.array_sound_info[SOUND.test_effect] = new ControllerSound('test', TYPE.EFFECT, 1)
-
         // 针对music预播放1次
         for (let csound of this.array_sound_info) {
             if (csound.type === TYPE.MUSIC) {

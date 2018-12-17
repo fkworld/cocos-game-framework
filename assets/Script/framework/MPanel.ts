@@ -1,7 +1,6 @@
 import { G } from "./G";
 import { MRes } from "./MRes";
 
-const { ccclass, property } = cc._decorator
 enum MOVE_DIRECTION { LEFT, RIGHT, TOP, BOTTOM }
 const C = {
     PATH: 'panel',
@@ -24,26 +23,27 @@ Object.freeze(C)
  * - [注意] 虽然格式上是static函数，但是需要在场景中挂载激活，使用到了MPanel.ins
  * - [注意] 场景中仅有一个MPanel脚本生效，只挂载1次即可
  */
-@ccclass
-export class MPanel extends cc.Component {
+export class MPanel {
 
     static ins: MPanel
 
-    onLoad() {
-        MPanel.ins = this
+    static init(parent_node: cc.Node) {
+        MPanel.ins = new MPanel(parent_node)
+        return MRes.ins
     }
 
-    @property({ tooltip: 'panel所挂载的父节点', type: cc.Node })
-    parent: cc.Node = null
+    constructor(parent_node: cc.Node) {
+        this.parent = parent_node
+    }
 
+    /** 挂载父节点 */
+    parent: cc.Node
     /** 当前的渲染层级 */
-    private now_z_index: number = 0
-
+    now_z_index: number = 0
     /** panel-实例节点存储 */
-    private obj_node = {}
-
+    obj_node = {}
     /** panel-prefab存储 */
-    private obj_prefab = {}
+    obj_prefab = {}
 
     /**
      * 打开panel
