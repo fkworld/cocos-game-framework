@@ -18,9 +18,8 @@ Object.freeze(C)
 
 /**
  * [framework] 游戏启动主入口
- * - 显式调用游戏资源的初始化过程
- * - 显示调用本次存储的初始化过程
  * - 调整屏幕适配方案
+ * - 显式调用本地存储初始化、游戏资源的初始化、声音初始化
  * - Loading界面的相关逻辑
  */
 @ccclass
@@ -30,6 +29,7 @@ class AppMain extends cc.Component {
         this.adjust_screen()
         this.init_local_data()
         MRes.ins.load_chain().then(() => { this.check_load_finish() })
+        MSound.ins.init_data()
         this.pb.progress = 0
         G.run_by_each_frame(() => {
             this.pb.progress += 1 / C.FAKE_FRAME
@@ -39,7 +39,6 @@ class AppMain extends cc.Component {
 
     /** 载入完毕计数 */
     load_count = 0
-
     /** 载入完毕总计数 */
     max_load_count = 2
 

@@ -24,8 +24,6 @@ export class MSound extends cc.Component {
 
     onLoad() {
         MSound.ins = this
-
-        this.init_data()
     }
 
     /** 与SOUND一一对应的具体声音信息 */
@@ -82,6 +80,11 @@ export class MSound extends cc.Component {
     /** 继续所有声音 */
     static resume_all() {
         cc.audioEngine.resumeAll()
+    }
+
+    /** 一个简化的通用方法：播放按钮声音 */
+    static play_btn() {
+        MSound.play(SOUND.test_effect)
     }
 
 }
