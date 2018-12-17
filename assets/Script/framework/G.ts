@@ -95,6 +95,46 @@ export class G {
     }
 
     /**
+     * 计算两点之间的距离
+     * - 有开平方计算，可能会有额外的性能损耗
+     * @param p0 
+     * @param p1 
+     * @static
+     */
+    static get_p_p_distance(p0: cc.Vec2, p1: cc.Vec2) {
+        return p0.sub(p1).mag()
+    }
+
+    /**
+     * 计算点到一个线段的最短距离
+     * - 注意是线段而非直线
+     * - 矢量法
+     * @param p 
+     * @param p0 
+     * @param p1 
+     * @static
+     */
+    static get_p_line_distance(p: cc.Vec2, p0: cc.Vec2, p1: cc.Vec2) {
+        const line = p1.sub(p0)                 // 线段矢量
+        const p_line = p.sub(p0)                // 线段起点到外部点矢量
+        const p_shadow = p_line.project(line)   // 投影矢量
+        const dot_value = p_line.dot(line)      // 向量点乘值
+        let result: number;
+        if (dot_value >= 0) {
+            // >=0表示夹角为直角或者锐角
+            if (p_shadow.mag() >= line.mag()) {
+                result = p_line.sub(line).mag()
+            } else {
+                result = p_line.sub(p_shadow).mag()
+            }
+        } else {
+            // <0表示夹角为钝角
+            result = p_line.mag()
+        }
+        return result
+    }
+
+    /**
      * 异步函数中等待一段时间
      * @param time 单位s
      * @static

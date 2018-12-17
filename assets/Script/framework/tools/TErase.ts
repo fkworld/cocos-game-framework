@@ -1,3 +1,5 @@
+import { G } from "../G";
+
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
     /** 默认擦除半径 */
@@ -9,6 +11,8 @@ const C = {
         EMPTY: 0,
         FULL: 255,
     },
+    /** 像素id溢出值 */
+    PIXEL_ID_OVERFLOW: -1,
 }
 Object.freeze(C)
 
@@ -17,7 +21,7 @@ Object.freeze(C)
  * - 通过动态修改mask图片的像素来实现
  * - 单点画圆，多点画直线
  * - [注意] 图片的像素数组从左上角开始
- * - [注意] 节点的width和height最好为整数
+ * - [注意] 节点的width和height需要为整数，考虑像素与id的转换方法，需要为偶数
  * - [注意] 由于像素和坐标的对应关系有偏差，因此擦除进度无法达到100%
  * - 完成回调实现逻辑：使用一系列参数确定一个完成回调；包括：区域描述，回调方法，执行次数，执行间隔；写入计数，总计数，是否完成
  */
@@ -42,6 +46,8 @@ export class TErase extends cc.Component {
 
     start() {
         this.draw_mask()
+
+        this.draw_circle_line(cc.v2(0, 0), cc.v2(100, 0))
     }
 
     update() {
@@ -54,25 +60,29 @@ export class TErase extends cc.Component {
         }
     }
 
-    /** 触摸区域（建议大于mask区域） */
-    @property(cc.Node)
+    @property({ tooltip: '触摸区域', type: cc.Node })
     touch_area: cc.Node = null
 
-    /** 是否自动设置touch事件 */
-    @property()
+    @property({ tooltip: '是否自动触摸擦除' })
     is_auto_touch: boolean = true
+
+    @property({ tooltip: '如果自动触摸擦除，擦除半径是' })
+    erase_r: number = C.R
 
     /** cc.Mask组件 */
     mask: cc.Mask
 
+    /** 擦除宽度 */
     get width() { return this.node.width }
+
+    /** 擦除高度 */
     get height() { return this.node.height }
+
+    /** 擦除像素计数 */
+    get length() { return this.node.width * this.node.height }
 
     /** 源像素数组；从左上角开始；每个像素用4个数值描述 */
     array_pixel_source: Uint8Array
-
-    /** 简化像素数组；同源像素数组，但是不包含像素的RGB信息，每个像素用1个数值描述 */
-    array_pixel_simplify: number[] = []
 
     /** 是否更改 */
     change_flag: boolean = false
@@ -83,8 +93,8 @@ export class TErase extends cc.Component {
     /** 保存touch点，end */
     p_end: cc.Vec2
 
-    /** 完成回调 */
-    array_finish_f: FInfo[] = []
+    /** 完成回调数组 */
+    array_finish_f: ControllerFinish[] = []
 
     /**
      * 设置点击事件
@@ -119,17 +129,18 @@ export class TErase extends cc.Component {
         this.mask.alphaThreshold = 0
     }
 
+    /** 用来初始化mask的数据 */
+    static array_pixel_init: number[] = []
+
     /**
      * 初始化像素数组
      */
     init_array_pixel() {
-        let array = []
-        for (let i = 0; i < this.node.width * this.node.height; i++) {
-            array.push(0, 0, 0, C.PIXEL_STATE.FULL)
+        if (TErase.array_pixel_init.length === 0) {
+            TErase.array_pixel_init.length = this.length * 4
+            TErase.array_pixel_init.fill(C.PIXEL_STATE.FULL)
         }
-        this.array_pixel_simplify.length = this.node.width * this.node.height
-        this.array_pixel_simplify.fill(C.PIXEL_STATE.FULL)
-        this.array_pixel_source = new Uint8Array(array)
+        this.array_pixel_source = new Uint8Array(TErase.array_pixel_init)
     }
 
     /**
@@ -159,15 +170,15 @@ export class TErase extends cc.Component {
     change_single_pixel(p: cc.Vec2): boolean {
         const pixel_id = this.trans_p_to_pixel_id(p)
         // id溢出处理
-        if (pixel_id < 0 || pixel_id >= this.array_pixel_simplify.length) { return false }
+        if (pixel_id < 0 || pixel_id >= this.length) { return false }
         // 无改动处理
-        if (this.array_pixel_simplify[pixel_id] === C.PIXEL_STATE.EMPTY) { return false }
+        if (this.array_pixel_source[pixel_id * 4 + 3] === C.PIXEL_STATE.EMPTY) { return false }
+        // 有改动处理
         // 更改存储数值
-        this.array_pixel_simplify[pixel_id] = C.PIXEL_STATE.EMPTY
         this.array_pixel_source[pixel_id * 4 + 3] = C.PIXEL_STATE.EMPTY
         // 判断是否修改了区域内的点
-        for (let finfo of this.array_finish_f) {
-            finfo.save_change(p, pixel_id)
+        for (let cfinish of this.array_finish_f) {
+            cfinish.save_change(p)
         }
         return true
     }
@@ -194,12 +205,15 @@ export class TErase extends cc.Component {
      * @param p 
      * @param r 
      */
-    draw_circle(p: cc.Vec2, r = C.R) {
+    draw_circle(p: cc.Vec2, r = this.erase_r) {
+        // 考虑性能，提前统一整数化，避免在每次计算时都要整数化1次
+        this.integer_p(p)
+        r = Math.trunc(r)
         // 计算点
         let array_result = []
-        for (let x = p.x - r; x <= p.x + r; x++) {
-            for (let y = p.y - r; y <= p.y + r; y++) {
-                if (TErase.cal_p0_p1_distance(cc.v2(x, y), p) <= r) {
+        for (let x = p.x - r; x < p.x + r; x += 1) {
+            for (let y = p.y - r; y < p.y + r; y += 1) {
+                if (G.get_p_p_distance(p, cc.v2(x, y)) <= r) {
                     array_result.push(cc.v2(x, y))
                 }
             }
@@ -208,14 +222,17 @@ export class TErase extends cc.Component {
         this.draw_array_point(array_result)
     }
 
-    draw_circle_line(p0: cc.Vec2, p1: cc.Vec2, r = C.R) {
+    draw_circle_line(p0: cc.Vec2, p1: cc.Vec2, r = this.erase_r) {
+        // 整数化
+        this.integer_p(p0, p1)
+        r = Math.trunc(r)
         // 计算点
-        let min_p = cc.v2(Math.min(p0.x, p1.x) - r, Math.min(p0.y, p1.y) - r)
-        let max_p = cc.v2(Math.max(p0.x, p1.x) + r, Math.max(p0.y, p1.y) + r)
+        let rect = cc.Rect.fromMinMax(p0, p1)
+        rect = cc.rect(rect.x - r, rect.y - r, rect.width + r * 2, rect.height + r * 2)
         let array_result = []
-        for (let x = min_p.x; x <= max_p.x; x++) {
-            for (let y = min_p.y; y <= max_p.y; y++) {
-                if (TErase.cal_p_line_distance(cc.v2(x, y), p0, p1) <= r) {
+        for (let x = rect.xMin; x < rect.xMax; x += 1) {
+            for (let y = rect.yMin; y < rect.yMax; y += 1) {
+                if (G.get_p_line_distance(cc.v2(x, y), p0, p1) <= r) {
                     array_result.push(cc.v2(x, y))
                 }
             }
@@ -226,72 +243,32 @@ export class TErase extends cc.Component {
 
     /**
      * 将多个p重置为整数
-     * @param p 
+     * - 使用Math.trunc()方法
+     * @param array_p 
      */
-    static reset_p(...p: cc.Vec2[]) {
-        for (let i = 0; i < p.length; i++) {
-            p[i].x = Math.round(p[i].x)
-            p[i].y = Math.round(p[i].y)
-        }
-    }
-
-    /**
-     * 计算点p0到p1的距离
-     * - 有开平方计算，可能会造成性能损耗；未来可能会替换成magSqr()
-     * @param p0 
-     * @param p1 
-     */
-    static cal_p0_p1_distance(p0: cc.Vec2, p1: cc.Vec2): number {
-        return p0.sub(p1).mag()
-    }
-
-    /**
-     * 计算点p到一条线段的最短距离
-     * - 线段并非直线，如果在线段外，则返回到某一个端点的距离
-     * - 算法抄的，我也不知道为啥这样算
-     * @param p 
-     * @param p0 
-     * @param p1 
-     */
-    static cal_p_line_distance(p: cc.Vec2, p0: cc.Vec2, p1: cc.Vec2): number {
-        // 计算交点坐标
-        let p_intersection;
-        if (p0.x === p1.x) {
-            p_intersection = cc.v2(p0.x, p.y)
-        } else {
-            let A = (p0.y - p1.y) / (p0.x - p1.x)
-            let B = p0.y - A * p0.x
-            let m = p.x + A * p.y
-            p_intersection = cc.v2((m - A * B) / (A * A + 1), A * (m - A * B) / (A * A + 1) + B)
-        }
-        // 判断交点是否在线段上，计算点到线段的最短距离
-        if (
-            p_intersection.x >= Math.min(p0.x, p1.x)
-            && p_intersection.x <= Math.max(p0.x, p1.x)
-            && p_intersection.y >= Math.min(p0.y, p1.y)
-            && p_intersection.y <= Math.max(p0.y, p1.y)
-        ) {
-            return p.sub(p_intersection).mag()
-        } else {
-            return Math.min(p.sub(p0).mag(), p.sub(p1).mag())
+    integer_p(...array_p: cc.Vec2[]) {
+        for (let p of array_p) {
+            p.x = Math.trunc(p.x)
+            p.y = Math.trunc(p.y)
         }
     }
 
     /**
      * 将坐标转换为像素数组的id
      * - [注意] 节点坐标以节点中心点为基准
-     * - [注意] 因为像素没有小数，因此会对节点坐标进行整数化处理；Math.floor()
-     * - [注意] 像素id从左上开始，从0开始，单个id的像素由4个数值组成
+     * - [注意] 因为像素没有小数，因此需要对节点坐标进行整数化处理
      * @param p 坐标
      * @param width 横向像素个数
      * @param height 纵向像素个数
      */
-    trans_p_to_pixel_id(p: cc.Vec2, width: number = this.node.width, height: number = this.node.height): number {
-        let col = Math.floor(width / 2 + p.x)
-        let row = Math.floor(height / 2 - p.y)
+    trans_p_to_pixel_id(p: cc.Vec2, width: number = this.width, height: number = this.height): number {
+        // 整数化处理
+        // this.integer_p(p) 考虑可能的性能损耗，在计算前进行统一的整数化处理
+        const col = width / 2 + p.x
+        const row = height / 2 - p.y
         // 溢出，则返回一个溢出的id
         if (col < 0 || col > width || row < 0 || row > height) {
-            return -1
+            return C.PIXEL_ID_OVERFLOW
         }
         return row * width + col
     }
@@ -302,8 +279,8 @@ export class TErase extends cc.Component {
      * @param width 
      * @param height 
      */
-    trans_pixel_id_to_p(id: number, width: number = this.node.width, height: number = this.node.height): cc.Vec2 {
-        let row = Math.floor(id / height)
+    trans_pixel_id_to_p(id: number, width: number = this.width, height: number = this.height): cc.Vec2 {
+        let row = Math.trunc(id / height)
         let col = id % height
         return cc.v2(-width / 2 + col, height / 2 - row)
     }
@@ -320,10 +297,8 @@ export class TErase extends cc.Component {
         rect: cc.Rect,
         f: Function,
         ratio: number = C.RATIO,
-        count: number = 1,
-        interval: number = 1.5
     ) {
-        this.array_finish_f.push(new FInfo(rect, f, ratio, count, interval))
+        this.array_finish_f.push(new ControllerFinish(rect, f, ratio))
     }
 
     /**
@@ -342,21 +317,17 @@ export class TErase extends cc.Component {
         height: number,
         f: Function,
         ratio: number = C.RATIO,
-        count: number = 1,
-        interval: number = 1.5
     ) {
         this.set_finish_f_by_rect(
             cc.rect(p_center.x - width / 2, p_center.y - height / 2, width, height),
             f,
             ratio,
-            count,
-            interval
         )
     }
 
     /** 执行完成回调 */
     do_finish_f() {
-        for (let finfo of this.array_finish_f) { finfo.do(this) }
+        for (let cfinish of this.array_finish_f) { cfinish.do() }
     }
 
     /**
@@ -369,29 +340,23 @@ export class TErase extends cc.Component {
 }
 
 /**
- * 完成回调信息类
+ * 完成回调控制器
  */
-class FInfo {
+class ControllerFinish {
 
     /**
      * 构造函数
-     * @param rect 
-     * @param f 
-     * @param ratio 
-     * @param count 
-     * @param interval 
+     * @param rect 完成区域（不进行二次验证，需要保证其在擦除区域内）
+     * @param f 完成方法
+     * @param ratio 完成比例
      */
-    constructor(rect: cc.Rect, f: Function, ratio: number, count: number, interval: number) {
+    constructor(rect: cc.Rect, f: Function, ratio: number) {
         this.rect = rect
         this.f = f
         this.ratio = ratio
-        this.count = count
-        this.interval = interval
         this.is_over = false
-        this.is_cd = false
         this.finish_count = 0
         this.all_count = rect.width * rect.height
-        this.id_set = new Set()
     }
 
     /** 区域描述 */
@@ -400,58 +365,31 @@ class FInfo {
     f: Function
     /** 完成比例 */
     ratio: number
-    /** 执行次数 */
-    count: number
-    /** 执行间隔 */
-    interval: number
     /** 是否执行完毕 */
     is_over: boolean
-    /** 是否执行cd */
-    is_cd: boolean
     /** 点修改计数 */
     finish_count: number
     /** 点总计数 */
     all_count: number
-    /** 保存当前区域内点对应的id；通过Set实现 */
-    id_set: Set<number>
 
     /**
      * 执行回调；包括回调判定
      * @param t_erase 传入TErase组件
      */
-    do(t_erase: TErase) {
+    do() {
         // 不满足执行条件
         if (this.is_over) { return }
-        if (this.is_cd) { return }
         if (this.finish_count / this.all_count < this.ratio) { return }
         // 满足执行条件
         this.f()
-        this.is_cd = true
-        this.count -= 1
-        if (this.count <= 0) {
-            this.is_over = true
-            return
-        } else {
-            t_erase.scheduleOnce(() => {
-                this.id_set.forEach(id => t_erase.array_pixel_simplify[id] = C.PIXEL_STATE.FULL)
-                this.finish_count = 0
-                this.is_cd = false
-            }, this.interval)
-        }
+        this.is_over = true
     }
 
     /**
      * 保存区域内点的变化
-     * - 判断点是否在区域内
-     * - 保存点的id
-     * - finish_count+=1
      * @param p 
-     * @param id 
      */
-    save_change(p, id) {
-        if (this.rect.contains(p)) {
-            this.id_set.add(id)
-            this.finish_count += 1
-        }
+    save_change(p: cc.Vec2) {
+        if (this.rect.contains(p)) { this.finish_count += 1 }
     }
 }
