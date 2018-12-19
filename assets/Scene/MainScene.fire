@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 1.1042065173034852,
-      "y": 1.1042065173034852,
+      "x": 0.4069744194981854,
+      "y": 0.4069744194981854,
       "z": 1
     },
     "_quat": {
@@ -499,7 +499,7 @@
     "_position": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 200,
       "z": 0
     },
     "_scale": {
@@ -585,13 +585,13 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": -200,
+      "x": -250,
+      "y": -300,
       "z": 0
     },
     "_scale": {
@@ -636,7 +636,7 @@
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$horizontalAlign": 1,
+    "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 2,
@@ -687,17 +687,17 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 500,
+      "width": 400,
       "height": 50
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 50,
+      "x": -250,
       "y": -500,
       "z": 0
     },
@@ -724,7 +724,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sp_Load",
+    "_name": "Sp_LoadingIcon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 15
@@ -758,7 +758,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -300,
+      "x": 400,
       "y": 0,
       "z": 0
     },
@@ -822,8 +822,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "The Game is loading...",
-    "_N$string": "The Game is loading...",
+    "_string": "The game is loading...",
+    "_N$string": "The game is loading...",
     "_fontSize": 30,
     "_lineHeight": 40,
     "_enableWrapText": false,
