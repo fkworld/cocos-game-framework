@@ -22,15 +22,15 @@ export class MRes {
     static init(f: Function) {
         if (MRes.ins != undefined) { cc.error(`[${MRes.name}] repeat init, please check`) }
         MRes.ins = new MRes()
-        MRes.ins.load_chain().then(() => { f() })
+        MRes.ins.load_all().then(() => { f() })
         return MRes.ins
     }
 
     array_fake: any[] = []
 
-    /** 资源载入链 */
-    async load_chain() {
-        this.array_fake = await MRes.load_res_dir(C.FAKE_PATH, cc.Prefab)
+    /** 资源载入 */
+    async load_all() {
+        // this.array_fake = await MRes.load_res_dir(C.FAKE_PATH, cc.Prefab)
     }
 
     /**
@@ -41,7 +41,7 @@ export class MRes {
      * @static
      * @async
      */
-    static async load_res(path: string, type: typeof cc.Asset) {
+    static async load_res(path: string, type: typeof cc.Asset): Promise<any> {
         return await new Promise((resolve, reject) => {
             cc.loader.loadRes(path, type, (err, res) => {
                 if (err) {
