@@ -6,24 +6,22 @@ const C = {
     R: 25,
     /** 默认擦除回调完成比例 */
     RATIO: 0.95,
-    /** 像素状态；使用像素的alpha代替 */
-    PIXEL_STATE: {
-        EMPTY: 0,
-        FULL: 255,
-    },
-    /** 像素id溢出值 */
-    PIXEL_ID_OVERFLOW: -1,
+    /** 默认的擦除间隔，单位是r的倍数 */
+    SPACE: 0.2,
+    /** 最大擦除间隔数 */
+    MAX_COUNT: 10,
 }
 Object.freeze(C)
 
 /**
  * [framework-T] 橡皮擦效果实现
- * - 通过动态修改mask图片的像素来实现
- * - 单点画圆，多点画直线
- * - [注意] 图片的像素数组从左上角开始
- * - [注意] 节点的width和height需要为整数，考虑像素与id的转换方法，需要为偶数
- * - [注意] 由于像素和坐标的对应关系有偏差，因此擦除进度无法达到100%
- * - 完成回调实现逻辑：使用一系列参数确定一个完成回调；包括：区域描述，回调方法，执行次数，执行间隔；写入计数，总计数，是否完成
+ * - 使用cc.Mask的_graphics组件实现擦除效果
+ * - 新建像素点数组来记录擦除点，实现擦除完成后的回调方法
+ * - 注意：之前版本的creator中cc.Mask有bug（在GitHub上已经修复），建议使用2.0.5以上版本，或者使用修复引擎功能修复
+ * - 注意：考虑有限像素存储
+ * @example 新建一个节点，节点大小为0，拖入TErase组件，会自动补充cc.Mask组件并调整参数，在此节点下的图片是被擦除部分
+ * @todo 性能优化
+ * @todo 完全像素存储->间隔像素存储，即使用300-300个像素来表示600-600个像素
  */
 @ccclass
 @requireComponent(cc.Mask)
@@ -34,29 +32,29 @@ export class TErase extends cc.Component {
      * @param node 
      * @static
      */
-    static get(node: cc.Node): TErase {
-        return node.getComponent(TErase)
-    }
+    static get(node: cc.Node): TErase { return node.getComponent(TErase) }
 
     onLoad() {
-        this.init_array_pixel()
-        this.init_mask()
-        this.draw_mask()
+        // 初始化mask
+        this.mask = this.node.getComponent(cc.Mask)
+        this.mask.type = cc.Mask.Type.RECT
+        this.mask.inverted = true
+        // 初始化g
+        this.g = this.mask['_graphics']
+        // 初始化触摸事件
         if (this.is_auto_touch) { this.set_touch_event() }
     }
 
     update() {
-        // 更改机制：考虑实际使用过程中的多点触摸，由触发式重绘改成帧重绘
-        // 目前是单帧重；如果依然有性能压力，则可以改为间隔帧重绘
-        if (this.change_flag) {
-            this.change_flag = false
-            this.draw_mask()
-            this.do_finish_f()
-        }
+        this.g.fill()
+        this.do_finish_f()
     }
 
     @property({ tooltip: '触摸区域', type: cc.Node })
     touch_area: cc.Node = null
+
+    @property({ tooltip: '是否记录擦除点（如果记录，则可以解锁擦除进度功能，但是相应的会一定程度的影响性能）' })
+    is_save: boolean = true
 
     @property({ tooltip: '是否自动触摸擦除' })
     is_auto_touch: boolean = true
@@ -66,28 +64,14 @@ export class TErase extends cc.Component {
 
     /** cc.Mask组件 */
     mask: cc.Mask
-
-    /** 擦除宽度 */
-    get width() { return this.node.width }
-
-    /** 擦除高度 */
-    get height() { return this.node.height }
-
-    /** 擦除像素计数 */
-    get length() { return this.node.width * this.node.height }
-
-    /** 源像素数组；从左上角开始；每个像素用4个数值描述 */
-    array_pixel_source: Uint8Array
-
-    /** 是否更改 */
-    change_flag: boolean = false
-
+    /** cc.Mask组件中的graphics实现 */
+    g: cc.Graphics
+    /** 记录已经修改的点 */
+    array_save = {}
     /** 保存touch点，start */
     p_start: cc.Vec2
-
     /** 保存touch点，end */
     p_end: cc.Vec2
-
     /** 完成回调数组 */
     array_finish_f: ControllerFinish[] = []
 
@@ -95,192 +79,78 @@ export class TErase extends cc.Component {
      * 设置点击事件
      * - 为了解决触摸溢出，则需要放一个超过Mask大小的touch_area
      */
-    set_touch_event(n: cc.Node = this.touch_area) {
+    set_touch_event() {
         /** touch start 逻辑 */
         const f_start = (e: cc.Touch) => {
             this.p_start = this.node.convertToNodeSpaceAR(e.getLocation())
-            this.draw_circle(this.p_start)
+            this.draw_circle(this.p_start, this.erase_r)
         }
         /** touch move逻辑 */
         const f_move = (e: cc.Touch) => {
             this.p_end = this.node.convertToNodeSpaceAR(e.getLocation())
-            this.draw_circle_line(this.p_start, this.p_end)
+            this.draw_many_circle(this.p_start, this.p_end, this.erase_r)
             this.p_start = this.p_end
         }
         /** touch end & cancel 逻辑 */
         const f_end_cancel = (e: cc.Touch) => {
             // 
         }
-
-        n.on(cc.Node.EventType.TOUCH_START, (e: cc.Touch) => { f_start(e) })
-        n.on(cc.Node.EventType.TOUCH_MOVE, (e: cc.Touch) => { f_move(e) })
-        n.on(cc.Node.EventType.TOUCH_END, (e: cc.Touch) => { f_end_cancel(e) })
-        n.on(cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => { f_end_cancel(e) })
+        this.touch_area.on(cc.Node.EventType.TOUCH_START, (e: cc.Touch) => { f_start(e) })
+        this.touch_area.on(cc.Node.EventType.TOUCH_MOVE, (e: cc.Touch) => { f_move(e) })
+        this.touch_area.on(cc.Node.EventType.TOUCH_END, (e: cc.Touch) => { f_end_cancel(e) })
+        this.touch_area.on(cc.Node.EventType.TOUCH_CANCEL, (e: cc.Touch) => { f_end_cancel(e) })
     }
 
     /**
-     * 初始化mask组件
-     */
-    init_mask() {
-        this.mask = this.node.getComponent(cc.Mask)
-        this.mask.type = cc.Mask.Type.IMAGE_STENCIL
-        this.mask.alphaThreshold = 0
-    }
-
-    /** 用来初始化mask的数据 */
-    static array_pixel_init: number[] = []
-
-    /**
-     * 初始化像素数组
-     */
-    init_array_pixel() {
-        if (TErase.array_pixel_init.length === 0) {
-            TErase.array_pixel_init.length = this.length * 4
-            TErase.array_pixel_init.fill(C.PIXEL_STATE.FULL)
-        }
-        this.array_pixel_source = new Uint8Array(TErase.array_pixel_init)
-    }
-
-    /**
-     * 绘制新的图像并赋值给mask
-     * - 使用cocos creator中spriteFrame的属性_texture；此属性不在公共API中
-     * @param array_pixel 像素点数组
-     */
-    draw_mask(array_pixel: Uint8Array = this.array_pixel_source) {
-        // 删除原有的
-        if (this.mask.spriteFrame) { this.mask.spriteFrame.destroy() }
-        if (this.mask.spriteFrame && this.mask.spriteFrame['_texture']) { this.mask.spriteFrame['_texture'].destroy() }
-        // 创建新的
-        let rt = new cc.RenderTexture()
-        rt.initWithSize(this.node.width, this.node.height)
-        rt.initWithData(array_pixel, 16, this.node.width, this.node.height)
-        this.mask.spriteFrame = new cc.SpriteFrame(rt)
-    }
-
-    /**
-     * 修改单个像素
-     * - 修改像素透明度
-     * - 修改实例化的this.array_pixel_simplify，this.array_pixel_source，
-     * - 处理id溢出情况：不进行溢出id绘制
-     * - 返回true表示有修改，false表示无修改
-     * @param p 
-     */
-    change_single_pixel(p: cc.Vec2): boolean {
-        const pixel_id = this.trans_p_to_pixel_id(p)
-        // id溢出处理
-        if (pixel_id < 0 || pixel_id >= this.length) { return false }
-        // 无改动处理
-        if (this.array_pixel_source[pixel_id * 4 + 3] === C.PIXEL_STATE.EMPTY) { return false }
-        // 有改动处理
-        // 更改存储数值
-        this.array_pixel_source[pixel_id * 4 + 3] = C.PIXEL_STATE.EMPTY
-        // 判断是否修改了区域内的点
-        for (let cfinish of this.array_finish_f) {
-            cfinish.save_change(p)
-        }
-        return true
-    }
-
-    /**
-     * 绘制多个点
-     * @param array_p 要绘制的点数组
-     */
-    draw_array_point(array_p: cc.Vec2[]) {
-        // 更改存储
-        let change_flag = false
-        for (let p of array_p) {
-            let flag = this.change_single_pixel(p)
-            change_flag = change_flag || flag
-        }
-        // 如果无更改，则直接return
-        if (!change_flag) { return }
-        // 有更改则修改flag，进行重绘
-        this.change_flag = true
-    }
-
-    /**
-     * 根据点p更改一个圆形内所有的像素点
+     * 绘制一个圆形的擦除区域
      * @param p 
      * @param r 
      */
-    draw_circle(p: cc.Vec2, r = this.erase_r) {
-        // 考虑性能，提前统一整数化，避免在每次计算时都要整数化1次
-        this.integer_p(p)
-        r = Math.trunc(r)
-        // 计算点
-        let array_result = []
-        for (let x = p.x - r; x < p.x + r; x += 1) {
-            for (let y = p.y - r; y < p.y + r; y += 1) {
-                if (G.get_p_p_distance(p, cc.v2(x, y)) <= r) {
-                    array_result.push(cc.v2(x, y))
-                }
-            }
-        }
-        // 绘制点
-        this.draw_array_point(array_result)
-    }
-
-    draw_circle_line(p0: cc.Vec2, p1: cc.Vec2, r = this.erase_r) {
-        // 整数化
-        this.integer_p(p0, p1)
-        r = Math.trunc(r)
-        // 计算点
-        let rect = cc.Rect.fromMinMax(p0, p1)
-        rect = cc.rect(rect.x - r, rect.y - r, rect.width + r * 2, rect.height + r * 2)
-        let array_result = []
-        for (let x = rect.xMin; x < rect.xMax; x += 1) {
-            for (let y = rect.yMin; y < rect.yMax; y += 1) {
-                if (G.get_p_line_distance(cc.v2(x, y), p0, p1) <= r) {
-                    array_result.push(cc.v2(x, y))
-                }
-            }
-        }
-        // 绘制点
-        this.draw_array_point(array_result)
-    }
-
-    /**
-     * 将多个p重置为整数
-     * - 使用Math.trunc()方法
-     * @param array_p 
-     */
-    integer_p(...array_p: cc.Vec2[]) {
-        for (let p of array_p) {
+    draw_circle(p: cc.Vec2, r: number = C.R) {
+        // 绘制（绘制路径但是不填充，在update中统一填充）
+        this.g.circle(p.x, p.y, r)
+        // 记录点
+        if (this.is_save) {
+            // 整数化
             p.x = Math.trunc(p.x)
             p.y = Math.trunc(p.y)
+            r = Math.trunc(r)
+            // 遍历点
+            for (let x = p.x - r; x <= p.x + r; x += 1) {
+                for (let y = p.y - r; y <= p.y + r; y += 1) {
+                    // 点已被改写，则跳过
+                    if (this.array_save[`${x}-${y}`] != undefined) { continue }
+                    // 点在圆外，则跳过
+                    if (G.get_p_p_distance(p, cc.v2(x, y)) > r) { continue }
+                    // 改写点
+                    this.array_save[`${x}-${y}`] = 1
+                    // 将点记录到rect中
+                    for (let cfinish of this.array_finish_f) { cfinish.save(cc.v2(x, y)) }
+                }
+            }
         }
     }
 
     /**
-     * 将坐标转换为像素数组的id
-     * - [注意] 节点坐标以节点中心点为基准
-     * - [注意] 因为像素没有小数，因此需要对节点坐标进行整数化处理
-     * @param p 坐标
-     * @param width 横向像素个数
-     * @param height 纵向像素个数
+     * 绘制两点之间的多个圆
+     * @param p0 
+     * @param p1 
+     * @param r 
      */
-    trans_p_to_pixel_id(p: cc.Vec2, width: number = this.width, height: number = this.height): number {
-        // 整数化处理
-        // this.integer_p(p) 考虑可能的性能损耗，在计算前进行统一的整数化处理
-        const col = width / 2 + p.x
-        const row = height / 2 - p.y
-        // 溢出，则返回一个溢出的id
-        if (col < 0 || col > width || row < 0 || row > height) {
-            return C.PIXEL_ID_OVERFLOW
+    draw_many_circle(p0: cc.Vec2, p1: cc.Vec2, r: number = C.R, space: number = C.SPACE) {
+        // 计算间隔数
+        let count = Math.min(C.MAX_COUNT, G.get_p_p_distance(p0, p1) / (r * space))
+        // 根据间隔数绘制圆
+        for (let i = 0; i < count; i += 1) {
+            let p = p0.lerp(p1, (i + 1) / count)
+            this.draw_circle(p, r)
         }
-        return row * width + col
     }
 
-    /**
-     * 将像素id转换为像素坐标
-     * @param id 
-     * @param width 
-     * @param height 
-     */
-    trans_pixel_id_to_p(id: number, width: number = this.width, height: number = this.height): cc.Vec2 {
-        let row = Math.trunc(id / height)
-        let col = id % height
-        return cc.v2(-width / 2 + col, height / 2 - row)
+    /** 检查是否开启近路功能 */
+    check_save() {
+        if (!this.is_save) { cc.error(`[${TErase.name}] 记录功能未开启，无法实现完成回调功能，已自动开启，请检查node=${this.node}`) }
+        this.is_save = true
     }
 
     /**
@@ -288,14 +158,9 @@ export class TErase extends cc.Component {
      * @param rect 区域描述
      * @param f 执行方法
      * @param ratio 判断擦除完毕的比例
-     * @param count 执行次数
-     * @param interval 多次执行时的执行间隔；默认为0.5
      */
-    set_finish_f_by_rect(
-        rect: cc.Rect,
-        f: Function,
-        ratio: number = C.RATIO,
-    ) {
+    set_finish_f_by_rect(rect: cc.Rect, f: Function, ratio: number = C.RATIO) {
+        this.check_save()
         this.array_finish_f.push(new ControllerFinish(rect, f, ratio))
     }
 
@@ -306,21 +171,10 @@ export class TErase extends cc.Component {
      * @param height 
      * @param f 
      * @param ratio 
-     * @param count 
-     * @param interval 
      */
-    set_finish_f_by_center(
-        p_center: cc.Vec2,
-        width: number,
-        height: number,
-        f: Function,
-        ratio: number = C.RATIO,
-    ) {
-        this.set_finish_f_by_rect(
-            cc.rect(p_center.x - width / 2, p_center.y - height / 2, width, height),
-            f,
-            ratio,
-        )
+    set_finish_f_by_center(p_center: cc.Vec2, width: number, height: number, f: Function, ratio: number = C.RATIO) {
+        this.check_save()
+        this.array_finish_f.push(new ControllerFinish(cc.rect(p_center.x - width / 2, p_center.y - height / 2, width, height), f, ratio))
     }
 
     /** 执行完成回调 */
@@ -328,11 +182,18 @@ export class TErase extends cc.Component {
         for (let cfinish of this.array_finish_f) { cfinish.do() }
     }
 
+    /** 重置 */
+    reset() {
+        this.g.clear()
+        this.array_save = {}
+        for (let cfinish of this.array_finish_f) { cfinish.reset() }
+    }
+
     /**
-     * 隐藏mask；渐隐效果
-     * @param time 渐隐时间
+     * 渐隐擦除内容
+     * @param time 渐隐时间，默认0.2s
      */
-    hide_mask(time: number) {
+    hide(time: number = 0.2) {
         this.mask.node.runAction(cc.fadeOut(time))
     }
 }
@@ -352,9 +213,9 @@ class ControllerFinish {
         this.rect = rect
         this.f = f
         this.ratio = ratio
+        this.all_count = rect.width * rect.height
         this.is_over = false
         this.finish_count = 0
-        this.all_count = rect.width * rect.height
     }
 
     /** 区域描述 */
@@ -371,23 +232,29 @@ class ControllerFinish {
     all_count: number
 
     /**
-     * 执行回调；包括回调判定
-     * @param t_erase 传入TErase组件
+     * 执行
+     * - 包括执行前置判定
      */
     do() {
         // 不满足执行条件
         if (this.is_over) { return }
         if (this.finish_count / this.all_count < this.ratio) { return }
         // 满足执行条件
-        this.f()
         this.is_over = true
+        this.f()
     }
 
     /**
      * 保存区域内点的变化
      * @param p 
      */
-    save_change(p: cc.Vec2) {
+    save(p: cc.Vec2) {
         if (this.rect.contains(p)) { this.finish_count += 1 }
+    }
+
+    /** 重置 */
+    reset() {
+        this.is_over = false
+        this.finish_count = 0
     }
 }
