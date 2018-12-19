@@ -1,6 +1,7 @@
 import { MLanguage_en } from "./MLanguageEn";
 import { MLanguage_zh } from "./MLanguageZh";
 import { L } from "../../L";
+import { G } from "../../G";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 /** 语言类型 */
@@ -34,7 +35,7 @@ export class MLanguage extends cc.Component {
     /**
      * 获取key对应的value并组合成为字符串
      * - 根据type的不同获取内容；type从L.language或者是C.DEFAULT_TYPE中获取
-     * - 组合方式参考MLanuage.fake_template_string()
+     * - 组合方式参考G.fake_template_string()
      * @param key 字符串key
      * @param param 字符串参数
      */
@@ -45,24 +46,7 @@ export class MLanguage extends cc.Component {
             value = key
             cc.warn(`[MLanguage] get a non-exist key, key=${key}`)
         }
-        return MLanguage.fake_template_string(value, ...param)
-    }
-
-    /**
-     * 显示一个多参数的模板字符串
-     * @param template 伪模板字符串，使用{index}来表示参数，index表示参数序号
-     * @param params 多个参数；注意排序
-     * @example
-    ```ts
-    const s = 'this is {0}, and {this1} is {1}, {1}, {2}'
-    const r = MLanguage.fake_template_string(s, 'param0', 'param1')
-    console.log(r)
-    => 'this is param0, and {this1} is param1, param1, undefined'
-    ```
-     */
-    static fake_template_string(template: string, ...params: any[]): string {
-        const reg = /\{([0-9]+?)\}/g
-        return template.replace(reg, (match, index) => params[index])
+        return G.fake_template_string(value, ...param)
     }
 
     onLoad() {

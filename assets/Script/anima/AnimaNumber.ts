@@ -1,4 +1,4 @@
-import { MLanguage } from "../framework/tools/i18n/MLanguage";
+import { G } from "../framework/G";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
@@ -36,7 +36,7 @@ export class AnimaNumber extends cc.Component {
     @property({ tooltip: '动画间隔；默认为0.05s' })
     interval: number = C.INTERVAL
 
-    @property({ tooltip: '显示字符串模板；参考MLanguage.fake_template_string()；；默认为{0}；如果为空也会视为{0}' })
+    @property({ tooltip: '显示字符串模板；参考G.fake_template_string()；；默认为{0}；如果为空也会视为{0}' })
     template: string = C.TEMPLATE
 
     /** 重置template */
@@ -59,7 +59,7 @@ export class AnimaNumber extends cc.Component {
         this.schedule(() => {
             i += 1
             let value = from_value + Math.trunc(i * (to_value - from_value) / count)
-            this.label.string = MLanguage.fake_template_string(this.template, value)
+            this.label.string = G.fake_template_string(this.template, value)
         }, interval, count - 1)
     }
 }
