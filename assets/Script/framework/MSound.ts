@@ -19,8 +19,11 @@ export class MSound {
 
     static ins: MSound
 
+    /** 初始化 */
     static init() {
+        if (MSound.ins != undefined) { cc.error(`[${MSound.name}] repeat init, please check`) }
         MSound.ins = new MSound()
+        MSound.ins.init_data()
         return MSound.ins
     }
 

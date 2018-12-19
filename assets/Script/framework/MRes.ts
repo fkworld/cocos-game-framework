@@ -15,8 +15,14 @@ export class MRes {
 
     static ins: MRes
 
-    static init() {
+    /**
+     * 初始化
+     * @param f 完成资源载入后的回调
+     */
+    static init(f: Function) {
+        if (MRes.ins != undefined) { cc.error(`[${MRes.name}] repeat init, please check`) }
         MRes.ins = new MRes()
+        MRes.ins.load_chain().then(() => { f() })
         return MRes.ins
     }
 

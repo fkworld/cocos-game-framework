@@ -8,8 +8,9 @@ import { TNull } from "./tools/TNull";
 
 const { ccclass, property } = cc._decorator
 const C = {
-    /** loading界面渐隐时间 */
-    LAODING_FADE_TIME: 2,
+    WAIT_TIME: 1,
+    FADE_TIME: 1,
+
 }
 Object.freeze(C)
 
@@ -28,9 +29,9 @@ class AppMain extends cc.Component {
         }, 0.1, cc.macro.REPEAT_FOREVER)
         this.adjust_screen()
         this.init_local_data()
-        MSound.init().init_data()
+        MSound.init()
         MPanel.init(this.panel_parent)
-        MRes.init().load_chain().then(() => { this.check_load_finish() })
+        MRes.init(() => { this.check_load_finish() })
     }
 
     /** 载入完毕计数 */
@@ -45,8 +46,8 @@ class AppMain extends cc.Component {
     async check_load_finish() {
         this.load_count += 1
         if (this.load_count < this.max_load_count) { return }
-        await G.wait_time(10)
-        await MPanel.out_fade(this.panel_loading, C.LAODING_FADE_TIME, cc.easeExponentialIn())
+        await G.wait_time(C.WAIT_TIME)
+        await MPanel.out_fade(this.panel_loading, C.FADE_TIME)
         this.panel_loading.active = false
         MPanel.chain('PanelTest')
     }
@@ -91,6 +92,6 @@ class AppMain extends cc.Component {
         this.canvas.fitWidth = !f
         // 注意本方法不在文档中，但是需要应用
         // 在下一个creator版本中有修复，会在fitHeight\fitWidth修改时自动调用
-        this.canvas.alignWithScreen()
+        this.canvas['alignWithScreen']()
     }
 }
