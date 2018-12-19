@@ -1,3 +1,5 @@
+import { G } from "./G";
+
 /** 配置参数 */
 const C = {
     FAKE_PATH: '__fake_path__',
@@ -20,10 +22,9 @@ export class MRes {
      * @param f 完成资源载入后的回调
      */
     static init(f: Function) {
-        if (MRes.ins != undefined) { cc.error(`[${MRes.name}] repeat init, please check`) }
+        G.check_ins(MRes)
         MRes.ins = new MRes()
         MRes.ins.load_all().then(() => { f() })
-        return MRes.ins
     }
 
     array_fake: any[] = []

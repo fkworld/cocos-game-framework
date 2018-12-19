@@ -28,6 +28,7 @@ export class MPanel {
     static ins: MPanel
 
     static init(parent_node: cc.Node) {
+        G.check_ins(MPanel)
         MPanel.ins = new MPanel(parent_node)
         return MRes.ins
     }

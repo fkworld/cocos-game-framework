@@ -161,4 +161,13 @@ export class G {
         const reg = /\{([0-9]+?)\}/g
         return template.replace(reg, (match, index) => params[index])
     }
+
+    /**
+     * 验证目标类的实例是否唯一
+     * - 看来对装饰器还需要进一步学习
+     * @param target 
+     */
+    static check_ins(target: any) {
+        if (target.ins != undefined) { cc.error(`[${target.name}] repeat init, please check`) }
+    }
 }

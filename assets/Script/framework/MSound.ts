@@ -1,5 +1,6 @@
 import { L } from "./L";
 import { MRes } from "./MRes";
+import { G } from "./G";
 
 /** 声音类别：音乐/音效 */
 enum TYPE { MUSIC, EFFECT }
@@ -21,10 +22,9 @@ export class MSound {
 
     /** 初始化 */
     static init() {
-        if (MSound.ins != undefined) { cc.error(`[${MSound.name}] repeat init, please check`) }
+        G.check_ins(MSound)
         MSound.ins = new MSound()
         MSound.ins.init_data()
-        return MSound.ins
     }
 
     /** 与SOUND一一对应的具体声音信息 */
