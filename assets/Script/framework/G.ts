@@ -1,6 +1,6 @@
 /**
  * [framework] 全局方法类
- * - 封装一些重要的/常用的方法
+ * - 封装一些通用方法
  */
 export class G {
 
@@ -34,7 +34,7 @@ export class G {
      * @static
      */
     static random_array_item(array: any[]) {
-        if (array.length === 0) { cc.warn('[G] 获取了一个长度为0的数组') }
+        if (array.length === 0) { cc.warn(`[${G.name}] 获取了一个长度为0的数组`) }
         return array[G.random_int(0, array.length)]
     }
 
@@ -169,5 +169,20 @@ export class G {
      */
     static check_ins(target: any) {
         if (target.ins != undefined) { cc.error(`[${target.name}] repeat init, please check`) }
+    }
+
+    /**
+     * 手动刷新widget1次，并在刷新完毕后置于false
+     * @param node 
+     * @static
+     */
+    static check_widget(node: cc.Node) {
+        let w: cc.Widget = node.getComponent(cc.Widget)
+        if (w && w.enabled) {
+            w.updateAlignment()
+            if (w.alignMode == cc.Widget.AlignMode.ONCE || w.alignMode == cc.Widget.AlignMode.ON_WINDOW_RESIZE) {
+                w.enabled = false
+            }
+        }
     }
 }
