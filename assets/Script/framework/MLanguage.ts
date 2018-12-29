@@ -1,7 +1,7 @@
 import { MLanguage_en } from "./MLanguageEn";
 import { MLanguage_zh } from "./MLanguageZh";
-import { L } from "../../L";
-import { G } from "../../G";
+import { L } from "./L";
+import { G } from "./G";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 /** 语言类型 */

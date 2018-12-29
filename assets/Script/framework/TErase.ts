@@ -1,4 +1,4 @@
-import { G } from "../G";
+import { G } from "./G";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {

@@ -1,10 +1,10 @@
 import { L } from "./L";
 import { G } from "./G";
 import { MRes } from "./MRes";
-import { MLanguage } from "./tools/i18n/MLanguage";
 import { MPanel } from "./MPanel";
 import { MSound } from "./MSound";
-import { TNull } from "./tools/TNull";
+import { MLanguage } from "./MLanguage";
+import { TNull } from "./TNull";
 
 const { ccclass, property } = cc._decorator
 const C = {
