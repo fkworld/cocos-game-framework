@@ -4,10 +4,9 @@ import { G } from "./G";
 const C = {
     FAKE_PATH: '__fake_path__',
 }
-Object.freeze(C)
 
 /**
- * [framework-M] 动态资源管理
+ * [M] 动态资源管理
  * - 载入变动的资源文件
  * - 资源路径需要在resource文件夹下，资源路径写在模块开头的C中
  * - 脚本需要挂载在尽量靠前的位置
@@ -28,7 +27,9 @@ export class MRes {
 
     /** 资源载入 */
     async load_all() {
-        // this.array_fake = await MRes.load_res_dir(C.FAKE_PATH, cc.Prefab)
+        [this.array_fake] = await Promise.all([
+            MRes.load_res_dir(C.FAKE_PATH, cc.Prefab),
+        ])
     }
 
     /**
@@ -36,18 +37,15 @@ export class MRes {
      * - 输出log
      * @param path 
      * @param type 
-     * @static
-     * @async
+     * @static @async
      */
     static async load_res(path: string, type: typeof cc.Asset): Promise<any> {
         return await new Promise((resolve, reject) => {
             cc.loader.loadRes(path, type, (err, res) => {
                 if (err) {
-                    // 载入失败
                     cc.error(`[${MRes.name}] resource load fail, path=${path}, type=${type}, error=${err}`)
                     reject(err)
                 } else {
-                    // 载入成功
                     resolve(res)
                 }
             })
@@ -60,18 +58,15 @@ export class MRes {
      * - 输出log
      * @param path 
      * @param type 
-     * @static
-     * @async
+     * @static @async
      */
     static async load_res_dir(path: string, type: typeof cc.Asset): Promise<any> {
         return await new Promise((resolve, reject) => {
             cc.loader.loadResDir(path, type, (err, res) => {
                 if (err) {
-                    // 载入失败
                     cc.error(`[${MRes.name}] resource load fail, path=${path}, type=${type.name}, error=${err}`)
                     reject(err)
                 } else {
-                    // 载入成功
                     cc.warn(`[${MRes.name}] resource load success, path=${path}, length=${res.length}, ${res.length === 0 ? 'please check again' : ''}`)
                     resolve(res)
                 }
