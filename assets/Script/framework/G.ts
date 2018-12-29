@@ -216,4 +216,13 @@ export class G {
         return Math.abs(n0 - n1) <= variance
     }
 
+    /**
+     * 截取数字的几位小数
+     * @param n 源数字
+     * @param count 小数位数
+     */
+    static number_fixed(n: number, count: number = 1) {
+        return Math.trunc(n * 10 ** count) / 10 ** count
+    }
+
 }

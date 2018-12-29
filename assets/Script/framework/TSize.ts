@@ -1,9 +1,11 @@
+import { G } from "./G";
+
 const { ccclass, property, executeInEditMode } = cc._decorator
 /** 基准类型 */
-enum TYPE { WIDTH, HEIGHT }
+enum TYPE { width, height }
 
 /**
- * [framework-T] size工具，使其保持比例调整大小
+ * [T] size工具，使其保持比例调整大小
  * - [使用流程] 添加脚本-点击save-修改type,修改current_size中的对应项-点击preview
  * - [注意] 计算结果保留1位小数
  * - [注意] source_size是节点的源比例；尽量save后就不要进行修改
@@ -25,7 +27,7 @@ export class TSize extends cc.Component {
 
     /** 类型 */
     @property({ tooltip: '基准类型', type: cc.Enum(TYPE) })
-    type: TYPE = TYPE.WIDTH
+    type: TYPE = TYPE.width
 
     /** 保存（点击后刷新编辑器） */
     @property({ tooltip: '保存' })
@@ -54,24 +56,21 @@ export class TSize extends cc.Component {
         this.current_size.y = this.node.height
     }
 
-    /**
-     * 更新size；保留1位小数
-     * @param type 类型
-     */
-    update_size(type = this.type) {
-        switch (type) {
-            case TYPE.WIDTH:
-                this.current_size.y = Math.floor(this.current_size.x / (this.source_size.x / this.source_size.y) * 10) / 10
+    /** 更新size，保留1位小数 */
+    update_size() {
+        switch (this.type) {
+            case TYPE.width:
+                this.current_size.y = G.number_fixed(this.current_size.x / this.source_size.x * this.source_size.y)
                 break;
-            case TYPE.HEIGHT:
-                this.current_size.x = Math.floor(this.current_size.y * (this.source_size.x / this.source_size.y) * 10) / 10
+            case TYPE.height:
+                this.current_size.x = G.number_fixed(this.current_size.y * this.source_size.x / this.source_size.y)
                 break;
             default:
-                this.current_size.y = Math.floor(this.current_size.x / (this.source_size.x / this.source_size.y) * 10) / 10
+                this.current_size.y = G.number_fixed(this.current_size.x / this.source_size.x * this.source_size.y)
                 break;
         }
         this.node.width = this.current_size.x
         this.node.height = this.current_size.y
     }
-    
+
 }
