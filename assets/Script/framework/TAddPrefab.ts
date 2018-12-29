@@ -1,18 +1,12 @@
 const { ccclass, property } = cc._decorator
 
 /**
- * [framework-T] 游戏开始时添加prefab
+ * [T] 游戏开始时添加prefab
  */
 @ccclass
 export class TAddPrefab extends cc.Component {
 
-    /**
-     * 获取当前脚本
-     * @param node 
-     */
-    static get(node: cc.Node) {
-        return node.getComponent(TAddPrefab)
-    }
+    static get(node: cc.Node) { return node.getComponent(TAddPrefab) }
 
     /**
      * 获取当前脚本创建的node
@@ -37,7 +31,7 @@ export class TAddPrefab extends cc.Component {
     prefab_node: cc.Node
 
     onLoad() {
-        if (this.is_play_onload) { this.add_prefab() }
+        if (this.is_play_onload) { this.prefab_node = this.add_prefab() }
     }
 
     /**
@@ -46,10 +40,10 @@ export class TAddPrefab extends cc.Component {
      * @param parent_node 
      * @param is_reset_position
      */
-    add_prefab(prefab = this.prefab, parent_node = this.node, is_reset_position: boolean = this.is_reset_position) {
-        let n = cc.instantiate(prefab)
-        n.setParent(parent_node)
-        n.position = is_reset_position ? cc.Vec2.ZERO : n.position
+    add_prefab() {
+        let n = cc.instantiate(this.prefab)
+        n.setParent(this.node)
+        n.position = this.is_reset_position ? cc.Vec2.ZERO : n.position
         return n
     }
 }
