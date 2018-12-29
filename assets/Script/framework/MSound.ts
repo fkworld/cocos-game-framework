@@ -43,14 +43,14 @@ export class MSound {
     }
 
     /** 初始化本地存储 */
-    static init_l() { L.sound = true }
+    static init_l() { L.set_sound(true) }
 
     /** 获取声音开关 */
-    static get_sound_switch() { return L.sound === `${true}` }
+    static get_sound_switch() { return L.get_sound() === `${true}` }
 
     /** 设置声音开关（直接反向） */
     static set_sound_switch() {
-        L.sound = L.sound === `${true}` ? false : true
+        L.set_sound(L.get_sound() === `${true}` ? false : true)
         if (MSound.get_sound_switch()) {
             MSound.resume_all()
         } else {

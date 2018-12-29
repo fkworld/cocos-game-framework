@@ -64,9 +64,9 @@ export class AppMain extends cc.Component {
     /** 初始化本地数据 */
     init_local_data() {
         // 判断模式
-        if (AppMain.IS_VERSION_DEV()) { L.is_init = false }
+        if (AppMain.IS_VERSION_DEV()) { L.set_init(false) }
         // 输出log
-        if (L.is_init === `${true}`) {
+        if (L.get_init() === `${true}`) {
             cc.warn(`[${AppMain.name}] get user\'s local data`)
             return
         } else {
@@ -81,7 +81,7 @@ export class AppMain extends cc.Component {
         MLanguage.init_l()
 
         // 初始化完毕之后，置is_init为true
-        L.is_init = true
+        L.set_init(true)
     }
 
     /** 调整屏幕适配 */

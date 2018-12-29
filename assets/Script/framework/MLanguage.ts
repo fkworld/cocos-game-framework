@@ -5,12 +5,11 @@ import { G } from "./G";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 /** 语言类型 */
-enum LANGUAGE_TYPE { CHINESE, ENGLISH }
+enum TYPE { chinese, english }
 /** 语言类型对应的语言数据脚本 */
 const LANGUAGE_DATA = [MLanguage_zh, MLanguage_en]
 const C = {
-    /** 默认语言类型 */
-    DEFAULT_TYPE: LANGUAGE_TYPE.ENGLISH,
+    DEFAULT_TYPE: TYPE.english,
     DEFAULT_KEY: 'enter_a_key_and_set_preview_true',
 }
 
@@ -25,11 +24,11 @@ const C = {
 export class MLanguage extends cc.Component {
 
     /** 类型 */
-    static get TYPE() { return LANGUAGE_TYPE }
+    static get TYPE() { return TYPE }
 
     /** 初始化本地存储 */
     static init_l() {
-        L.language = C.DEFAULT_TYPE
+        L.set_language(C.DEFAULT_TYPE)
     }
 
     /**
@@ -39,8 +38,8 @@ export class MLanguage extends cc.Component {
      * @param key 字符串key
      * @param param 字符串参数
      */
-    static get_text(key: string, ...param): string {
-        let type = Number.parseInt(L.language) || C.DEFAULT_TYPE
+    static get_text(key: string, ...param: any[]): string {
+        let type = Number.parseInt(L.get_language()) || C.DEFAULT_TYPE
         let value = LANGUAGE_DATA[type][key]
         if (value === undefined) {
             value = key
