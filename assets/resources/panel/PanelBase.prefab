@@ -12,7 +12,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "PanelTest",
+    "_name": "PanelBase",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
@@ -235,7 +235,7 @@
       "__id__": 1
     },
     "component": "PanelTest",
-    "handler": "event_test",
+    "handler": "click_test",
     "customEventData": ""
   },
   {
@@ -323,8 +323,8 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "This is a test panel",
-    "_N$string": "This is a test panel",
+    "_string": "This is a base panel",
+    "_N$string": "This is a base panel",
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
@@ -358,7 +358,6 @@
       "__id__": 1
     },
     "_enabled": true,
-    "sp": null,
     "_id": ""
   },
   {

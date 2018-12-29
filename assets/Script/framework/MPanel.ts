@@ -23,7 +23,7 @@ const C = {
 }
 
 /**
- * [framework-M] 游戏窗口管理
+ * [M] 游戏窗口管理
  * - 封装窗口打开的open\close接口，API为open\close\chain；open和close时会附带参数；open的异步结束不包括动画效果，close的异步结束包括动画效果
  * - 封装窗口中UI打开的in\out接口，API为in\out+type
  * - 窗口的打开直接调用active=true；窗口中UI组件的打开方式可以使用写定的方法；未来会独立成为脚本
@@ -43,16 +43,17 @@ export class MPanel {
 
     constructor(parent_node: cc.Node) {
         this.parent = parent_node
+        this.now_z_index = 0
     }
 
     /** 挂载父节点 */
     parent: cc.Node
     /** 当前的渲染层级 */
-    now_z_index: number = 0
+    now_z_index: number
     /** panel-实例节点存储 */
-    obj_node = {}
+    obj_node: { string: cc.Node } | {} = {}
     /** panel-prefab存储 */
-    obj_prefab = {}
+    obj_prefab: { string: cc.Prefab } | {} = {}
 
     /**
      * 打开panel
@@ -83,16 +84,16 @@ export class MPanel {
         }
         // 优先从prefab存储中寻找
         if (MPanel.ins.obj_prefab[panel_name]) {
-            show_panel(MPanel.ins.obj_prefab[panel_name])
+            return show_panel(MPanel.ins.obj_prefab[panel_name])
         }
         // 如果找不到则从resource中载入
-        await MRes.load_res(`${C.PATH}/${panel_name}`, cc.Prefab).then((v: cc.Prefab) => {
-            // 保存prefab
-            MPanel.ins.obj_prefab[v.name] = v
-            show_panel(v)
-        }).catch(() => {
-            cc.error(`panel open fail, panel_name=${panel_name}`)
-        })
+        return await MRes.load_res(`${C.PATH}/${panel_name}`, cc.Prefab)
+            .then((v: cc.Prefab) => {
+                MPanel.ins.obj_prefab[v.name] = v
+                show_panel(v)
+            }).catch(() => {
+                cc.error(`panel open fail, panel_name=${panel_name}`)
+            })
     }
 
     /**
@@ -123,10 +124,11 @@ export class MPanel {
      * - 打开的panel无参数传入
      * - 默认interval为1s
      * @param array_panel_name 多个panel的name
+     * @static @async
      */
     static async chain(...array_panel_name: string[]) {
-        for (let i = 0; i < array_panel_name.length; i += 1) {
-            await MPanel.open(array_panel_name[i])
+        for (let name of array_panel_name) {
+            await MPanel.open(name)
             await G.wait_time(1)
         }
     }

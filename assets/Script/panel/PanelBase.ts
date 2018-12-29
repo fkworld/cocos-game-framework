@@ -4,27 +4,20 @@ import { MSound } from "../framework/MSound";
 const { ccclass, property } = cc._decorator
 
 /**
- * [framework-Panel] Test
+ * [Panel] PanelBase
  */
 @ccclass
-class PanelTest extends cc.Component {
+export class PanelBase extends cc.Component {
 
-    open(param1, param2) {
+    open() {
         MPanel.in_fade(this.node)
     }
 
-    async close(param1, param2) {
+    async close() {
         await MPanel.out_fade(this.node)
     }
 
-    @property(cc.Sprite)
-    sp: cc.Sprite = null
-
-    start() {
-
-    }
-
-    event_test() {
+    click_test() {
         MSound.play(MSound.SOUND.test_effect)
     }
 }
