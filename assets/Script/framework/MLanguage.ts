@@ -5,16 +5,16 @@ import { G } from "./G";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 /** 语言类型 */
-enum TYPE { chinese, english }
+enum TYPE { english, chinese }
 /** 语言类型对应的语言数据脚本 */
-const LANGUAGE_DATA = [MLanguage_zh, MLanguage_en]
+const LANGUAGE_DATA = [MLanguage_en, MLanguage_zh]
 const C = {
     DEFAULT_TYPE: TYPE.english,
     DEFAULT_KEY: 'enter_a_key_and_set_preview_true',
 }
 
 /**
- * [framework-M] 多语言
+ * [M] 多语言
  * - [用法] 修改配置文件中的内容（例如LanguageEN.ts），key-value格式，并将此组件挂载在对应的Label所在节点下，修改key
  * - [用法] 静态接口get_text()
  */
@@ -22,9 +22,6 @@ const C = {
 @executeInEditMode
 @requireComponent(cc.Label)
 export class MLanguage extends cc.Component {
-
-    /** 类型 */
-    static get TYPE() { return TYPE }
 
     /** 初始化本地存储 */
     static init_l() {
@@ -52,7 +49,7 @@ export class MLanguage extends cc.Component {
         this.update_label()
     }
 
-    update(dt) {
+    update() {
         if (this.preview) {
             this.preview = false
             this.update_label()

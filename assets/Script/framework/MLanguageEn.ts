@@ -1,5 +1,5 @@
 /**
- * [framework-M-MLanguage] 英文
+ * [MLanguage] 英文
  */
 export const MLanguage_en = {
     'panel_loading_health_game_advice': 'Health Game Advice',
