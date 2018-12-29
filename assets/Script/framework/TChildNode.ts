@@ -1,7 +1,7 @@
 const { ccclass, property } = cc._decorator
 
 /**
- * [framework-T] 子节点管理工具
+ * [T] 子节点管理工具
  * - [目的] 用于解决需要在节点内部getChildByName()来获取到子节点的场景
  * - [用法] 需要将此作为需要观察节点的组件；并将需要观察节点的子节点拖入组件；后面的静态方法定义了使用接口
  * - [注意] 理论上可以观察非子节点，但是逻辑上并不推荐使用
@@ -29,7 +29,7 @@ export class TChildNode extends cc.Component {
     array_child_node: cc.Node[] = []
 
     /** 子节点存储表；name-node */
-    obj_child_node: {} = {}
+    obj_child_node: { string: cc.Node } | {} = {}
 
     /** 重构数据；将[]转化为{} */
     trans_array_to_object() {
