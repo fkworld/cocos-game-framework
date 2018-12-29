@@ -5,19 +5,17 @@
 export class G {
 
     /**
-     * 获取一个随机整数
-     * - [min,max)
+     * 获取一个随机整数，[min,max)
      * @param min 
      * @param max 
      * @static
      */
     static random_int(min: number, max: number) {
-        return Math.floor(Math.random() * (max - min) + min)
+        return Math.trunc(Math.random() * (max - min) + min)
     }
 
     /**
-     * 获取一个随机小数
-     * - [min,max)
+     * 获取一个随机小数，[min,max)
      * @param min 
      * @param max 
      * @static
@@ -36,6 +34,17 @@ export class G {
     static random_array_item(array: any[]) {
         if (array.length === 0) { cc.warn(`[${G.name}] 获取了一个长度为0的数组`) }
         return array[G.random_int(0, array.length)]
+    }
+
+    /**
+     * 从枚举中获取一个随机值
+     * - Typescript不提供标准的方法
+     * - 枚举需要是数字，从0开始并且不可间断
+     * @param array_enum 
+     * @static
+     */
+    static random_enum_item(array_enum: any) {
+        return G.random_int(0, Object.keys(array_enum).length / 2)
     }
 
     /**
@@ -137,8 +146,7 @@ export class G {
     /**
      * 异步函数中等待一段时间
      * @param time 单位s
-     * @static
-     * @async
+     * @static @async
      */
     static async wait_time(time: number) {
         return new Promise((resolve, reject) => { setTimeout(resolve, time * 1000) })
@@ -185,4 +193,27 @@ export class G {
             }
         }
     }
+
+    /**
+     * 两数字间的线性求值，比例范围：[0,1]
+     * @param start 
+     * @param end 
+     * @param ratio 
+     * @static
+     */
+    static number_lerp(start: number, end: number, ratio: number) {
+        return start + (end - start) * ratio
+    }
+
+    /**
+     * 判断两个数是否约等于
+     * @param n0 
+     * @param n1 
+     * @param variance 精度，默认为1
+     * @static
+     */
+    static number_fuzzy_equal(n0: number, n1: number, variance: number = 1) {
+        return Math.abs(n0 - n1) <= variance
+    }
+
 }
