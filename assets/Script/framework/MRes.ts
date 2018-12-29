@@ -17,14 +17,11 @@ export class MRes {
 
     static ins: MRes
 
-    /**
-     * 初始化
-     * @param f 完成资源载入后的回调
-     */
-    static init(f: Function) {
+    /** 初始化 */
+    static async init() {
         G.check_ins(MRes)
         MRes.ins = new MRes()
-        MRes.ins.load_all().then(() => { f() })
+        return await MRes.ins.load_all()
     }
 
     array_fake: any[] = []
