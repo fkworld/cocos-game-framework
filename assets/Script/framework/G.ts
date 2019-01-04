@@ -5,12 +5,14 @@
 export class G {
 
     /**
-     * 获取一个随机整数，[min,max)
+     * 获取一个随机整数，[min,max)，范围内的可行整数的概率相等
      * @param min 
      * @param max 
      * @static
      */
     static random_int(min: number, max: number) {
+        min = Number.isInteger(min) ? min : Math.trunc(min) + 1
+        max = Number.isInteger(max) ? max : Math.trunc(max) + 1
         return Math.trunc(Math.random() * (max - min) + min)
     }
 
