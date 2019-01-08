@@ -1,4 +1,4 @@
-import { MPanel } from "../framework/MPanel";
+import { MPanel, IPanel } from "../framework/MPanel";
 
 const { ccclass, property } = cc._decorator
 
@@ -7,7 +7,7 @@ const { ccclass, property } = cc._decorator
  * - 逻辑与UI合并，逻辑使用static函数编写，UI使用实例函数编写
  */
 @ccclass
-export class PanelWait extends cc.Component {
+export class PanelWait extends cc.Component implements IPanel {
 
     static open() { MPanel.open('PanelWait') }
 

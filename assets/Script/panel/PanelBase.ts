@@ -1,4 +1,4 @@
-import { MPanel } from "../framework/MPanel";
+import { MPanel, IPanel } from "../framework/MPanel";
 import { MSound } from "../framework/MSound";
 
 const { ccclass, property } = cc._decorator
@@ -7,7 +7,7 @@ const { ccclass, property } = cc._decorator
  * [Panel] PanelBase
  */
 @ccclass
-export class PanelBase extends cc.Component {
+export class PanelBase extends cc.Component implements IPanel {
 
     open() {
         MPanel.in_fade(this.node)

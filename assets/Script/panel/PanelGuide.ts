@@ -1,4 +1,4 @@
-import { MPanel } from "../framework/MPanel";
+import { MPanel, IPanel } from "../framework/MPanel";
 
 const { ccclass, property } = cc._decorator;
 enum GUIDE_TYPE { test1, test2 }
@@ -8,7 +8,7 @@ enum GUIDE_TYPE { test1, test2 }
  * - guide_type -> guide_info -> guide_panel
  */
 @ccclass
-export class PanelGuide extends cc.Component {
+export class PanelGuide extends cc.Component implements IPanel {
 
     /** 引导的枚举类型 */
     static get TYPE() { return GUIDE_TYPE }

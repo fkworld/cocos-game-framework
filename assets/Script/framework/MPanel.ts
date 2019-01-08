@@ -22,6 +22,12 @@ const C = {
     FADE_SCALE_TARGET: 2,
 }
 
+/** 每个Panel的具体实现接口 */
+export interface IPanel {
+    open(...params: any[]): void,
+    close(...params: any[]): void,
+}
+
 /**
  * [M] 游戏窗口管理
  * - 封装窗口打开的open\close接口，API为open\close\chain；open和close时会附带参数；open的异步结束不包括动画效果，close的异步结束包括动画效果
@@ -76,9 +82,8 @@ export class MPanel {
             node.zIndex = z_index
             node.active = true
             // 如果节点有打开动画，则进行打开动画
-            if (node.getComponent(panel_name) && node.getComponent(panel_name).open) {
-                node.getComponent(panel_name).open(...args)
-            }
+            let c: IPanel = node.getComponent(panel_name)
+            if (c && c.open) { c.open(...args) }
             // 保存节点
             MPanel.ins.obj_node[panel_name] = node
         }
@@ -111,8 +116,9 @@ export class MPanel {
             return
         }
         // 执行节点关闭动画
-        if (node.getComponent(panel_name) && node.getComponent(panel_name).close) {
-            await node.getComponent(panel_name).close(...args)
+        let c: IPanel = node.getComponent(panel_name)
+        if (c && c.close) {
+            await c.close(...args)
         }
         // 删除节点存储
         node.destroy()
