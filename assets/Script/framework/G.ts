@@ -84,7 +84,7 @@ export class G {
      * @static
      */
     static get_node_world_position(node: cc.Node): cc.Vec2 {
-        return node.getParent().convertToWorldSpaceAR(node.position)
+        return node.convertToWorldSpaceAR(cc.Vec2.ZERO)
     }
 
     /**
