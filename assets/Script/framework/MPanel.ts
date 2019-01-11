@@ -23,7 +23,7 @@ const C = {
 }
 
 /** 每个Panel的具体实现接口 */
-export interface IPanel {
+export interface IPanel extends cc.Component {
     open(...params: any[]): void,
     close(...params: any[]): void,
 }
