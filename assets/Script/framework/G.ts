@@ -151,7 +151,7 @@ export class G {
      * @static @async
      */
     static async wait_time(time: number) {
-        return new Promise((resolve, reject) => { setTimeout(resolve, time * 1000) })
+        return new Promise(res => setTimeout(res, time * 1000))
     }
 
     /**

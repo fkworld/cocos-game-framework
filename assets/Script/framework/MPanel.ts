@@ -175,12 +175,12 @@ export class MPanel {
      * @static @async
      */
     static async in_scale(node: cc.Node, time: number = C.TIME, ease: any = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             node.scale = C.SCALE_0
             node.active = true
             node.runAction(cc.sequence(
                 cc.scaleTo(time, C.SCALE_1).easing(ease),
-                cc.callFunc(resolve),
+                cc.callFunc(res),
             ))
         })
     }
@@ -192,10 +192,10 @@ export class MPanel {
      * @static @async
      */
     static async out_scale(node: cc.Node, time: number = C.TIME, ease: any = C.EASE_OUT) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             node.runAction(cc.sequence(
                 cc.scaleTo(time, C.SCALE_0).easing(ease),
-                cc.callFunc(resolve),
+                cc.callFunc(res),
             ))
         })
     }
@@ -207,12 +207,12 @@ export class MPanel {
      * @static @async
      */
     static async in_fade(node: cc.Node, time: number = C.TIME, ease: any = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             node.opacity = 0
             node.active = true
             node.runAction(cc.sequence(
                 cc.fadeIn(time).easing(ease),
-                cc.callFunc(resolve),
+                cc.callFunc(res),
             ))
         })
     }
@@ -224,10 +224,10 @@ export class MPanel {
      * @static @async
      */
     static async out_fade(node: cc.Node, time: number = C.TIME, ease = C.EASE_OUT) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             node.runAction(cc.sequence(
                 cc.fadeOut(time).easing(ease),
-                cc.callFunc(resolve),
+                cc.callFunc(res),
             ))
         })
     }
@@ -240,7 +240,7 @@ export class MPanel {
      * @static @async
      */
     static async in_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position.add(DIRECTION_VEC2[direction].mul(Math.max(cc.winSize.width, cc.winSize.height)))
             const end_postion: cc.Vec2 = node.position
@@ -248,7 +248,7 @@ export class MPanel {
             node.active = true
             node.runAction(cc.sequence(
                 cc.moveTo(time, end_postion).easing(ease),
-                cc.callFunc(resolve),
+                cc.callFunc(res),
             ))
         })
     }
@@ -261,13 +261,13 @@ export class MPanel {
      * @static @async
      */
     static async out_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position
             const end_postion: cc.Vec2 = node.position.add(DIRECTION_VEC2[direction].mul(Math.max(cc.winSize.width, cc.winSize.height)))
             node.runAction(cc.sequence(
                 cc.moveTo(time, end_postion).easing(ease),
-                cc.callFunc(resolve),
+                cc.callFunc(res),
             ))
         })
     }
@@ -281,7 +281,7 @@ export class MPanel {
      * @static @async
      */
     static async in_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position.add(DIRECTION_VEC2[direction].mul(C.FADE_MOVE_DISTANCE))
             const end_position: cc.Vec2 = node.position
@@ -290,7 +290,7 @@ export class MPanel {
             node.runAction(cc.spawn(
                 cc.moveTo(time, end_position).easing(ease),
                 cc.fadeIn(time).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(resolve)),
+                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
             ))
         })
     }
@@ -304,7 +304,7 @@ export class MPanel {
      * @static @async
      */
     static async out_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position
             const end_position: cc.Vec2 = node.position.add(DIRECTION_VEC2[direction].mul(C.FADE_MOVE_DISTANCE))
@@ -312,7 +312,7 @@ export class MPanel {
             node.runAction(cc.spawn(
                 cc.moveTo(time, end_position).easing(ease),
                 cc.fadeOut(time).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(resolve)),
+                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
             ))
         })
     }
@@ -326,13 +326,13 @@ export class MPanel {
      * @static @async
      */
     static async in_fade_scale(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             node.scale = target_scale
             node.opacity = 0
             node.runAction(cc.spawn(
                 cc.fadeIn(time).easing(ease),
                 cc.scaleTo(time, C.SCALE_1).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(resolve)),
+                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
             ))
         })
     }
@@ -346,11 +346,11 @@ export class MPanel {
      * @static @async
      */
     static async out_fade_sacle(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise((resolve, reject) => {
+        return await new Promise(res => {
             node.runAction(cc.spawn(
                 cc.fadeOut(time).easing(ease),
                 cc.scaleTo(time, target_scale).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(resolve)),
+                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
             ))
         })
     }

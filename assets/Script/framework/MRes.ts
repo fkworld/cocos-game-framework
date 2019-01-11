@@ -39,14 +39,14 @@ export class MRes {
      * @param type 
      * @static @async
      */
-    static async load_res(path: string, type: typeof cc.Asset): Promise<any> {
-        return await new Promise((resolve, reject) => {
-            cc.loader.loadRes(path, type, (err, res) => {
+    static async load_res<T extends typeof cc.Asset>(path: string, type: T): Promise<T> {
+        return await new Promise((res, rej) => {
+            cc.loader.loadRes(path, type, (err, resource) => {
                 if (err) {
                     cc.error(`[${MRes.name}] resource load fail, path=${path}, type=${type}, error=${err}`)
-                    reject(err)
+                    rej(err)
                 } else {
-                    resolve(res)
+                    res(resource)
                 }
             })
         })
@@ -54,21 +54,20 @@ export class MRes {
 
     /**
      * 载入dir资源
-     * - 使用Promise进行封装
      * - 输出log
      * @param path 
      * @param type 
      * @static @async
      */
-    static async load_res_dir(path: string, type: typeof cc.Asset): Promise<any> {
-        return await new Promise((resolve, reject) => {
-            cc.loader.loadResDir(path, type, (err, res) => {
+    static async load_res_dir<T extends typeof cc.Asset>(path: string, type: T): Promise<T[]> {
+        return await new Promise((res, rej) => {
+            cc.loader.loadResDir(path, type, (err, resource) => {
                 if (err) {
                     cc.error(`[${MRes.name}] resource load fail, path=${path}, type=${type.name}, error=${err}`)
-                    reject(err)
+                    rej(err)
                 } else {
                     cc.warn(`[${MRes.name}] resource load success, path=${path}, length=${res.length}, ${res.length === 0 ? 'please check again' : ''}`)
-                    resolve(res)
+                    res(resource)
                 }
             })
         })
@@ -78,8 +77,9 @@ export class MRes {
      * 资源排序：根据name属性的第一个数字
      * @param a 
      * @param b 
+     * @static
      */
-    static sort_by_name(a: any, b: any) {
+    static sort_by_name<T extends typeof cc.Asset>(a: T, b: T) {
         return Number.parseInt(a.name[0]) - Number.parseInt(b.name[0])
     }
 }
