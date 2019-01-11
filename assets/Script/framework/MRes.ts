@@ -39,7 +39,7 @@ export class MRes {
      * @param type 
      * @static @async
      */
-    static async load_res<T extends typeof cc.Asset>(path: string, type: T): Promise<T> {
+    static async load_res<T extends typeof cc.Asset>(path: string, type: T): Promise<any> {
         return await new Promise((res, rej) => {
             cc.loader.loadRes(path, type, (err, resource) => {
                 if (err) {
@@ -59,7 +59,7 @@ export class MRes {
      * @param type 
      * @static @async
      */
-    static async load_res_dir<T extends typeof cc.Asset>(path: string, type: T): Promise<T[]> {
+    static async load_res_dir<T extends typeof cc.Asset>(path: string, type: T): Promise<any[]> {
         return await new Promise((res, rej) => {
             cc.loader.loadResDir(path, type, (err, resource) => {
                 if (err) {

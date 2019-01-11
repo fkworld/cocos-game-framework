@@ -33,7 +33,7 @@ export class G {
      * @param array 
      * @static
      */
-    static random_array_item(array: any[]) {
+    static random_array_item<T>(array: T[]): T {
         if (array.length === 0) { cc.warn(`[${G.name}] 获取了一个长度为0的数组`) }
         return array[G.random_int(0, array.length)]
     }

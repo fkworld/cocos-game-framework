@@ -174,7 +174,7 @@ export class MPanel {
      * @param ease
      * @static @async
      */
-    static async in_scale(node: cc.Node, time: number = C.TIME, ease: any = C.EASE_IN) {
+    static async in_scale(node: cc.Node, time: number = C.TIME, ease = C.EASE_IN) {
         return await new Promise(res => {
             node.scale = C.SCALE_0
             node.active = true
@@ -191,7 +191,7 @@ export class MPanel {
      * @param ease
      * @static @async
      */
-    static async out_scale(node: cc.Node, time: number = C.TIME, ease: any = C.EASE_OUT) {
+    static async out_scale(node: cc.Node, time: number = C.TIME, ease = C.EASE_OUT) {
         return await new Promise(res => {
             node.runAction(cc.sequence(
                 cc.scaleTo(time, C.SCALE_0).easing(ease),
@@ -206,7 +206,7 @@ export class MPanel {
      * @param ease
      * @static @async
      */
-    static async in_fade(node: cc.Node, time: number = C.TIME, ease: any = C.EASE_IN) {
+    static async in_fade(node: cc.Node, time: number = C.TIME, ease = C.EASE_IN) {
         return await new Promise(res => {
             node.opacity = 0
             node.active = true
