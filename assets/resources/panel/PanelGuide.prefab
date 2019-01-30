@@ -414,7 +414,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sp - Arrow",
+    "_name": "Sp-Arrow",
     "_objFlags": 0,
     "_parent": {
       "__id__": 5
@@ -576,7 +576,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "BG - Info",
+    "_name": "BG-Info",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -652,7 +652,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sp - Arrow",
+    "_name": "Sp-Arrow",
     "_objFlags": 0,
     "_parent": {
       "__id__": 16
@@ -754,7 +754,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label - GuideInfo",
+    "_name": "Lab-GuideInfo",
     "_objFlags": 0,
     "_parent": {
       "__id__": 16
@@ -855,7 +855,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Btn - Close",
+    "_name": "Btn-Close",
     "_objFlags": 0,
     "_parent": {
       "__id__": 16

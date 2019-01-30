@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.4806338028169014,
-      "y": 0.4806338028169014,
+      "x": 1,
+      "y": 1,
       "z": 1
     },
     "_quat": {
@@ -340,7 +340,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "N_PanelNodeRoot",
+    "_name": "N-PanelNodeRoot",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -397,7 +397,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "N_PanelLoading",
+    "_name": "N-PanelLoading",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -464,7 +464,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sp_GameIcon",
+    "_name": "Sp-GameIcon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 9
@@ -553,7 +553,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Lab_HealthGameAdvice",
+    "_name": "Lab-HealthGameAdvice",
     "_objFlags": 0,
     "_parent": {
       "__id__": 9
@@ -656,7 +656,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Lab_LoadingLog",
+    "_name": "Lab-LoadingLog",
     "_objFlags": 0,
     "_parent": {
       "__id__": 9
@@ -724,7 +724,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sp_LoadingIcon",
+    "_name": "Sp-LoadingIcon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 15
@@ -898,9 +898,6 @@
     },
     "panel_parent": {
       "__id__": 8
-    },
-    "load_icon": {
-      "__id__": 16
     },
     "_id": "76lMZpUhBL07R5eEVFCQ9h"
   }

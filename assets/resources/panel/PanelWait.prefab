@@ -290,7 +290,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Lab_LoadingLog",
+    "_name": "Lab-LoadingLog",
     "_objFlags": 0,
     "_parent": {
       "__id__": 6
@@ -474,7 +474,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sp_LoadingIcon",
+    "_name": "Sp-LoadingIcon",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1

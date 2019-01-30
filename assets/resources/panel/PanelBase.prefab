@@ -80,7 +80,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sp_Test",
+    "_name": "Sp-Test",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -251,7 +251,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Lab_Test",
+    "_name": "Lab-Test",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1

@@ -156,7 +156,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Btn - Close",
+    "_name": "Btn-Close",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -359,7 +359,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label - Title",
+    "_name": "Label-Title",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -460,7 +460,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label - Message",
+    "_name": "Label-Message",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
