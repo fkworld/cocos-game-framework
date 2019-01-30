@@ -5,12 +5,13 @@ enum TYPE { none }
 /** 颜色分类对应的颜色数值 */
 const COLOR: cc.Color[] = [
     cc.Color.WHITE,
-
 ]
+
 
 /**
  * [T] 颜色工具
- * - [注意] 不在onLoad时执行，需要手动在编辑器中preview
+ * - [注意] 不在onLoad()时执行，需要手动在编辑器中preview
+ * - [参考资料] Ant-design推荐的颜色设计：https://ant.design/docs/spec/colors-cn
  */
 @ccclass
 @executeInEditMode
