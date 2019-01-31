@@ -1,12 +1,23 @@
 const { ccclass, property, executeInEditMode } = cc._decorator;
 
 /** 颜色分类 */
-enum TYPE { none }
+enum TYPE { none, cyan_1, cyan_2, cyan_3, cyan_4, cyan_5, cyan_6, cyan_7, cyan_8, cyan_9, cyan_10 }
 /** 颜色分类对应的颜色数值 */
 const COLOR: cc.Color[] = [
+    // none
     cc.Color.WHITE,
+    // ant-design-cyan-1-10
+    cc.color().fromHEX('#e6fffb'),
+    cc.color().fromHEX('#b5f5ec'),
+    cc.color().fromHEX('#87e8de'),
+    cc.color().fromHEX('#5cdbd3'),
+    cc.color().fromHEX('#36cfc9'),
+    cc.color().fromHEX('#13c2c2'),
+    cc.color().fromHEX('#08979c'),
+    cc.color().fromHEX('#006d75'),
+    cc.color().fromHEX('#00474f'),
+    cc.color().fromHEX('#002329'),
 ]
-
 
 /**
  * [T] 颜色工具
@@ -29,6 +40,5 @@ export class TColor extends cc.Component {
 
     @property({ tooltip: '预览' })
     preview: boolean = false
-
 
 }
