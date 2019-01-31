@@ -5,6 +5,7 @@ import { MPanel } from "./MPanel";
 import { MSound } from "./MSound";
 import { MLanguage } from "./MLanguage";
 import { PanelBase } from "../panel/PanelBase";
+import { PanelTest } from "../panel/PanelTest";
 
 const { ccclass, property } = cc._decorator
 /** 版本区分：开发者版本，测试版本，正式版本 */
@@ -59,15 +60,15 @@ export class AppMain extends cc.Component {
         await G.wait_time(C.WAIT_TIME)
         await MPanel.out_fade(this.panel_loading, C.FADE_TIME)
         this.panel_loading.active = false
-        MPanel.open(`${PanelBase.name}`)
+        MPanel.open(`${PanelTest.name}`)
     }
 
     /** 初始化本地数据 */
     init_local_data() {
-        // 判断模式
-        if (AppMain.IS_VERSION_DEV()) { L.set_init(false) }
+        // 根据版本对init进行预处理
+        L.init = AppMain.IS_VERSION_DEV() ? false : L.init
         // 输出log
-        if (L.get_init() === `${true}`) {
+        if (L.init) {
             cc.warn(`[${AppMain.name}] get user\'s local data`)
             return
         } else {
@@ -82,7 +83,7 @@ export class AppMain extends cc.Component {
         MLanguage.init_l()
 
         // 初始化完毕之后，置is_init为true
-        L.set_init(true)
+        L.init = true
     }
 
     /** 调整屏幕适配 */

@@ -43,15 +43,12 @@ export class MSound {
     }
 
     /** 初始化本地存储 */
-    static init_l() { L.set_sound(true) }
-
-    /** 获取声音开关 */
-    static get_sound_switch() { return L.get_sound() === `${true}` }
+    static init_l() { L.sound = true }
 
     /** 设置声音开关（直接反向） */
     static set_sound_switch() {
-        L.set_sound(L.get_sound() === `${true}` ? false : true)
-        if (MSound.get_sound_switch()) {
+        L.sound = !L.sound
+        if (L.sound) {
             MSound.resume_all()
         } else {
             MSound.pause_all()
@@ -63,7 +60,7 @@ export class MSound {
 
     /** 播放某一个声音：play/resume */
     static play(sound: SOUND) {
-        if (!MSound.get_sound_switch()) { return }
+        if (!L.sound) { return }
         MSound.ins.array_sound_info[sound].play()
     }
 

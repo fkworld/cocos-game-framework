@@ -24,9 +24,7 @@ const C = {
 export class MLanguage extends cc.Component {
 
     /** 初始化本地存储 */
-    static init_l() {
-        L.set_language(C.DEFAULT_TYPE)
-    }
+    static init_l() { L.language = C.DEFAULT_TYPE }
 
     /**
      * 获取key对应的value并组合成为字符串
@@ -36,11 +34,11 @@ export class MLanguage extends cc.Component {
      * @param param 字符串参数
      */
     static get_text(key: string, ...param: any[]): string {
-        let type = Number.parseInt(L.get_language()) || C.DEFAULT_TYPE
+        let type = L.language || C.DEFAULT_TYPE
         let value = LANGUAGE_DATA[type][key]
         if (value === undefined) {
             value = key
-            cc.warn(`[MLanguage] get a non-exist key, key=${key}`)
+            cc.warn(`[${MLanguage.name}] get a non-exist key, key=${key}`)
         }
         return G.fake_template_string(value, ...param)
     }
