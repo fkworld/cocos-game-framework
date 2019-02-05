@@ -50,6 +50,23 @@ export class G {
     }
 
     /**
+     * 洗牌算法：打乱数组顺序
+     * - 不直接更改array，会返回一个打乱了的新数组
+     * - 洗牌算法有多种实现方式，不同的实现方式效率与概率均不同
+     * - 这里采用遍历+替换的方式。在数量级很大时，可能会有性能损耗
+     * @param array
+     * @static 
+     */
+    static shuffle_array<T>(array: T[]): T[] {
+        let result = [...array]
+        for (let i = 0; i < result.length; i += 1) {
+            let t = G.random_int(0, result.length);
+            [result[i], result[t]] = [result[t], result[i]];
+        }
+        return result
+    }
+
+    /**
      * 将一个多次执行的方法放到多帧中执行，避免单帧中消耗过多性能造成卡顿
      * - 使用cc.Component.schedule()方法，在interval参数为0时表示逐帧调用
      * @param f 需要执行的方法
