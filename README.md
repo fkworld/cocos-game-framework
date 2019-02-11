@@ -1,6 +1,6 @@
 # cocos游戏轻量级框架
 * 以个人实践为主，某些处理可能并非是最佳实践。我刚入门游戏开发，还在不断学习中。
-* 个人游戏开发博客，欢迎交流。https://www.yuque.com/fengyong/game-develop-road。
+* 个人游戏开发博客，欢迎交流。https://www.yuque.com/fengyong/game-develop-road
 
 ###### 重要更新
 * 2019-1-30，更新项目名称为cocos-game-framework，更新一些资源的命名方式
