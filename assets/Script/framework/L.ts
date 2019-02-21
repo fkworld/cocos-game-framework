@@ -45,7 +45,7 @@ export class L {
     /** 语言，默认为null，在Mi18n中配置默认语言 */
     static get language() {
         let v = Number.parseInt(L.get_item('Language'))
-        return v === NaN ? null : v
+        return Number.isNaN(v) ? null : v
     }
     static set language(v: number) { L.set_item('Language', v) }
 
