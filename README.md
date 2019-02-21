@@ -19,7 +19,7 @@
     - [**MPanel**] 界面管理，界面UI动画管理
     - [**MRes**] 资源管理，动态载入resource下的资源
     - [**MSoud**] 声音管理
-    - [**MLanguage**] 多语言管理
+    - [**Mi18n**] 多语言管理
 - [**T-系列**] 工具组，一般需要挂载到节点上
     - [**TAddPrefab**] onLoad()时添加一个prefab
     - [**TChildNode**] 子节点管理

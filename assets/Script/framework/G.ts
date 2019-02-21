@@ -179,7 +179,7 @@ export class G {
      * @example
     ```ts
     const s = 'this is {0}, and {this1} is {1}, {1}, {2}'
-    const r = MLanguage.fake_template_string(s, 'param0', 'param1')
+    const r = Mi18n.fake_template_string(s, 'param0', 'param1')
     console.log(r)
     => 'this is param0, and {this1} is param1, param1, undefined'
     ```

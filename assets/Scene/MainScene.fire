@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.40697441949818397,
-      "y": 0.40697441949818397,
+      "x": 0.4806338028169014,
+      "y": 0.4806338028169014,
       "z": 1
     },
     "_quat": {
@@ -671,8 +671,9 @@
       "__id__": 13
     },
     "_enabled": true,
-    "preview": false,
     "key": "panel_loading_creator",
+    "param": [],
+    "preview": false,
     "_id": "f4CvgtdKlNUoM0tRIBrcQ+"
   },
   {
@@ -789,8 +790,9 @@
       "__id__": 17
     },
     "_enabled": true,
-    "preview": false,
     "key": "panel_loading_health_game_advice",
+    "param": [],
+    "preview": false,
     "_id": "5brRnVt5BEtJKR52M2Iof/"
   },
   {
@@ -1030,8 +1032,9 @@
       "__id__": 21
     },
     "_enabled": true,
-    "preview": false,
     "key": "panel_loading_log",
+    "param": [],
+    "preview": false,
     "_id": "29q1Wx7HhBdatr/ZsbjRgP"
   },
   {

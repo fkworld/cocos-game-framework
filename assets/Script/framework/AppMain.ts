@@ -3,7 +3,7 @@ import { G } from "./G";
 import { MRes } from "./MRes";
 import { MPanel } from "./MPanel";
 import { MSound } from "./MSound";
-import { MLanguage } from "./MLanguage";
+import { Mi18n } from "./Mi18n";
 import { PanelBase } from "../panel/PanelBase";
 import { PanelTest } from "../panel/PanelTest";
 
@@ -80,7 +80,7 @@ export class AppMain extends cc.Component {
         //////////
 
         MSound.init_l()
-        MLanguage.init_l()
+        Mi18n.init_local()
 
         // 初始化完毕之后，置is_init为true
         L.init = true

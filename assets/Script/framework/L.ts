@@ -42,7 +42,7 @@ export class L {
     static set sound(v: boolean) { L.set_item('Sound', v) }
 
 
-    /** 语言，默认为null，在MLanguage中配置默认语言 */
+    /** 语言，默认为null，在Mi18n中配置默认语言 */
     static get language() {
         let v = Number.parseInt(L.get_item('Language'))
         return v === NaN ? null : v
