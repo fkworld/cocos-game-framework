@@ -163,7 +163,7 @@ export class MPanel {
      * @static @async
      */
     static async in_scale(node: cc.Node, time: number = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             node.scale = C.SCALE_0
             node.active = true
             node.runAction(cc.sequence(
@@ -180,7 +180,7 @@ export class MPanel {
      * @static @async
      */
     static async out_scale(node: cc.Node, time: number = C.TIME, ease = C.EASE_OUT) {
-        return await new Promise(res => {
+        await new Promise(res => {
             node.runAction(cc.sequence(
                 cc.scaleTo(time, C.SCALE_0).easing(ease),
                 cc.callFunc(res),
@@ -195,7 +195,7 @@ export class MPanel {
      * @static @async
      */
     static async in_fade(node: cc.Node, time: number = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             node.opacity = 0
             node.active = true
             node.runAction(cc.sequence(
@@ -212,7 +212,7 @@ export class MPanel {
      * @static @async
      */
     static async out_fade(node: cc.Node, time: number = C.TIME, ease = C.EASE_OUT) {
-        return await new Promise(res => {
+        await new Promise(res => {
             node.runAction(cc.sequence(
                 cc.fadeOut(time).easing(ease),
                 cc.callFunc(res),
@@ -228,7 +228,7 @@ export class MPanel {
      * @static @async
      */
     static async in_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(Math.max(cc.winSize.width, cc.winSize.height)))
             const end_postion: cc.Vec2 = node.position
@@ -249,7 +249,7 @@ export class MPanel {
      * @static @async
      */
     static async out_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position
             const end_postion: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(Math.max(cc.winSize.width, cc.winSize.height)))
@@ -269,7 +269,7 @@ export class MPanel {
      * @static @async
      */
     static async in_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(C.FADE_MOVE_DISTANCE))
             const end_position: cc.Vec2 = node.position
@@ -292,7 +292,7 @@ export class MPanel {
      * @static @async
      */
     static async out_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position
             const end_position: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(C.FADE_MOVE_DISTANCE))
@@ -314,7 +314,7 @@ export class MPanel {
      * @static @async
      */
     static async in_fade_scale(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             node.scale = target_scale
             node.opacity = 0
             node.runAction(cc.spawn(
@@ -334,7 +334,7 @@ export class MPanel {
      * @static @async
      */
     static async out_fade_sacle(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_IN) {
-        return await new Promise(res => {
+        await new Promise(res => {
             node.runAction(cc.spawn(
                 cc.fadeOut(time).easing(ease),
                 cc.scaleTo(time, target_scale).easing(ease),
