@@ -4,7 +4,6 @@ import { MRes } from "./MRes";
 import { MPanel } from "./MPanel";
 import { MSound } from "./MSound";
 import { Mi18n } from "./Mi18n";
-import { PanelBase } from "../panel/PanelBase";
 import { PanelTest } from "../panel/PanelTest";
 
 const { ccclass, property } = cc._decorator
@@ -60,7 +59,7 @@ export class AppMain extends cc.Component {
         await G.wait_time(C.WAIT_TIME)
         await MPanel.out_fade(this.panel_loading, C.FADE_TIME)
         this.panel_loading.active = false
-        MPanel.open(`${PanelTest.name}`)
+        PanelTest.open()
     }
 
     /** 初始化本地数据 */

@@ -1,26 +1,35 @@
-import { MPanel, IPanel } from "../framework/MPanel";
+import { MPanel, MPanelImplements } from "../framework/MPanel";
 
 const { ccclass, property } = cc._decorator;
 enum GUIDE_TYPE { test1, test2 }
 
 /**
- * [framework-panel] Guide+system
+ * [Panel] Guide+system
  * - guide_type -> guide_info -> guide_panel
  */
 @ccclass
-export class PanelGuide extends cc.Component implements IPanel {
+export class PanelGuide extends cc.Component implements MPanelImplements {
 
-    /** 引导的枚举类型 */
-    static get TYPE() { return GUIDE_TYPE }
-
-    static open(type: GUIDE_TYPE) {
+    static async open(type: GUIDE_TYPE) {
         if (!GUIDE_TYPE[type]) { cc.error(`get a non-type, type=${type}`); return }
         MPanel.open('PanelGuide', ...PanelGuide.get_guide_info(type))
     }
-
-    static close() {
+    static async close() {
         MPanel.close('PanelGuide')
     }
+    async on_open(mask_world_position: cc.Vec2, mask_width: number, mask_height: number, info: string) {
+        this.init(mask_world_position, mask_width, mask_height, info)
+        await MPanel.in_fade(this.node)
+        cc.director.pause()
+    }
+
+    async on_close() {
+        cc.director.resume()
+        await MPanel.out_fade(this.node)
+    }
+
+    /** 引导的枚举类型 */
+    static get TYPE() { return GUIDE_TYPE }
 
     /**
      * 获得guide信息
@@ -48,17 +57,6 @@ export class PanelGuide extends cc.Component implements IPanel {
                 break;
         }
         return [world_position, width, height, info]
-    }
-
-    async open(mask_world_position: cc.Vec2, mask_width: number, mask_height: number, info: string) {
-        this.init(mask_world_position, mask_width, mask_height, info)
-        await MPanel.in_fade(this.node)
-        cc.director.pause()
-    }
-
-    async close() {
-        cc.director.resume()
-        await MPanel.out_fade(this.node)
     }
 
     @property(cc.Node)

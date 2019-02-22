@@ -1,28 +1,21 @@
-import { MPanel, IPanel } from "../framework/MPanel";
+import { MPanel, MPanelImplements } from "../framework/MPanel";
 
 const { ccclass, property } = cc._decorator;
 
 /**
- * [framework-panel] Message+system
+ * [Panel] Message+system，逻辑与UI合并
  */
 @ccclass
-export class PanelMessage extends cc.Component implements IPanel {
+export class PanelMessage extends cc.Component implements MPanelImplements {
 
-    static open(message: string) {
-        MPanel.open('PanelMessage', message)
-    }
-
-    static close() {
-        MPanel.close('PanelMessage')
-    }
-
-    async open(message: string) {
+    static async open(message: string) { await MPanel.open(PanelMessage.name, message) }
+    static async close() { await MPanel.close(PanelMessage.name) }
+    async on_open(message: string) {
         this.label_message.string = message
         this.content.getComponent(cc.Widget).updateAlignment() // 自动的会出问题，这里禁用cc.Widget，改为手动调用1次
         await MPanel.in_scale(this.content)
     }
-
-    async close() {
+    async on_close() {
         await MPanel.out_scale(this.content)
     }
 
