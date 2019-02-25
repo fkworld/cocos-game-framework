@@ -11,40 +11,49 @@
 * 适用于轻量级游戏，单一场景，界面使用prefab进行管理。
 
 ### 文件说明
-- [**AppMain**] 游戏启动唯一主入口，完成资源初始化，部分单例脚本初始化，本地存储初始化，loading界面逻辑管理
-- [**GamePlay**] 游戏的主Gameplay
-- [**G**] 通用方法
-- [**L**] 本地存储方法
+- [**`AppMain`**] 游戏启动唯一主入口，完成资源初始化，部分单例脚本初始化，本地存储初始化，loading界面逻辑管理
+- [**`GamePlay`**] 游戏的主Gameplay
+- [**`G`**] 通用方法
+- [**`L`**] 本地存储方法
 - [**M系列**] 管理组
-    - [**MPanel**] 界面管理，界面UI动画管理
-    - [**MRes**] 资源管理，动态载入resource下的资源
-    - [**MSoud**] 声音管理
-    - [**Mi18n**] 多语言管理
-    - [**MAction**] 动画管理
+    - [**`MPanel`**] 界面管理，界面UI动画管理
+    - [**`MRes`**] 资源管理，动态载入resource下的资源
+    - [**`MSoud`**] 声音管理
+    - [**`Mi18n`**] 多语言管理
+    - [**`MAction`**] 动画管理
 - [**T-系列**] 工具组，一般需要挂载到节点上
-    - [**TAddPrefab**] onLoad()时添加一个prefab
-    - [**TChildNode**] 子节点管理
-    - [**TNull**] 空脚本
-    - [**TSize**] 节点比例化修改大小
-    - [**TZIndex**] 编辑器中修改节点zIndex
-    - [**TSimpleFSM**] 简单状态机调度
-    - [**TErase**] 橡皮擦效果
-    - [**TColor**] 颜色控制工具
-    - [**TFollow**] 节点跟随工具
+    - [**`TAddPrefab`**] onLoad()时添加一个prefab
+    - [**`TChildNode`**] 子节点管理
+    - [**`TNull`**] 空脚本
+    - [**`TSize`**] 节点比例化修改大小
+    - [**`TZIndex`**] 编辑器中修改节点zIndex
+    - [**`TErase`**] 橡皮擦效果
+    - [**`TColor`**] 颜色控制工具
+    - [**`TFollow`**] 节点跟随工具
 - [**Panel-系列**] 界面组，脚本命名方式为Panel*，需要挂载在界面的同名prefab下
-    - [**PanelLoading**] 开场时的loading页面
-    - [**PanelBase**] 标准页面（建议新建panel时直接复制PanelBase.prefab和PanelBase.ts并重命名）
-    - [**PanelWait**] 一个通用的等待页面
-    - [**PanelGuide**] 一个个人使用的新手引导页面
-    - [**PanelMessage**] 一个通用的消息页面
+    - [**`PanelLoading`**] 开场时的loading页面
+    - [**`PanelBase`**] 标准页面（建议新建panel时直接复制PanelBase.prefab和PanelBase.ts并重命名）
+    - [**`PanelWait`**] 一个通用的等待页面
+    - [**`PanelGuide`**] 一个个人使用的新手引导页面
+    - [**`PanelMessage`**] 一个通用的消息页面
 - [**Action-系列**] 动画组，脚本命名方式为Anima*，包含一些游戏中常用的复杂动画
 - [**S-系列**] 子系统组，脚本命名方式为S*，游戏子系统管理
 - [**C-系列**] 控制器组，脚本命名方式为C*，游戏中重要组件的控制器
 
-### 两层逻辑设计（尽量使得逻辑扁平话，少分层，多分模块）：System+Controller
-1. System层，包含游戏主逻辑（GamePlay）和各子系统（System）
-    * 主要实现游戏逻辑（可以理解成不同组件的操作集合），比如过关逻辑（next_level）就包含清理数据，场景切换，加分动画等子逻辑。
-    * 子系统则用来实现除游戏主逻辑外的额外逻辑，例如：新手引导系统、离线奖励系统等。
-    * 子系统根据控制子逻辑的多少分成3类：对应0个Panel的子系统，如数值系统；对应1个固定Panel的子系统，如离线奖励系统；对应多个不固定Panel的子系统，如分数系统、收集系统等。
-    * 对应1个固定Panel的子系统，如离线奖励系统，进行脚本简化，将系统脚本（S*）合并到界面脚本中（Panel*）。
-2. Controller层，包含界面的控制器（Panel）和各界面中重要组件的控制器（Controller）
+### 规范
+##### 命名规范
+* 文件名采用PascalCase
+* 文件的主类名和文件同名
+* 常量采用“大写字母+下划线”命名
+* 类中的变量、方法采用“小写字母+下划线”命名，本项是为了与引擎自带方法区分开，如果引擎是“小写字母+下划线”写的方法，则使用camelCase
+##### export规范
+* 使用export而不是export default
+* 一般一个文件只有一个export，如果有enum，interface类型的数据也可以有多个export，注意命名冲突
+
+### 两层逻辑设计：数据逻辑层system + 显示逻辑层controller
+1. 数据逻辑层system
+    * 实现游戏逻辑，处理游戏数据
+    * 以子系统的方式区分逻辑和数据，例如：新手引导系统，离线奖励系统，分数系统
+2. 显示逻辑层controller
+    * 界面的显示逻辑，对于只有单一Panel对应的子系统，进行代码合并，在Panel中即处理数据，也处理显示
+    * 界面中重要组件的显示逻辑
