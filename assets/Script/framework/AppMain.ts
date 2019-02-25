@@ -77,7 +77,7 @@ export class AppMain extends cc.Component {
         // 这里是各个项目的本地数据初始化过程
         //////////
 
-        MSound.init_l()
+        MSound.init_local()
         Mi18n.init_local()
 
         // 初始化完毕之后，置is_init为true
