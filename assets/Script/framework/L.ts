@@ -9,27 +9,21 @@
 export class L {
 
     /** 缓存 */
-    static cache = {}
+    static cache: { string: string } | {} = {}
 
     /** 封装设置item */
     static set_item(key: string, value: any) {
-        L.cache[key] = value
-        new Promise(() => {
-            setTimeout(() => {
-                cc.sys.localStorage.setItem(key, value)
-            }, 5000);
-        })
+        L.cache[key] = `${value}`
+        cc.sys.localStorage.setItem(key, value)
     }
 
     /** 封装获取item */
     static get_item(key: string): string | null {
-        if (L.cache[key] === undefined) {
+        if (!L.cache[key]) {
             let value = cc.sys.localStorage.getItem(key)
             L.cache[key] = value
-            return value
-        } else {
-            return L.cache[key]
         }
+        return L.cache[key]
     }
 
     /** 是否初始化，默认为false */
