@@ -1,5 +1,5 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
-import { MAnima } from "../framework/MAnima";
+import { MAction } from "../framework/MAction";
 import { G } from "../framework/G";
 
 const { ccclass, property } = cc._decorator
@@ -15,7 +15,7 @@ export class PanelLoading extends cc.Component implements MPanelImplements {
     static async open() { await MPanel.open(PanelLoading.name) }
     static async close() { await MPanel.close(PanelLoading.name) }
     async on_open() {
-        MAnima.clock(this.wait_icon, 45, 0.2, cc.macro.REPEAT_FOREVER)
+        MAction.clock(this.wait_icon, 45, 0.2, cc.macro.REPEAT_FOREVER)
         await MPanel.in_fade(this.node, C.FADE_TIME)
     }
     async on_close() {

@@ -20,6 +20,7 @@
     - [**MRes**] 资源管理，动态载入resource下的资源
     - [**MSoud**] 声音管理
     - [**Mi18n**] 多语言管理
+    - [**MAction**] 动画管理
 - [**T-系列**] 工具组，一般需要挂载到节点上
     - [**TAddPrefab**] onLoad()时添加一个prefab
     - [**TChildNode**] 子节点管理
@@ -31,11 +32,12 @@
     - [**TColor**] 颜色控制工具
     - [**TFollow**] 节点跟随工具
 - [**Panel-系列**] 界面组，脚本命名方式为Panel*，需要挂载在界面的同名prefab下
+    - [**PanelLoading**] 开场时的loading页面
     - [**PanelBase**] 标准页面（建议新建panel时直接复制PanelBase.prefab和PanelBase.ts并重命名）
     - [**PanelWait**] 一个通用的等待页面
     - [**PanelGuide**] 一个个人使用的新手引导页面
     - [**PanelMessage**] 一个通用的消息页面
-- [**Anima-系列**] 动画组，脚本命名方式为Anima*，包含一些游戏中常用的动画
+- [**Action-系列**] 动画组，脚本命名方式为Anima*，包含一些游戏中常用的复杂动画
 - [**S-系列**] 子系统组，脚本命名方式为S*，游戏子系统管理
 - [**C-系列**] 控制器组，脚本命名方式为C*，游戏中重要组件的控制器
 

@@ -1,11 +1,11 @@
 const { ccclass, property } = cc._decorator;
 
 /**
- * [M] 动画管理器
- * - 一些简单的、常用的UI动画管理
+ * [M] 动画管理
+ * - 一些简单的、常用的UI动画
  */
 @ccclass
-export class MAnima extends cc.Component {
+export class MAction extends cc.Component {
 
     /**
      * 时钟动画：每次转动一定的角度
