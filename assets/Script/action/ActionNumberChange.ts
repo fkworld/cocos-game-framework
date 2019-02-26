@@ -8,20 +8,14 @@ const C = {
 }
 
 /**
- * [Anima] 数字变动动画
+ * [Action] 数字变动动画
  * - [注意] 使用到了unscheduleAllCallbacks()方法，可能会导致异常
  */
 @ccclass
 @requireComponent(cc.Label)
 export class AnimaNumber extends cc.Component {
 
-    /**
-     * 获取节点组件7
-     * @param node 
-     */
-    static get(node: cc.Node) {
-        return node.getComponent(AnimaNumber)
-    }
+    static get(node: cc.Node) { return node.getComponent(AnimaNumber) }
 
     onLoad() {
         this.label = this.node.getComponent(cc.Label)
@@ -30,18 +24,18 @@ export class AnimaNumber extends cc.Component {
 
     label: cc.Label
 
-    @property({ tooltip: '动画持续总时间；默认为1s' })
+    @property({ tooltip: '动画持续总时间' })
     time: number = C.TIME
 
-    @property({ tooltip: '动画间隔；默认为0.05s' })
+    @property({ tooltip: '动画间隔' })
     interval: number = C.INTERVAL
 
-    @property({ tooltip: '显示字符串模板；参考G.fake_template_string()；；默认为{0}；如果为空也会视为{0}' })
+    @property({ tooltip: '显示字符串模板；参考G.fake_template_string()；如果为空也会视为{0}' })
     template: string = C.TEMPLATE
 
     /** 重置template */
     reset_template() {
-        if (this.template === '') { this.template = '{0}' }
+        if (this.template === '') { this.template = C.TEMPLATE }
     }
 
     /**
