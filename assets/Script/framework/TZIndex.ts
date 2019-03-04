@@ -20,7 +20,7 @@ export class TZIndex extends cc.Component {
     preview = false
 
     update() {
-        if (MVersion.run_editor() && this.preview) {
+        if (MVersion.run_editor && this.preview) {
             this.preview = false
             this.update_z_index()
         }

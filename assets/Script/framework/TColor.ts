@@ -31,7 +31,7 @@ const COLOR: cc.Color[] = [
 export class TColor extends cc.Component {
 
     update() {
-        if (MVersion.run_editor() && this.preview) {
+        if (MVersion.run_editor && this.preview) {
             this.preview = false
             this.node.color = COLOR[this.type]
         }

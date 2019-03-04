@@ -16,11 +16,11 @@ enum TYPE { width, height }
 export class TSize extends cc.Component {
 
     update() {
-        if (MVersion.run_editor() && this.preview) {
+        if (MVersion.run_editor && this.preview) {
             this.preview = false
             this.update_size()
         }
-        if (MVersion.run_editor() && this.save) {
+        if (MVersion.run_editor && this.save) {
             this.save = false
             this.save_size()
         }

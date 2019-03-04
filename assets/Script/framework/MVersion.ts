@@ -13,6 +13,7 @@ const C = {
  * - 运行环境，使用引擎自带宏变量，编辑器环境、发布环境等，具体参考https://docs.cocos.com/creator/api/zh/modules/GLOBAL-MACROS.html
  * - 自定义版本：开发版本，无广告版本等
  * - 自定义综合判定，环境+版本
+ * - [注意] 这里均使用getter函数来简化，如果都不使用getter函数也可以，保持一致即可
  */
 @ccclass
 export class MVersion {
@@ -20,15 +21,15 @@ export class MVersion {
     // 运行环境判定
 
     /** 编辑器环境 */
-    static run_editor() { return CC_EDITOR }
+    static get run_editor() { return CC_EDITOR }
 
     // 运行版本判定
 
     /** 开发版本 */
-    static version_dev() { return C.VERSION === VERSION.dev }
+    static get version_dev() { return C.VERSION === VERSION.dev }
 
     // 自定义综合判定
 
     /** 编辑器环境+开发版本 */
-    static is_editor_and_dev() { return CC_EDITOR && C.VERSION === VERSION.dev }
+    static get is_editor_and_dev() { return CC_EDITOR && C.VERSION === VERSION.dev }
 }

@@ -34,7 +34,7 @@ export class Mi18n extends cc.Component {
      * @param param
      */
     static text(key: string, ...param: any[]): string {
-        let type = MVersion.run_editor() || L.language === null ? C.EDITOR_TYPE : L.language
+        let type = MVersion.run_editor || L.language === null ? C.EDITOR_TYPE : L.language
         let value = C.DATA[type][key]
         if (value === undefined) {
             value = key
@@ -48,7 +48,7 @@ export class Mi18n extends cc.Component {
     }
 
     update() {
-        if (MVersion.run_editor() && this.preview) {
+        if (MVersion.run_editor && this.preview) {
             this.preview = false
             this.update_label()
         }

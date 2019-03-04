@@ -63,7 +63,7 @@ export class AppMain extends cc.Component {
     /** 初始化本地数据 */
     init_local_data() {
         // 根据版本对init进行预处理
-        L.init = MVersion.version_dev() ? false : L.init
+        L.init = MVersion.version_dev ? false : L.init
         // 输出log
         cc.warn(`@${AppMain.name}: ${L.init ? 'get user local data' : 'not get user local data, init now...'}`)
         if (L.init) { return }
