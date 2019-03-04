@@ -1,4 +1,5 @@
 import { G } from "./G";
+import { MVersion } from "./MVersion";
 
 const { ccclass, property, executeInEditMode } = cc._decorator
 /** 基准类型 */
@@ -15,11 +16,11 @@ enum TYPE { width, height }
 export class TSize extends cc.Component {
 
     update() {
-        if (this.preview) {
+        if (MVersion.run_editor() && this.preview) {
             this.preview = false
             this.update_size()
         }
-        if (this.save) {
+        if (MVersion.run_editor() && this.save) {
             this.save = false
             this.save_size()
         }

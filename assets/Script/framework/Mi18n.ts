@@ -2,6 +2,7 @@ import { Mi18n_en } from "./Mi18n_en";
 import { Mi18n_zh } from "./Mi18n_zh";
 import { L } from "./L";
 import { G } from "./G";
+import { MVersion } from "./MVersion";
 
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
@@ -17,7 +18,7 @@ const C = {
  * [M] 国际化-多语言
  * - 修改对应配置文件中的内容，key-value格式
  * - [用法] 将此组件挂载在对应的Label所在节点下，修改key
- * - [用法] 静态接口get_text()
+ * - [用法] 使用静态接口text()
  */
 @ccclass
 @executeInEditMode
@@ -33,7 +34,7 @@ export class Mi18n extends cc.Component {
      * @param param
      */
     static text(key: string, ...param: any[]): string {
-        let type = L.language === null ? C.EDITOR_TYPE : L.language
+        let type = MVersion.run_editor() || L.language === null ? C.EDITOR_TYPE : L.language
         let value = C.DATA[type][key]
         if (value === undefined) {
             value = key
@@ -47,7 +48,7 @@ export class Mi18n extends cc.Component {
     }
 
     update() {
-        if (this.preview) {
+        if (MVersion.run_editor() && this.preview) {
             this.preview = false
             this.update_label()
         }
@@ -59,7 +60,7 @@ export class Mi18n extends cc.Component {
 
     /** 参数 */
     @property({ tooltip: '字符串参数', type: cc.String })
-    param: any[] = []
+    param: string[] = []
 
     /** 预览（点击后刷新编辑器） */
     @property({ tooltip: '预览1次；预览完毕后置于false' })

@@ -6,12 +6,10 @@ import { MSound } from "./MSound";
 import { Mi18n } from "./Mi18n";
 import { PanelTest } from "../panel/PanelTest";
 import { PanelLoading } from "../panel/PanelLoading";
+import { MVersion } from "./MVersion";
 
 const { ccclass, property } = cc._decorator
-/** 版本区分：开发者版本，测试版本，正式版本 */
-enum VERSION { dev, beta, rc }
 const C = {
-    VERSION: VERSION.dev,   // 当前版本
     WAIT_TIME: 1,           // 载入完毕后在loading页面的停留时间
 }
 
@@ -21,9 +19,6 @@ const C = {
  */
 @ccclass
 export class AppMain extends cc.Component {
-
-    /** 判断当前的打开模式是否为dev模式 */
-    static IS_VERSION_DEV() { return C.VERSION === VERSION.dev }
 
     start() {
         this.adjust_screen()
@@ -68,7 +63,7 @@ export class AppMain extends cc.Component {
     /** 初始化本地数据 */
     init_local_data() {
         // 根据版本对init进行预处理
-        L.init = AppMain.IS_VERSION_DEV() ? false : L.init
+        L.init = MVersion.version_dev() ? false : L.init
         // 输出log
         cc.warn(`@${AppMain.name}: ${L.init ? 'get user local data' : 'not get user local data, init now...'}`)
         if (L.init) { return }

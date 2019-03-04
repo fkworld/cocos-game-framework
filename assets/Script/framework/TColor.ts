@@ -1,3 +1,5 @@
+import { MVersion } from "./MVersion";
+
 const { ccclass, property, executeInEditMode } = cc._decorator;
 
 /** 颜色分类 */
@@ -29,7 +31,7 @@ const COLOR: cc.Color[] = [
 export class TColor extends cc.Component {
 
     update() {
-        if (this.preview) {
+        if (MVersion.run_editor() && this.preview) {
             this.preview = false
             this.node.color = COLOR[this.type]
         }
