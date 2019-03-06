@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "lib": [ "dom", "es5", "es2015.promise", "es6" ],
+    "lib": [
+      "dom",
+      "es2015",
+    ],
     "target": "es5",
     "experimentalDecorators": true,
     "skipLibCheck": true
