@@ -1,4 +1,5 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
+import { MLog } from "../framework/MLog";
 
 const { ccclass, property } = cc._decorator;
 enum GUIDE_TYPE { test1, test2 }
@@ -11,7 +12,7 @@ enum GUIDE_TYPE { test1, test2 }
 export class PanelGuide extends cc.Component implements MPanelImplements {
 
     static async open(type: GUIDE_TYPE) {
-        if (!GUIDE_TYPE[type]) { cc.error(`get a non-type, type=${type}`); return }
+        if (!GUIDE_TYPE[type]) { MLog.error(`@${PanelGuide.name}: get a non-type, type=${type}`); return }
         MPanel.open('PanelGuide', ...PanelGuide.get_guide_info(type))
     }
     static async close() {

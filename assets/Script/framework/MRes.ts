@@ -1,4 +1,5 @@
 import { G } from "./G";
+import { MLog } from "./MLog";
 
 /** 配置参数 */
 const C = {
@@ -42,7 +43,7 @@ export class MRes {
         let res = await new Promise(res => {
             cc.loader.loadRes(path, type, (err, resource) => {
                 if (err) {
-                    cc.error(`@${MRes.name}: resource load fail, path=${path}, type=${type}, error=${err}`)
+                    MLog.error(`@${MRes.name}: resource load fail, path=${path}, type=${type}, error=${err}`)
                     res(null)
                 } else {
                     res(resource)
@@ -63,10 +64,10 @@ export class MRes {
         let array_res: any[] | null = await new Promise(res => {
             cc.loader.loadResDir(path, type, (err, resource) => {
                 if (err) {
-                    cc.error(`@${MRes.name}: resource load fail, path=${path}, type=${type.name}, error=${err}`)
+                    MLog.error(`@${MRes.name}: resource load fail, path=${path}, type=${type.name}, error=${err}`)
                     res(null)
                 } else {
-                    cc.warn(`@${MRes.name}: resource load success, path=${path}, length=${res.length}, ${res.length === 0 ? 'please check again' : ''}`)
+                    MLog.warn(`@${MRes.name}: resource load success, path=${path}, length=${res.length}, ${res.length === 0 ? 'please check again' : ''}`)
                     res(resource)
                 }
             })

@@ -7,10 +7,15 @@ import { Mi18n } from "./Mi18n";
 import { PanelTest } from "../panel/PanelTest";
 import { PanelLoading } from "../panel/PanelLoading";
 import { MVersion } from "./MVersion";
+import { MLog } from "./MLog";
 
 const { ccclass, property } = cc._decorator
 const C = {
-    WAIT_TIME: 1,           // 载入完毕后在loading页面的停留时间
+    // 游戏信息
+    GAME_NAME: 'cocos-game-framework',
+    GAME_VERSION_NUMBER: '0.0',
+    GAME_CREATOR: 'skyfox-fengyog',
+    WAIT_TIME: 1,   // 载入完毕后在loading页面的停留时间
 }
 
 /**
@@ -21,6 +26,7 @@ const C = {
 export class AppMain extends cc.Component {
 
     start() {
+        this.log_game_infomation()
         this.adjust_screen()
         this.init_local_data()
         // panel系统初始化，加载loading页面
@@ -50,6 +56,11 @@ export class AppMain extends cc.Component {
         PanelTest.open()
     }
 
+    /** 打印游戏信息 */
+    log_game_infomation() {
+        MLog.log('@game-info:', C.GAME_NAME, C.GAME_VERSION_NUMBER, C.GAME_CREATOR)
+    }
+
     /** 调整屏幕适配 */
     adjust_screen() {
         const screen_size = cc.view.getFrameSize().width / cc.view.getFrameSize().height // 注意cc.winSize只有在适配后（修改fitHeight\fitWidth后）才能获取到正确的值,因此使用cc.getFrameSize()来获取初始的屏幕大小
@@ -65,7 +76,7 @@ export class AppMain extends cc.Component {
         // 根据版本对init进行预处理
         L.init = MVersion.version_dev ? false : L.init
         // 输出log
-        cc.warn(`@${AppMain.name}: ${L.init ? 'get user local data' : 'not get user local data, init now...'}`)
+        MLog.warn(`@${AppMain.name}: ${L.init ? 'get user local data' : 'not get user local data, init now...'}`)
         if (L.init) { return }
 
         //////////

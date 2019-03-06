@@ -1,3 +1,5 @@
+import { MLog } from "./MLog";
+
 /**
  * [framework] 全局方法类
  * - 封装一些通用方法
@@ -34,7 +36,7 @@ export class G {
      * @static
      */
     static random_array_item<T>(array: T[]): T {
-        if (array.length === 0) { cc.warn(`[${G.name}] 获取了一个长度为0的数组`) }
+        if (array.length === 0) { MLog.warn(`@${G.name}: 获取一个一个长度为0的数组`) }
         return array[G.random_int(0, array.length)]
     }
 
@@ -195,7 +197,7 @@ export class G {
      * @param target 
      */
     static check_ins(target: any) {
-        if (target.ins != undefined) { cc.error(`[${target.name}] repeat init, please check`) }
+        if (target.ins != undefined) { MLog.error(`@${target.name}: repeat init, please check`) }
     }
 
     /**

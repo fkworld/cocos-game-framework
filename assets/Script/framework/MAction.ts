@@ -1,3 +1,5 @@
+import { MLog } from "./MLog";
+
 const { ccclass, property } = cc._decorator;
 
 /**
@@ -28,7 +30,7 @@ export class MAction extends cc.Component {
      */
     static count_down(node: cc.Node, number: number, f = () => { }) {
         let label = node.getComponent(cc.Label)
-        if (!label) { cc.warn(`@${MAction.count_down.name}: no label component`); return }
+        if (!label) { MLog.warn(`@${MAction.name}: no label component`); return }
         label.unscheduleAllCallbacks()
         label.string = `${number}`
         node.active = true

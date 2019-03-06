@@ -1,3 +1,5 @@
+import { MLog } from "./MLog";
+
 /**
  * [framework-T] simple finite state machine - 简单的状态机实现
  * - 一个适合游戏中使用的简单状态机实现
@@ -8,10 +10,10 @@ export class TSimpleFSM {
     obj_state: object
 
     constructor(obj_state: object) {
-        // check，只检查并报错，cc.error()，不进行额外处理
+        // check，只检查并报错，不进行额外处理
         for (let s in obj_state) {
             if (typeof obj_state[s] != 'function') {
-                cc.error(`get a not-function value, state=${s}`)
+                MLog.error(`@${TSimpleFSM.name}: get a not-function value, state=${s}`)
                 // return
             }
         }
@@ -32,7 +34,7 @@ export class TSimpleFSM {
         if (typeof f === 'function') {
             f()
         } else {
-            cc.error(`get a not-function value, state=${new_state}`)
+            MLog.error(`@${TSimpleFSM.name}: get a not-function value, state=${new_state}`)
         }
     }
 }

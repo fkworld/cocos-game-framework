@@ -3,6 +3,7 @@ import { Mi18n_zh } from "./Mi18n_zh";
 import { L } from "./L";
 import { G } from "./G";
 import { MVersion } from "./MVersion";
+import { MLog } from "./MLog";
 
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
@@ -38,7 +39,7 @@ export class Mi18n extends cc.Component {
         let value = C.DATA[type][key]
         if (value === undefined) {
             value = key
-            cc.warn(`@${Mi18n.name}: get a not exist key, key=${key}`)
+            MLog.warn(`@${Mi18n.name}: get a not exist key, key=${key}`)
         }
         return G.fake_template_string(value, ...param)
     }

@@ -1,3 +1,5 @@
+import { MLog } from "./MLog";
+
 const { ccclass, property } = cc._decorator
 
 /**
@@ -35,11 +37,11 @@ export class TChildNode extends cc.Component {
     trans_array_to_object() {
         for (let node of this.array_child_node) {
             if (node === null) {
-                cc.error(`[TChildNode] get a null node, check node ${this.node.name}`)
+                MLog.error(`@${TChildNode.name}: get a null node, node-name=${this.node.name}`)
                 continue;
             }
             if (this.obj_child_node[node.name] != undefined) {
-                cc.error(`[TChildNode] get a same-name node, check node ${this.node.name}, same-name=${node.name}`)
+                MLog.error(`@${TChildNode.name}: get a same-name node, node-name=${this.node.name}, same-name=${node.name}`)
                 continue;
             }
             this.obj_child_node[node.name] = node
@@ -52,7 +54,7 @@ export class TChildNode extends cc.Component {
      */
     get_child_node(name: string): cc.Node {
         if (this.obj_child_node[name] === undefined) {
-            cc.error(`[TChildNode] get a undefined node, name=${name}`)
+            MLog.error(`@${TChildNode.name}: get a undefined node, name=${name}`)
         }
         return this.obj_child_node[name]
     }

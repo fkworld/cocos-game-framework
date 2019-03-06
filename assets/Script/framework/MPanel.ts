@@ -1,5 +1,6 @@
 import { G } from "./G";
 import { MRes } from "./MRes";
+import { MLog } from "./MLog";
 
 /** 移动方向 */
 enum DIRECTION { LEFT, RIGHT, TOP, BOTTOM, LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM }
@@ -72,7 +73,7 @@ export class MPanel {
         }
         // 需要载入的prefab并不存在
         if (!prefab) {
-            cc.error(`@${MPanel.name}:panel open fail, panel_name=${panel_name}`)
+            MLog.error(`@${MPanel.name}: panel open fail, panel_name=${panel_name}`)
             return
         }
         // 删除同名节点
@@ -102,7 +103,7 @@ export class MPanel {
         // 获取节点
         let node: cc.Node = MPanel.ins.obj_node[panel_name]
         if (!node) {
-            cc.error(`@${MPanel.name}:panel close fail, panel_name=${panel_name}`)
+            MLog.error(`@${MPanel.name}: panel close fail, panel_name=${panel_name}`)
             return
         }
         // 执行节点关闭动画

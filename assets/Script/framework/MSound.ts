@@ -1,6 +1,7 @@
 import { L } from "./L";
 import { G } from "./G";
 import { MRes } from "./MRes";
+import { MLog } from "./MLog";
 
 interface ISound {
     url: string,            // 声音的资源字符串
@@ -66,7 +67,7 @@ export class MSound {
         let info: ISound = MSound.ins.array_sound_info[sound]
         // 载入audio clip资源
         if (!info.clip) { info.clip = await MRes.load_res(`${C.PATH}/${info.url}`, cc.AudioClip) }
-        if (!info.clip) { cc.error(`@${MSound.name}: a not exsit audio clip, url=${info.url}`); return }
+        if (!info.clip) { MLog.error(`@${MSound.name}: a not exsit audio clip, url=${info.url}`); return }
         if (info.loop) {
             // bgm类型，循环播放，只需要播放1次即可
             switch (cc.audioEngine.getState(info.id)) {

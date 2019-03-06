@@ -1,4 +1,5 @@
 import { G } from "./G";
+import { MLog } from "./MLog";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
@@ -149,7 +150,7 @@ export class TErase extends cc.Component {
 
     /** 检查是否开启近路功能 */
     check_save() {
-        if (!this.is_save) { cc.error(`[${TErase.name}] 记录功能未开启，无法实现完成回调功能，已自动开启，请检查node=${this.node}`) }
+        if (!this.is_save) { MLog.error(`@${TErase.name}: 记录功能未开启，无法实现完成回调功能，已自动开启，请检查node=${this.node}`) }
         this.is_save = true
     }
 
