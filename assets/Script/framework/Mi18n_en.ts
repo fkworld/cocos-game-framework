@@ -5,8 +5,6 @@ export const Mi18n_en = {
     'panel-loading-creator': 'Created by skyfoxgame-fengyong',
     'panel-loading-log': 'The game is loading...',
 
-    'panel_wait_log': 'Loading... Please wait...',
-
     'panel-message-title': 'MESSAGE',
     'panel-message-ok': 'ok',
     'panel-message-cancel': 'cancel',
