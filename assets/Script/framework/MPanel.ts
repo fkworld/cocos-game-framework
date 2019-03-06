@@ -8,7 +8,7 @@ const C = {
     PATH: 'panel',
     TIME: 0.5,
     EASE_IN: cc.easeExponentialOut(),
-    EASE_OUT: cc.easeExponentialOut(),
+    EASE_OUT: cc.easeExponentialIn(),
     DIRECTION_VEC2: [               // 移动方向对应的方向向量
         cc.v2(-1, 0), cc.v2(1, 0), cc.v2(0, 1), cc.v2(0, -1),
         cc.v2(-1, 1), cc.v2(-1, -1), cc.v2(1, 1), cc.v2(1, -1),
@@ -249,7 +249,7 @@ export class MPanel {
      * @param ease 
      * @static @async
      */
-    static async out_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
+    static async out_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_OUT) {
         await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position
@@ -292,7 +292,7 @@ export class MPanel {
      * @param ease 
      * @static @async
      */
-    static async out_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
+    static async out_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_OUT) {
         await new Promise(res => {
             G.check_widget(node)
             const start_position: cc.Vec2 = node.position
@@ -334,7 +334,7 @@ export class MPanel {
      * @param ease 
      * @static @async
      */
-    static async out_fade_sacle(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_IN) {
+    static async out_fade_sacle(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_OUT) {
         await new Promise(res => {
             node.runAction(cc.spawn(
                 cc.fadeOut(time).easing(ease),

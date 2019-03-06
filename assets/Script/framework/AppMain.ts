@@ -8,6 +8,7 @@ import { PanelTest } from "../panel/PanelTest";
 import { PanelLoading } from "../panel/PanelLoading";
 import { MVersion } from "./MVersion";
 import { MLog } from "./MLog";
+import { PanelMessage } from "../panel/PanelMessage";
 
 const { ccclass, property } = cc._decorator
 const C = {
@@ -53,7 +54,8 @@ export class AppMain extends cc.Component {
         // 载入完毕，进入游戏逻辑
         await G.wait_time(C.WAIT_TIME)
         await PanelLoading.close()
-        PanelTest.open()
+        // PanelTest.open()
+        PanelMessage.open('msg')
     }
 
     /** 打印游戏信息 */
