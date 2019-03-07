@@ -246,4 +246,20 @@ export class G {
         return Math.trunc(n * 10 ** count) / 10 ** count
     }
 
+    /** 默认去掉了容易混淆的字符oO,9gq,Vv,Uu,LlI1 */
+    private static random_string_list = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+
+    /**
+     * 随机字符串
+     * @param length 
+     * @static
+     */
+    static random_string(length: number): string {
+        let result = []
+        for (let i = 0; i < length; i += 1) {
+            result.push(G.random_string_list[G.random_int(0, G.random_string_list.length)])
+        }
+        return result.join('')
+    }
+
 }
