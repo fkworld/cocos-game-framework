@@ -82,13 +82,17 @@
         "iOS",
         "HTML5"
       ],
-      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-anysdk/1.0.0_2.2.5.zip",
-      "package_version_desc": "",
+      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-anysdk/1.0.1_2.2.5.zip",
+      "package_version_desc": "修复 Creator 2.0.x 系列版本 2.0.7 以上因调用 cc.game.restart(); 而导致的 AnySDK 调用失败的错误",
       "service_component_name": "service-anysdk",
       "package_versions": [
-        "1.0.0_2.2.5"
+        "1.0.1_2.2.5"
       ],
       "build_platform": [
+        "web-mobile",
+        "web-desktop",
+        "android",
+        "ios"
       ]
     }
   ]
