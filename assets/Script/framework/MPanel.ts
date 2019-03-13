@@ -1,5 +1,4 @@
 import { G } from "./G";
-import { MRes } from "./MRes";
 import { MLog } from "./MLog";
 
 /** 移动方向 */
@@ -68,7 +67,7 @@ export class MPanel {
         // 载入prefab
         let prefab: cc.Prefab = MPanel.ins.obj_prefab[panel_name]
         if (!prefab) {
-            prefab = await MRes.load_res(`${C.PATH}/${panel_name}`, cc.Prefab)
+            prefab = await G.load_res(`${C.PATH}/${panel_name}`, cc.Prefab)
             MPanel.ins.obj_prefab[prefab.name] = prefab
         }
         // 需要载入的prefab并不存在

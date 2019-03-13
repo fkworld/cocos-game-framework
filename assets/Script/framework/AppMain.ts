@@ -1,6 +1,5 @@
 import { L } from "./L";
 import { G } from "./G";
-import { MRes } from "./MRes";
 import { MPanel } from "./MPanel";
 import { MSound } from "./MSound";
 import { Mi18n } from "./Mi18n";
@@ -35,14 +34,13 @@ export class AppMain extends cc.Component {
         PanelLoading.open().then(() => { this.check_load_finish() })
         // 各系统初始化
         MSound.init()
-        MRes.init().then(() => { this.check_load_finish() })
     }
 
     @property({ tooltip: 'panel所挂载的父节点', type: cc.Node })
     panel_parent: cc.Node = null
 
     load_count = 0      // 载入流程计数
-    max_load_count = 2  // 载入完毕计数（根据游戏的不同自行修改）
+    max_load_count = 1  // 载入完毕计数（根据游戏的不同自行修改）
 
     /**
      * 检查载入计数，执行载入完毕逻辑

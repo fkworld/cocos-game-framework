@@ -3,11 +3,14 @@ import { MLog } from "./MLog";
 /**
  * [framework] 全局方法类
  * - 封装一些通用方法
+ * @todo 未来会对这些全局方法进行一个分类，这里全部都在G下
  */
 export class G {
 
     /**
-     * 获取一个随机整数，[min,max)，范围内的可行整数的概率相等
+     * 获取一个随机整数
+     * - 范围：[min,max)，范围内的可行整数的概率相等
+     * - 如果max = min，则只会返回min；如果max < min，则返回值异常
      * @param min 
      * @param max 
      * @static
@@ -29,30 +32,30 @@ export class G {
     }
 
     /**
-     * 从数组中获取一个量
+     * 从数组中回去一个随机项
      * - 概率相等
-     * - 当数组长度为0时，会输出log并返回一个undefined
+     * - 当数组长度为0时，返回null
      * @param array 
      * @static
      */
     static random_array_item<T>(array: T[]): T {
-        if (array.length === 0) { MLog.warn(`@${G.name}: 获取一个一个长度为0的数组`) }
-        return array[G.random_int(0, array.length)]
+        if (array.length === 0) { return null }
+        return array[Math.trunc(Math.random() * array.length)]
     }
 
     /**
-     * 从枚举中获取一个随机值
-     * - Typescript不提供标准的方法
+     * 从typescript枚举中获取一个随机项
+     * - typescript不提供标准的方法
      * - 枚举需要是数字，从0开始并且不可间断
      * @param array_enum 
      * @static
      */
     static random_enum_item(array_enum: any) {
-        return G.random_int(0, Object.keys(array_enum).length / 2)
+        return Math.trunc(Math.random() * Object.keys(array_enum).length / 2)
     }
 
     /**
-     * 洗牌算法：打乱数组顺序
+     * 采用洗牌算法打乱数组顺序
      * - 不直接更改array，会返回一个打乱了的新数组
      * - 洗牌算法有多种实现方式，不同的实现方式效率与概率均不同
      * - 这里采用遍历+替换的方式。在数量级很大时，可能会有性能损耗
@@ -62,21 +65,21 @@ export class G {
     static shuffle_array<T>(array: T[]): T[] {
         let result = [...array]
         for (let i = 0; i < result.length; i += 1) {
-            let t = G.random_int(0, result.length);
+            let t = Math.trunc(Math.random() * result.length);
             [result[i], result[t]] = [result[t], result[i]];
         }
         return result
     }
 
     /**
-     * 将一个多次执行的方法放到多帧中执行，避免单帧中消耗过多性能造成卡顿
+     * 逐帧执行
      * - 使用cc.Component.schedule()方法，在interval参数为0时表示逐帧调用
      * @param f 需要执行的方法
      * @param nc 执行方法的节点脚本
      * @param all_count 执行的总数
      * @static
      */
-    static run_by_each_frame(f: Function, nc: cc.Component, all_count: number) {
+    static run_by_each_frame(f: () => void, nc: cc.Component, all_count: number) {
         nc.schedule(f, 0, all_count - 1)
     }
 
@@ -88,7 +91,7 @@ export class G {
      * @param interval 间隔帧；默认为1，表示连续帧
      * @static
      */
-    static run_by_interval_frame(f: Function, nc: cc.Component, all_count: number, interval: number = 1) {
+    static run_by_interval_frame(f: () => void, nc: cc.Component, all_count: number, interval: number = 1) {
         let c = 0
         nc.schedule(() => {
             if (c === 0) { f() }
@@ -108,6 +111,7 @@ export class G {
 
     /**
      * 将角度转换为弧度
+     * - cc.misc.degreesToRadians()
      * @param angle 
      * @static
      */
@@ -117,6 +121,7 @@ export class G {
 
     /**
      * 将弧度转换为角度
+     * - cc.misc.radiansToDegrees()
      * @param radian 
      * @static
      */
@@ -167,9 +172,9 @@ export class G {
     /**
      * 异步函数中等待一段时间
      * @param time 单位s
-     * @static @async
+     * @static
      */
-    static async wait_time(time: number) {
+    static wait_time(time: number) {
         return new Promise(res => setTimeout(res, time * 1000))
     }
 
@@ -192,12 +197,14 @@ export class G {
     }
 
     /**
-     * 验证目标类的实例是否唯一
-     * - 看来对装饰器还需要进一步学习
+     * 验证目标类的ins实例是否唯一
+     * @todo 可能考虑使用装饰器实现
      * @param target 
      */
     static check_ins(target: any) {
-        if (target.ins != undefined) { MLog.error(`@${target.name}: repeat init, please check`) }
+        if (target.ins) {
+            MLog.error(`@${target.name}: repeat init ins, please check`)
+        }
     }
 
     /**
@@ -217,6 +224,7 @@ export class G {
 
     /**
      * 两数字间的线性求值，比例范围：[0,1]
+     * - cc.misc.lerp()
      * @param start 
      * @param end 
      * @param ratio 
@@ -225,6 +233,19 @@ export class G {
     static number_lerp(start: number, end: number, ratio: number) {
         return start + (end - start) * ratio
     }
+
+    /**
+     * 限制数字的最大最小值
+     * - cc.misc.clampf()
+     * @param value 
+     * @param min_inclusive 
+     * @param max_inclusive 
+     */
+    static number_clampf(value: number, min_inclusive: number, max_inclusive: number) {
+        let min = Math.min(min_inclusive, max_inclusive)
+        let max = Math.max(min_inclusive, max_inclusive)
+        return value < min ? min : value < max ? value : max
+    };
 
     /**
      * 判断两个数是否约等于
@@ -246,20 +267,72 @@ export class G {
         return Math.trunc(n * 10 ** count) / 10 ** count
     }
 
-    /** 默认去掉了容易混淆的字符oO,9gq,Vv,Uu,LlI1 */
-    private static random_string_list = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
-
     /**
      * 随机字符串
      * @param length 
      * @static
      */
     static random_string(length: number): string {
+        // 默认去掉了容易混淆的字符oO,9gq,Vv,Uu,LlI1
+        const random_string_list = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
         let result = []
         for (let i = 0; i < length; i += 1) {
-            result.push(G.random_string_list[G.random_int(0, G.random_string_list.length)])
+            result.push(random_string_list[Math.trunc(Math.random() * random_string_list.length)])
         }
         return result.join('')
+    }
+
+    /**
+     * 载入单个资源
+     * - 输出log
+     * @todo ts的类型系统（特别是泛型这一块）需要进一步学习，争取去掉<any>强制类型转换
+     * @param path 
+     * @param type 
+     * @static
+     */
+    static load_res<T extends cc.Asset>(path: string, type: new () => T): Promise<T> {
+        return new Promise(res => {
+            cc.loader.loadRes(path, <any>type, () => { }, (err, resource) => {
+                if (err) {
+                    MLog.error(`@${G.load_res}: resource load fail, path=${path}, type=${type}, error=${err}`)
+                    res(null)
+                } else {
+                    res(resource)
+                }
+            })
+        })
+    }
+
+    /**
+     * 载入dir资源
+     * - 输出log
+     * @param path 
+     * @param type 
+     * @static
+     */
+    static load_res_dir<T extends cc.Asset>(path: string, type: new () => T): Promise<T[]> {
+        return new Promise(res => {
+            cc.loader.loadResDir(path, <any>type, (err, resource) => {
+                if (err) {
+                    MLog.error(`@${G.load_res_dir.name}: resource load fail, path=${path}, type=${type.name}, error=${err}`)
+                    res(null)
+                } else {
+                    MLog.warn(`@${G.load_res_dir.name}: resource load success, path=${path}, length=${res.length}, ${res.length === 0 ? 'please check again' : ''}`)
+                    res(resource)
+                }
+            })
+        })
+    }
+
+    /**
+     * 资源排序：根据name属性的第一个数字
+     * - [注意天坑] 编辑器中的载入顺序与打包之后的载入顺序不同（不同的打包平台顺序也不同），因此在载入完成后需要对数组进行排序
+     * @param a 
+     * @param b 
+     * @static
+     */
+    static res_sort_by_name_0<T extends typeof cc.Asset>(a: T, b: T) {
+        return Number.parseInt(a.name[0]) - Number.parseInt(b.name[0])
     }
 
 }
