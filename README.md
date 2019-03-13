@@ -13,6 +13,11 @@
 ### 使用方法
 * 拷贝整个项目作为基础使用。
 * 单文件直接使用，文件依赖参考文件头部import部分。
+    * 依赖处理
+        * G，在G.ts文件中找到对应方法，复制到当前文件中替换
+        * MLog，直接MLog替换为cc，或者是自定义的log方法
+        * MVersion，根据实际需求替换为true/false，或者直接删除
+        * 其余组件，根据依赖特别处理
 * 思路参考，某些处理并非是最优解，但是提供了一个还算不错的思路可以参考。
 
 ### 文件说明
@@ -22,7 +27,6 @@
 - [**`L`**] 本地存储方法
 - [**`M系列`**] 管理组
     - [**`MPanel`**] 界面管理，界面UI动画管理
-    - [**`MRes`**] 资源管理，动态载入resource下的资源
     - [**`MSoud`**] 声音管理
     - [**`Mi18n`**] 多语言管理
     - [**`MAction`**] 动画管理
@@ -57,6 +61,12 @@
 ##### export规范
 * 使用export而不是export default
 * 一般一个文件只有一个export，如果有enum，interface类型的数据也可以有多个export，注意命名冲突
+##### class or namespace
+* 目前量级较少，使用class来显示脚本与脚本的依赖关系，不使用namespace
+* 如果项目较大，则使用namespace做区域划分
+##### public or private
+* typescript默认为public
+* 建议全部private化，只有需要外部调用的方法public
 
 ### 两层逻辑设计：数据逻辑层system + 显示逻辑层controller
 1. 数据逻辑层system
