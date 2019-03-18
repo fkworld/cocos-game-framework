@@ -30,5 +30,6 @@
     "audience": {
       "enable": false
     }
-  }
+  },
+  "assets-sort-type": "name"
 }
