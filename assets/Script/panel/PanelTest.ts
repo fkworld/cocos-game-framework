@@ -9,10 +9,19 @@ const { ccclass, property } = cc._decorator
 @ccclass
 export class PanelTest extends cc.Component implements MPanelImplements {
 
-    static async open() { await MPanel.open(PanelTest.name) }
-    static async close() { await MPanel.close(PanelTest.name) }
+    static path = 'PanelTest'
+
+    static async open() {
+        await MPanel.open(PanelTest)
+    }
+
+    static async close() {
+        await MPanel.close(PanelTest)
+    }
+
     async on_open() {
         MSound.play(MSound.SOUND.test_bgm)
     }
+
     async on_close() { }
 }

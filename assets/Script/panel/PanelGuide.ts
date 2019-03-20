@@ -11,13 +11,17 @@ enum GUIDE_TYPE { test1, test2 }
 @ccclass
 export class PanelGuide extends cc.Component implements MPanelImplements {
 
+    static path = 'PanelGuide'
+
     static async open(type: GUIDE_TYPE) {
         if (!GUIDE_TYPE[type]) { MLog.error(`@${PanelGuide.name}: get a non-type, type=${type}`); return }
-        MPanel.open('PanelGuide', ...PanelGuide.get_guide_info(type))
+        MPanel.open(PanelGuide, ...PanelGuide.get_guide_info(type))
     }
+
     static async close() {
-        MPanel.close('PanelGuide')
+        MPanel.close(PanelGuide)
     }
+
     async on_open(mask_world_position: cc.Vec2, mask_width: number, mask_height: number, info: string) {
         this.init(mask_world_position, mask_width, mask_height, info)
         await MPanel.in_fade(this.node)
@@ -90,6 +94,6 @@ export class PanelGuide extends cc.Component implements MPanelImplements {
 
     /** click event close */
     event_close() {
-        MPanel.close('PanelGuide')
+        PanelGuide.close()
     }
 }

@@ -4,12 +4,22 @@ const { ccclass, property } = cc._decorator
 
 /**
  * [Panel] PanelBase
+ * - 建议直接通过复制PanelBase.prefab/PanelBase.ts来新建窗口
  */
 @ccclass
 export class PanelBase extends cc.Component implements MPanelImplements {
 
-    static async open() { await MPanel.open(PanelBase.name) }
-    static async close() { await MPanel.close(PanelBase.name) }
+    static path = 'PanelBase'
+
+    static async open() {
+        await MPanel.open(PanelBase)
+    }
+
+    static async close() {
+        await MPanel.close(PanelBase)
+    }
+
     async on_open() { }
+
     async on_close() { }
 }

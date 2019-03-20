@@ -8,6 +8,8 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export class PanelMessage extends cc.Component implements MPanelImplements {
 
+    static path = 'PanelMessage'
+
     /**
      * 
      * @param msg 消息内容
@@ -16,10 +18,12 @@ export class PanelMessage extends cc.Component implements MPanelImplements {
      * @param f_cancel 点击cancel按钮执行的方法，为null则不显示
      */
     static async open(msg: string, msg_title = '', f_ok = () => { }, f_cancel = () => { }, ) {
-        await MPanel.open(PanelMessage.name, msg, msg_title, f_ok, f_cancel)
+        await MPanel.open(PanelMessage, msg, msg_title, f_ok, f_cancel)
     }
 
-    static async close() { await MPanel.close(PanelMessage.name) }
+    static async close() {
+        await MPanel.close(PanelMessage)
+    }
 
     async on_open(msg: string, msg_title: string, f_ok: () => void, f_cancel: () => void) {
         this.f_ok = f_ok

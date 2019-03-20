@@ -292,7 +292,7 @@ export class G {
      */
     static load_res<T extends cc.Asset>(path: string, type: new () => T): Promise<T> {
         return new Promise(res => {
-            cc.loader.loadRes(path, <any>type, () => { }, (err, resource) => {
+            cc.loader.loadRes(path, <any>type, (err, resource) => {
                 if (err) {
                     MLog.error(`@${G.load_res}: resource load fail, path=${path}, type=${type}, error=${err}`)
                     res(null)

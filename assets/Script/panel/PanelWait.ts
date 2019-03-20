@@ -9,9 +9,11 @@ const { ccclass, property } = cc._decorator
 @ccclass
 export class PanelWait extends cc.Component implements MPanelImplements {
 
-    static async open() { await MPanel.open(PanelWait.name) }
+    static path = 'PanelWait'
 
-    static async close() { await MPanel.close(PanelWait.name) }
+    static async open() { await MPanel.open(PanelWait) }
+
+    static async close() { await MPanel.close(PanelWait) }
 
     async on_open() {
         MAction.clock(this.wait_icon, 45, 0.1, cc.macro.REPEAT_FOREVER)

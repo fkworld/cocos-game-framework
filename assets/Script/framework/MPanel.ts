@@ -1,5 +1,6 @@
 import { G } from "./G";
 import { MLog } from "./MLog";
+import { PanelTest } from "../panel/PanelTest";
 
 /** 移动方向 */
 enum DIRECTION { LEFT, RIGHT, TOP, BOTTOM, LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM }
@@ -20,10 +21,11 @@ const C = {
 
 /** 每个子panel的实现类，通过implements */
 export class MPanelImplements extends cc.Component {
-    static async open(...param: any[]): Promise<void> { }      // open方法，注意static+async，并内部实现MPanel.open()
-    static async close(...param: any[]): Promise<void> { }     // close方法，注意static+async，并内部实现MPanel.close()
-    async on_open(...param: any[]): Promise<void> { }          // open动画
-    async on_close(...param: any[]): Promise<void> { }         // close动画
+    static path: string = ""                                    // 对应的prefab路径
+    static async open(...param: any[]): Promise<void> { }       // open方法，注意static+async，并内部实现MPanel.open()
+    static async close(...param: any[]): Promise<void> { }      // close方法，注意static+async，并内部实现MPanel.close()
+    async on_open(...param: any[]): Promise<void> { }           // open动画
+    async on_close(...param: any[]): Promise<void> { }          // close动画
 }
 
 /**
@@ -57,26 +59,26 @@ export class MPanel {
 
     /**
      * 打开panel
-     * @param panel_name
-     * @param param
+     * @param panel 传入panel的类型
+     * @param params
      * @static @async
      */
-    static async open(panel_name: string, ...param: any[]) {
+    static async open(panel: typeof MPanelImplements, ...params: any[]) {
         // 考虑异步延迟，记录当前打开panel应该的z_index
         const z_index = MPanel.ins.now_z_index += 1
         // 载入prefab
-        let prefab: cc.Prefab = MPanel.ins.obj_prefab[panel_name]
+        let prefab: cc.Prefab = MPanel.ins.obj_prefab[panel.name]
         if (!prefab) {
-            prefab = await G.load_res(`${C.PATH}/${panel_name}`, cc.Prefab)
-            MPanel.ins.obj_prefab[prefab.name] = prefab
+            prefab = await G.load_res(`${C.PATH}/${panel.path}`, cc.Prefab)
+            MPanel.ins.obj_prefab[panel.name] = prefab
         }
         // 需要载入的prefab并不存在
         if (!prefab) {
-            MLog.error(`@${MPanel.name}: panel open fail, panel_name=${panel_name}`)
+            MLog.error(`@${MPanel.name}: panel open fail, panel_name=${panel.name}`)
             return
         }
         // 删除同名节点
-        let node = MPanel.ins.obj_node[panel_name]
+        let node = MPanel.ins.obj_node[panel.name]
         if (node) { node.destroy() }
         // 实例化prefab
         node = cc.instantiate(prefab)
@@ -87,44 +89,35 @@ export class MPanel {
         node.zIndex = z_index
         node.active = true
         // 保存节点
-        MPanel.ins.obj_node[panel_name] = node
+        MPanel.ins.obj_node[panel.name] = node
         // 执行节点打开动画
-        let c: MPanelImplements = node.getComponent(panel_name)
-        if (c && c.on_open) { await c.on_open(...param) }
+        let c: MPanelImplements = node.getComponent(panel)
+        if (c && c.on_open) {
+            await c.on_open(...params)
+        }
     }
 
     /**
      * 关闭panel
-     * @param panel_name
+     * @param panel 传入panel的类型
+     * @param param
      * @static @async
      */
-    static async close(panel_name: string, ...param: any[]) {
+    static async close(panel: typeof MPanelImplements, ...params: any[]) {
         // 获取节点
-        let node: cc.Node = MPanel.ins.obj_node[panel_name]
+        let node: cc.Node = MPanel.ins.obj_node[panel.name]
         if (!node) {
-            MLog.error(`@${MPanel.name}: panel close fail, panel_name=${panel_name}`)
+            MLog.error(`@${MPanel.name}: panel close fail, panel_name=${panel.name}`)
             return
         }
         // 执行节点关闭动画
-        let c: MPanelImplements = node.getComponent(panel_name)
-        if (c && c.on_close) { await c.on_close(...param) }
+        let c: MPanelImplements = node.getComponent(panel)
+        if (c && c.on_close) {
+            await c.on_close(...params)
+        }
         // 删除节点存储
         node.destroy()
-        delete MPanel.ins.obj_node[panel_name]
-    }
-
-    /**
-     * [暂时弃用] 链式打开多个panel
-     * - 打开的panel无参数传入
-     * - 默认interval为1s
-     * @param array_panel_name 多个panel的name
-     * @static @async
-     */
-    static async chain(...array_panel_name: string[]) {
-        for (let name of array_panel_name) {
-            await MPanel.open(name)
-            await G.wait_time(1)
-        }
+        delete MPanel.ins.obj_node[panel.name]
     }
 
     //////////

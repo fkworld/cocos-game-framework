@@ -59,12 +59,13 @@
         "iOS",
         "HTML5"
       ],
-      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-matchvs/1.0.5_3.7.7.3.zip",
-      "package_version_desc": "2019-01-17<br> SDK版本：v3.7.7.3 <br> 1. 增加 断线补帧接口 getOffLineData <br> 2. 修改 login 接口和 init 接口参数，去掉重复参数。 <br> 3. 修复 sendEvent 有新用户刚刚进入房间的时候收不到第一条消息。 <br> 4. 修改 接口调用返回错误码，内部逻辑修改，功能不变。 <br> 5. 增加 组队匹配 接口<br> 6. 修复 组队开始匹配开始一次后不能再次匹配问题。 <br> 7. 其他内部代码的一些优化。<br> ",
+      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-matchvs/1.0.6_3.7.9.2.zip",
+      "package_version_desc": "更新日期：2019-03-20<br>更新内容：<br>1、添加多节点相关接口 <br>2、优化独立部署wss和ws切换<br>3、优化login参数容错<br>4、添加组队中踢人和消息发送接口<br>5、添加取消组队匹配接口",
       "service_component_name": "service-matchvs",
       "package_versions": [
         "1.0.3_3.7.6.4",
-        "1.0.5_3.7.7.3"
+        "1.0.5_3.7.7.3",
+        "1.0.6_3.7.9.2"
       ],
       "build_platform": [
         "web-mobile",
@@ -91,8 +92,8 @@
       "service_guide_url": "http://docs.anysdk.com",
       "service_sample_url": "http://github.com/AnySDK",
       "service_dev_url": "http://dev.anysdk.com",
-      "service_type": "2",
-      "service_type_zh": "仅支持公司游戏",
+      "service_type": "0",
+      "service_type_zh": "不支持游戏",
       "support_platform": [
         "Android",
         "iOS",
