@@ -1,4 +1,5 @@
 import { MLog } from "./MLog";
+import { MVersion } from "./MVersion";
 
 const { ccclass, property, requireComponent, executeInEditMode } = cc._decorator;
 const C = {
@@ -33,34 +34,30 @@ export class TScrollList extends cc.Component {
     }
 
     update() {
-        if (this.check_only) {
-            this.check_only = false
-            this.check(false)
-        }
-        if (this.check_and_change) {
-            this.check_and_change = false
-            this.check(true)
+        if (MVersion.run_editor && this.check) {
+            this.check = false
+            this.check_all()
         }
     }
 
-    sv: cc.ScrollView = null
-    content: cc.Node = null
+    private sv: cc.ScrollView = null
+    private content: cc.Node = null
     item_list: cc.Node[] = []
 
     @property(cc.Node)
-    item: cc.Node = null
+    private item: cc.Node = null
 
     @property({ type: cc.Enum(TYPE_SV) })
-    type_sv: TYPE_SV = TYPE_SV.ver
+    private type_sv: TYPE_SV = TYPE_SV.ver
 
     @property({ type: cc.Enum(TYPE_CONTENT) })
-    type_content: TYPE_CONTENT = TYPE_CONTENT.layout
+    private type_content: TYPE_CONTENT = TYPE_CONTENT.layout
+
+    @property({ tooltip: '' })
+    private check_and_change_flag = true
 
     @property()
-    check_only = false
-
-    @property()
-    check_and_change = false
+    private check = false
 
     /**
      * 创建item
@@ -104,100 +101,95 @@ export class TScrollList extends cc.Component {
         }
     }
 
-    /**
-     * 检查设置是否正确
-     * - 检查scroll-view组件的滑动方向是否正确
-     * - 检查scroll-view节点与mask节点的大小是否统一，非必须，如需要修改则根据sv的大小进行修改
-     * - 检查mask节点的位置是否在原点
-     * - 检查item的anchor中间，position为原点
-     * - 检查content节点的anchor设置是否正确
-     * - 检查content节点的位置是否正确
-     * - 如果content有layout，检查layout的设置是否正确
-     * @param flag 是否修改
-     */
-    check(flag: boolean) {
+    /** 检查所有设置是否正确 */
+    private check_all() {
         MLog.log(`@${this.node.name}: check-scroll-view-setting`)
-        // 检查scroll-view组件的滑动方向是否正确
-        const check_scroll_view_direction = () => {
-            let f = this.type_sv === TYPE_SV.hor ? this.sv.horizontal && !this.sv.vertical : !this.sv.horizontal && this.sv.vertical
-            if (flag) {
-                this.sv.horizontal = this.type_sv === TYPE_SV.hor
-                this.sv.vertical = !this.sv.horizontal
-            }
-            MLog.log('scroll-view-direction', f)
-        }
-        // 检查scroll-view节点与mask节点的大小是否统一
-        const check_scroll_view_size = () => {
-            let f = this.node.width === this.content.parent.width && this.node.height === this.content.parent.height
-            if (flag) {
-                this.content.parent.width = this.node.width
-                this.content.parent.height = this.node.height
-            }
-            MLog.log('scroll-view-size', f)
-        }
-        // 检查mask节点的位置是否在原点
-        const check_mask_position = () => {
-            let f = this.content.parent.position.equals(cc.Vec2.ZERO)
-            if (flag) {
-                this.content.parent.position = cc.Vec2.ZERO
-            }
-            MLog.log('mask-position', f)
-        }
-        // 检查item的anchor中间，position为原点
-        const check_item_anchor_position = () => {
-            let f = this.item.getAnchorPoint().equals(cc.v2(0.5, 0.5)) && this.item.position.equals(cc.Vec2.ZERO)
-            if (flag) {
-                this.item.setAnchorPoint(cc.v2(0.5, 0.5))
-                this.item.position = cc.Vec2.ZERO
-            }
-            MLog.log('item-anchor', f)
-        }
-        // 检查content节点的anchor设置是否正确
-        const check_content_anchor = () => {
-            let target_anchor = this.type_sv === TYPE_SV.hor ? cc.v2(0, 0.5) : cc.v2(0.5, 1)
-            let f = this.content.getAnchorPoint().equals(target_anchor)
-            if (flag) {
-                this.content.setAnchorPoint(target_anchor)
-            }
-            MLog.log('content-anchor', f)
-        }
-        // 检查content节点的位置是否正确
-        const check_content_position = () => {
-            let target_position = this.type_sv === TYPE_SV.hor ? cc.v2(-this.node.width / 2, 0) : cc.v2(0, this.node.height / 2)
-            let f = this.content.position.equals(target_position)
-            if (flag) {
-                this.content.position = target_position
-            }
-            MLog.log('content-position', f)
-        }
-        // 如果有layout，检查layout的设置是否正确
-        const check_content_layout = () => {
-            if (this.type_content != TYPE_CONTENT.layout) { return }
-            let f = false
-            let layout = this.content.getComponent(cc.Layout)
-            if (layout) {
-                f = this.type_sv === TYPE_SV.hor ? layout.type === cc.Layout.Type.HORIZONTAL : layout.type === cc.Layout.Type.VERTICAL
-                f = f && layout.resizeMode === cc.Layout.ResizeMode.CONTAINER
-            } else {
-                f = false
-            }
-            if (flag) {
-                if (!layout) { layout = this.content.addComponent(cc.Layout) }
-                layout.type = this.type_sv === TYPE_SV.hor ? cc.Layout.Type.HORIZONTAL : cc.Layout.Type.VERTICAL
-                layout.resizeMode = cc.Layout.ResizeMode.CONTAINER
-            }
-            MLog.log('content-layout', f)
-        }
-
-        check_scroll_view_direction()
-        check_scroll_view_size()
-        check_mask_position()
-        check_item_anchor_position()
-        check_content_anchor()
-        check_content_position()
-        check_content_layout()
+        this.check_scroll_view_direction()
+        this.check_scroll_view_size()
+        this.check_mask_position()
+        this.check_item_anchor_position()
+        this.check_content_anchor()
+        this.check_content_position()
+        this.check_content_layout()
         this.content.width = 0
         this.content.height = 0
     }
 
+    /* 检查scroll-view组件的滑动方向是否正确 */
+    private check_scroll_view_direction() {
+        let f = this.type_sv === TYPE_SV.hor ? this.sv.horizontal && !this.sv.vertical : !this.sv.horizontal && this.sv.vertical
+        if (this.check_and_change_flag) {
+            this.sv.horizontal = this.type_sv === TYPE_SV.hor
+            this.sv.vertical = !this.sv.horizontal
+        }
+        MLog.log('scroll-view-direction', f)
+    }
+
+    /* 检查scroll-view节点与mask节点的大小是否统一 */
+    private check_scroll_view_size() {
+        let f = this.node.width === this.content.parent.width && this.node.height === this.content.parent.height
+        if (this.check_and_change_flag) {
+            this.content.parent.width = this.node.width
+            this.content.parent.height = this.node.height
+        }
+        MLog.log('scroll-view-size', f)
+    }
+
+    /* 检查mask节点的位置是否在原点 */
+    private check_mask_position() {
+        let f = this.content.parent.position.equals(cc.Vec2.ZERO)
+        if (this.check_and_change_flag) {
+            this.content.parent.position = cc.Vec2.ZERO
+        }
+        MLog.log('mask-position', f)
+    }
+
+    /* 检查item的anchor中间，position为原点 */
+    private check_item_anchor_position() {
+        let f = this.item.getAnchorPoint().equals(cc.v2(0.5, 0.5)) && this.item.position.equals(cc.Vec2.ZERO)
+        if (this.check_and_change_flag) {
+            this.item.setAnchorPoint(cc.v2(0.5, 0.5))
+            this.item.position = cc.Vec2.ZERO
+        }
+        MLog.log('item-anchor', f)
+    }
+
+    /* 检查content节点的anchor设置是否正确 */
+    private check_content_anchor() {
+        let target_anchor = this.type_sv === TYPE_SV.hor ? cc.v2(0, 0.5) : cc.v2(0.5, 1)
+        let f = this.content.getAnchorPoint().equals(target_anchor)
+        if (this.check_and_change_flag) {
+            this.content.setAnchorPoint(target_anchor)
+        }
+        MLog.log('content-anchor', f)
+    }
+
+    /* 检查content节点的位置是否正确 */
+    private check_content_position() {
+        let target_position = this.type_sv === TYPE_SV.hor ? cc.v2(-this.node.width / 2, 0) : cc.v2(0, this.node.height / 2)
+        let f = this.content.position.equals(target_position)
+        if (this.check_and_change_flag) {
+            this.content.position = target_position
+        }
+        MLog.log('content-position', f)
+    }
+
+    /* 如果有layout，检查layout的设置是否正确 */
+    private check_content_layout() {
+        if (this.type_content != TYPE_CONTENT.layout) { return }
+        let f = false
+        let layout = this.content.getComponent(cc.Layout)
+        if (layout) {
+            f = this.type_sv === TYPE_SV.hor ? layout.type === cc.Layout.Type.HORIZONTAL : layout.type === cc.Layout.Type.VERTICAL
+            f = f && layout.resizeMode === cc.Layout.ResizeMode.CONTAINER
+        } else {
+            f = false
+        }
+        if (this.check_and_change_flag) {
+            if (!layout) { layout = this.content.addComponent(cc.Layout) }
+            layout.type = this.type_sv === TYPE_SV.hor ? cc.Layout.Type.HORIZONTAL : cc.Layout.Type.VERTICAL
+            layout.resizeMode = cc.Layout.ResizeMode.CONTAINER
+        }
+        MLog.log('content-layout', f)
+    }
 }

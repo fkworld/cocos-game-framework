@@ -42,10 +42,10 @@ export class MSound {
     }
 
     /** 与SOUND一一对应的具体声音信息 */
-    array_sound_info: ISound[] = []
+    private array_sound_info: ISound[] = []
 
     /** 初始化声音数据 */
-    init_data() {
+    private init_data() {
         this.array_sound_info[SOUND.test_bgm] = { url: 'test', volume: 1, loop: true, clip: null, id: null }
         this.array_sound_info[SOUND.test] = { url: 'test', volume: 1, loop: false, clip: null, id: null }
     }

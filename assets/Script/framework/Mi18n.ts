@@ -1,10 +1,9 @@
-import { Mi18n_en } from "./Mi18n_en";
-import { Mi18n_zh } from "./Mi18n_zh";
 import { L } from "./L";
 import { G } from "./G";
+import { Mi18n_en } from "./Mi18n_en";
+import { Mi18n_zh } from "./Mi18n_zh";
 import { MVersion } from "./MVersion";
 import { MLog } from "./MLog";
-
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 /** 语言类型 */
@@ -57,22 +56,22 @@ export class Mi18n extends cc.Component {
 
     /** key；无法使用notify() */
     @property({ tooltip: '字符串key', multiline: true })
-    key: string = C.DEFAULT_KEY
+    private key: string = C.DEFAULT_KEY
 
     /** 参数 */
     @property({ tooltip: '字符串参数', type: cc.String })
-    param: string[] = []
+    private param: string[] = []
 
     /** 预览（点击后刷新编辑器） */
     @property({ tooltip: '预览1次；预览完毕后置于false' })
-    preview: boolean = false
+    private preview: boolean = false
 
     /**
      * 更新label
      * - 目前仅支持cc.Label组件
      * @param label node中的cc.Label组件
      */
-    update_label() {
+    private update_label() {
         this.node.getComponent(cc.Label).string = Mi18n.text(this.key, ...this.param)
     }
 }

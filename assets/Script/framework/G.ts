@@ -331,7 +331,7 @@ export class G {
      * @param b 
      * @static
      */
-    static res_sort_by_name_0<T extends typeof cc.Asset>(a: T, b: T) {
+    static res_sort_by_name_0(a: cc.Asset, b: cc.Asset) {
         return Number.parseInt(a.name[0]) - Number.parseInt(b.name[0])
     }
 

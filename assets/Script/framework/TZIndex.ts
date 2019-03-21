@@ -10,15 +10,6 @@ const { ccclass, property, executeInEditMode } = cc._decorator
 @executeInEditMode
 export class TZIndex extends cc.Component {
 
-    @property({ tooltip: '当前的zIndex', readonly: true })
-    now_z_index = 0
-
-    @property({ tooltip: '更改的zIndex' })
-    z_index = 0
-
-    @property({ tooltip: '预览' })
-    preview = false
-
     update() {
         if (MVersion.run_editor && this.preview) {
             this.preview = false
@@ -26,7 +17,17 @@ export class TZIndex extends cc.Component {
         }
     }
 
-    update_z_index() {
+    @property({ tooltip: '当前的zIndex', readonly: true })
+    private now_z_index = 0
+
+    @property({ tooltip: '更改的zIndex' })
+    private z_index = 0
+
+    @property({ tooltip: '预览' })
+    private preview = false
+
+
+    private update_z_index() {
         this.node.zIndex = this.z_index
         this.now_z_index = this.node.zIndex
     }

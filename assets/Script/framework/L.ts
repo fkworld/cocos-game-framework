@@ -9,16 +9,16 @@
 export class L {
 
     /** 缓存 */
-    static cache: { string: string } | {} = {}
+    private static cache: { string: string } | {} = {}
 
     /** 封装设置item */
-    static set_item(key: string, value: any) {
+    private static set_item(key: string, value: any) {
         L.cache[key] = `${value}`
         cc.sys.localStorage.setItem(key, value)
     }
 
     /** 封装获取item */
-    static get_item(key: string): string | null {
+    private static get_item(key: string): string | null {
         if (!L.cache[key]) {
             let value = cc.sys.localStorage.getItem(key)
             L.cache[key] = value

@@ -28,28 +28,28 @@ export class TSize extends cc.Component {
 
     /** 类型 */
     @property({ tooltip: '基准类型', type: cc.Enum(TYPE) })
-    type: TYPE = TYPE.width
+    private type: TYPE = TYPE.width
 
     /** 保存（点击后刷新编辑器） */
     @property({ tooltip: '保存' })
-    save: boolean = false
+    private save: boolean = false
 
     /** 初始size；x-width；y-height */
     @property({ tooltip: '基准size', readonly: true })
-    source_size: cc.Vec2 = cc.v2(1, 1)
+    private source_size: cc.Vec2 = cc.v2(1, 1)
 
     /** 预览（点击后刷新编辑器） */
     @property({ tooltip: '预览' })
-    preview: boolean = false
+    private preview: boolean = false
 
     /** 当前size；x-width；y-height */
     @property({ tooltip: '当前size' })
-    current_size: cc.Vec2 = cc.v2(1, 1)
+    private current_size: cc.Vec2 = cc.v2(1, 1)
 
     /**
      * 保存size
      */
-    save_size() {
+    private save_size() {
         this.source_size.x = this.node.width
         this.source_size.y = this.node.height
 
@@ -58,7 +58,7 @@ export class TSize extends cc.Component {
     }
 
     /** 更新size，保留1位小数 */
-    update_size() {
+    private update_size() {
         switch (this.type) {
             case TYPE.width:
                 this.current_size.y = G.number_fixed(this.current_size.x / this.source_size.x * this.source_size.y)

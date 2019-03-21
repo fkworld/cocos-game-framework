@@ -28,20 +28,20 @@ export class TChildNode extends cc.Component {
 
     /** 子节点列表 */
     @property(cc.Node)
-    array_child_node: cc.Node[] = []
+    private array_child_node: cc.Node[] = []
 
     /** 子节点存储表；name-node */
-    obj_child_node: { string: cc.Node } | {} = {}
+    private obj_child_node: { string: cc.Node } | {} = {}
 
     /** 重构数据；将[]转化为{} */
-    trans_array_to_object() {
+    private trans_array_to_object() {
         for (let node of this.array_child_node) {
-            if (node === null) {
-                MLog.error(`@${TChildNode.name}: get a null node, node-name=${this.node.name}`)
+            if (!node) {
+                MLog.warn(`@${TChildNode.name}: get a null node, node-name=${this.node.name}`)
                 continue;
             }
-            if (this.obj_child_node[node.name] != undefined) {
-                MLog.error(`@${TChildNode.name}: get a same-name node, node-name=${this.node.name}, same-name=${node.name}`)
+            if (this.obj_child_node[node.name]) {
+                MLog.warn(`@${TChildNode.name}: get a same-name node, node-name=${this.node.name}, same-name=${node.name}`)
                 continue;
             }
             this.obj_child_node[node.name] = node
@@ -52,8 +52,8 @@ export class TChildNode extends cc.Component {
      * 获取被观察的子节点；如果找不到则返回undefined
      * @param name 
      */
-    get_child_node(name: string): cc.Node {
-        if (this.obj_child_node[name] === undefined) {
+    private get_child_node(name: string): cc.Node {
+        if (!this.obj_child_node[name]) {
             MLog.error(`@${TChildNode.name}: get a undefined node, name=${name}`)
         }
         return this.obj_child_node[name]

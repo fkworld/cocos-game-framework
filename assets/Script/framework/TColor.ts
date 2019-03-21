@@ -38,9 +38,9 @@ export class TColor extends cc.Component {
     }
 
     @property({ tooltip: '颜色类别', type: cc.Enum(TYPE) })
-    type: TYPE = TYPE.none
+    private type: TYPE = TYPE.none
 
     @property({ tooltip: '预览' })
-    preview: boolean = false
+    private preview: boolean = false
 
 }

@@ -49,13 +49,13 @@ export class MPanel {
     }
 
     /** 挂载父节点 */
-    parent: cc.Node
+    private parent: cc.Node
     /** 当前的渲染层级 */
-    now_z_index: number
+    private now_z_index: number
     /** panel-实例节点存储 */
-    obj_node: { string: cc.Node } | {} = {}
+    private obj_node: { string: cc.Node } | {} = {}
     /** panel-prefab存储 */
-    obj_prefab: { string: cc.Prefab } | {} = {}
+    private obj_prefab: { string: cc.Prefab } | {} = {}
 
     /**
      * 打开panel
