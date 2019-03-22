@@ -290,9 +290,9 @@ export class G {
      * @param type 
      * @static
      */
-    static load_res<T extends cc.Asset>(path: string, type: new () => T): Promise<T> {
+    static load_res<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>> {
         return new Promise(res => {
-            cc.loader.loadRes(path, <any>type, (err, resource) => {
+            cc.loader.loadRes(path, type, (err, resource) => {
                 if (err) {
                     MLog.error(`@${G.load_res}: resource load fail, path=${path}, type=${type}, error=${err}`)
                     res(null)
@@ -310,9 +310,9 @@ export class G {
      * @param type 
      * @static
      */
-    static load_res_dir<T extends cc.Asset>(path: string, type: new () => T): Promise<T[]> {
+    static load_res_dir<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>[]> {
         return new Promise(res => {
-            cc.loader.loadResDir(path, <any>type, (err, resource) => {
+            cc.loader.loadResDir(path, type, (err, resource) => {
                 if (err) {
                     MLog.error(`@${G.load_res_dir.name}: resource load fail, path=${path}, type=${type.name}, error=${err}`)
                     res(null)
