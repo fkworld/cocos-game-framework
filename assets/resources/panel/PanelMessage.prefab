@@ -350,8 +350,8 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 0,
-      "g": 109,
-      "b": 117,
+      "g": 71,
+      "b": 79,
       "a": 255
     },
     "_contentSize": {
@@ -542,7 +542,7 @@
       "__id__": 7
     },
     "_enabled": true,
-    "type": 8,
+    "type": 9,
     "preview": false,
     "_id": ""
   },
@@ -671,8 +671,8 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 0,
-      "g": 109,
-      "b": 117,
+      "g": 71,
+      "b": 79,
       "a": 255
     },
     "_contentSize": {
@@ -863,7 +863,7 @@
       "__id__": 17
     },
     "_enabled": true,
-    "type": 8,
+    "type": 9,
     "preview": false,
     "_id": ""
   },
@@ -1066,7 +1066,7 @@
     "duration": 0.1,
     "zoomScale": 1.2,
     "clickEvents": [],
-    "_N$interactable": true,
+    "_N$interactable": false,
     "_N$enableAutoGrayEffect": false,
     "_N$transition": 0,
     "transition": 0,
