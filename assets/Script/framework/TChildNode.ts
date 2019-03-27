@@ -22,37 +22,36 @@ export class TChildNode extends cc.Component {
         return parent_node.getComponent(TChildNode).get_child_node(child_node_nodename)
     }
 
-    onLoad() {
-        this.trans_array_to_object()
-    }
-
-    /** 子节点列表 */
     @property(cc.Node)
-    private array_child_node: cc.Node[] = []
+    private list_child_node: cc.Node[] = []
 
-    /** 子节点存储表；name-node */
-    private obj_child_node: { string: cc.Node } | {} = {}
+    private obj_child_node: { [key: string]: cc.Node } = {}
 
-    /** 重构数据；将[]转化为{} */
-    private trans_array_to_object() {
-        for (let node of this.array_child_node) {
-            if (!node) {
+    /** 数据转化，在第1次调用时使用 */
+    private trans_data() {
+        for (let i = 0; i < this.list_child_node.length; i += 1) {
+            let child_node = this.list_child_node[i]
+            if (!child_node) {
                 MLog.warn(`@${TChildNode.name}: get a null node, node-name=${this.node.name}`)
                 continue;
             }
-            if (this.obj_child_node[node.name]) {
-                MLog.warn(`@${TChildNode.name}: get a same-name node, node-name=${this.node.name}, same-name=${node.name}`)
+            if (this.obj_child_node[child_node.name]) {
+                MLog.warn(`@${TChildNode.name}: get a same-name node, node-name=${this.node.name}, same-name=${child_node.name}`)
                 continue;
             }
-            this.obj_child_node[node.name] = node
+            this.obj_child_node[child_node.name] = child_node
         }
     }
+
 
     /**
      * 获取被观察的子节点；如果找不到则返回undefined
      * @param name 
      */
     private get_child_node(name: string): cc.Node {
+        if (this.list_child_node.length === 0 || Object.keys(this.obj_child_node).length === 0) {
+            this.trans_data()
+        }
         if (!this.obj_child_node[name]) {
             MLog.error(`@${TChildNode.name}: get a undefined node, name=${name}`)
         }

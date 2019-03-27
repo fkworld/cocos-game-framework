@@ -9,7 +9,7 @@
 export class L {
 
     /** 缓存 */
-    private static cache: { string: string } | {} = {}
+    private static cache: { [key: string]: string } = {}
 
     /** 封装设置item */
     private static set_item(key: string, value: any) {
