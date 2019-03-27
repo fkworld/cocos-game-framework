@@ -7,10 +7,13 @@ import { MLog } from "./MLog";
 
 const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
 /** 语言类型 */
-enum TYPE { english, chinese }
+enum TYPE { en, zh }
 const C = {
-    DATA: [Mi18n_en, Mi18n_zh],     // 数据对应
-    EDITOR_TYPE: TYPE.english,      // 编辑器语言
+    DATA: {
+        en: Mi18n_en,
+        zh: Mi18n_zh,
+    },                              // 数据对应
+    EDITOR_TYPE: TYPE[TYPE.en],     // 编辑器语言
     DEFAULT_KEY: 'enter-a-key',     // 默认key
 }
 
@@ -34,9 +37,9 @@ export class Mi18n extends cc.Component {
      * @param param
      */
     static text(key: string, ...param: any[]): string {
-        let type = MVersion.run_editor || L.language === null ? C.EDITOR_TYPE : L.language
+        let type = MVersion.run_editor || !L.language ? C.EDITOR_TYPE : L.language
         let value = C.DATA[type][key]
-        if (value === undefined) {
+        if (!value) {
             value = key
             MLog.warn(`@${Mi18n.name}: get a not exist key, key=${key}`)
         }
@@ -55,7 +58,7 @@ export class Mi18n extends cc.Component {
     }
 
     /** key；无法使用notify() */
-    @property({ tooltip: '字符串key', multiline: true })
+    @property({ tooltip: '字符串key' })
     private key: string = C.DEFAULT_KEY
 
     /** 参数 */

@@ -80,7 +80,6 @@
     },
     "_skewX": 0,
     "_skewY": 0,
-    "_zIndex": 0,
     "groupIndex": 0,
     "_id": ""
   },
@@ -143,7 +142,6 @@
     },
     "_skewX": 0,
     "_skewY": 0,
-    "_zIndex": 0,
     "groupIndex": 0,
     "_id": ""
   },
@@ -155,8 +153,6 @@
       "__id__": 2
     },
     "_enabled": true,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
@@ -173,6 +169,8 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_id": ""
   },
   {
@@ -251,7 +249,6 @@
     },
     "_skewX": 0,
     "_skewY": 0,
-    "_zIndex": 0,
     "groupIndex": 0,
     "_id": ""
   },
@@ -263,8 +260,6 @@
       "__id__": 5
     },
     "_enabled": true,
-    "_srcBlendFactor": 1,
-    "_dstBlendFactor": 771,
     "_useOriginalSize": false,
     "_string": "Created by skyfoxgame-fengyong",
     "_N$string": "Created by skyfoxgame-fengyong",
@@ -281,6 +276,7 @@
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 2,
+    "_N$cacheMode": 0,
     "_id": ""
   },
   {
@@ -291,7 +287,7 @@
       "__id__": 5
     },
     "_enabled": true,
-    "key": "panel-loading-creator",
+    "key": "panel_loading_creator",
     "param": [],
     "preview": false,
     "_id": ""
@@ -384,7 +380,6 @@
     },
     "_skewX": 0,
     "_skewY": 0,
-    "_zIndex": 0,
     "groupIndex": 0,
     "_id": ""
   },
@@ -396,8 +391,6 @@
       "__id__": 10
     },
     "_enabled": true,
-    "_srcBlendFactor": 1,
-    "_dstBlendFactor": 771,
     "_useOriginalSize": false,
     "_string": "The game is loading...",
     "_N$string": "The game is loading...",
@@ -414,6 +407,7 @@
     "_N$verticalAlign": 1,
     "_N$fontFamily": "",
     "_N$overflow": 2,
+    "_N$cacheMode": 0,
     "_id": ""
   },
   {
@@ -424,7 +418,7 @@
       "__id__": 10
     },
     "_enabled": true,
-    "key": "panel-loading-log",
+    "key": "panel_loading_log",
     "param": [],
     "preview": false,
     "_id": ""
@@ -514,7 +508,6 @@
     },
     "_skewX": 0,
     "_skewY": 0,
-    "_zIndex": 0,
     "groupIndex": 0,
     "_id": ""
   },
@@ -526,8 +519,6 @@
       "__id__": 15
     },
     "_enabled": true,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "79a855c4-8c2a-462d-8eaa-4866e9d0a66c"
     },
@@ -544,6 +535,8 @@
     "_isTrimmedMode": false,
     "_state": 0,
     "_atlas": null,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_id": ""
   },
   {

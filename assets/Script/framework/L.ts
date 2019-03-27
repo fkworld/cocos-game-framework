@@ -37,11 +37,8 @@ export class L {
 
 
     /** 语言，默认为null，在Mi18n中配置默认语言 */
-    static get language() {
-        let v = Number.parseInt(L.get_item('Language'))
-        return Number.isNaN(v) ? null : v
-    }
-    static set language(v: number) { L.set_item('Language', v) }
+    static get language() { return L.get_item('Language') }
+    static set language(v: string) { L.set_item('Language', v) }
 
     //////////
     // 下面的内容需要添加每个游戏自身的本地存储；注意使用static方法
