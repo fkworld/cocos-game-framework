@@ -109,8 +109,8 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 0,
-      "g": 35,
-      "b": 41,
+      "g": 71,
+      "b": 79,
       "a": 255
     },
     "_contentSize": {
@@ -284,8 +284,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 220,
-      "height": 50
+      "width": 250,
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -340,7 +340,7 @@
         "__id__": 13
       },
       {
-        "__id__": 14
+        "__id__": 15
       }
     ],
     "_prefab": {
@@ -350,14 +350,14 @@
     "_color": {
       "__type__": "cc.Color",
       "r": 0,
-      "g": 71,
-      "b": 79,
+      "g": 109,
+      "b": 117,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 100,
-      "height": 50
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -366,7 +366,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": -60,
+      "x": -75,
       "y": 0,
       "z": 0
     },
@@ -466,8 +466,8 @@
     "_useOriginalSize": false,
     "_string": "YES",
     "_N$string": "YES",
-    "_fontSize": 25,
-    "_lineHeight": 30,
+    "_fontSize": 30,
+    "_lineHeight": 40,
     "_enableWrapText": false,
     "_N$file": {
       "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
@@ -535,18 +535,6 @@
     "_id": ""
   },
   {
-    "__type__": "3609aCjMFBEu7p3GIxARqvs",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 7
-    },
-    "_enabled": true,
-    "type": 9,
-    "preview": false,
-    "_id": ""
-  },
-  {
     "__type__": "cc.Button",
     "_name": "",
     "_objFlags": 0,
@@ -558,7 +546,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 15
+        "__id__": 14
       }
     ],
     "_N$interactable": true,
@@ -629,6 +617,18 @@
     "customEventData": ""
   },
   {
+    "__type__": "3609aCjMFBEu7p3GIxARqvs",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 7
+    },
+    "_enabled": true,
+    "type_index": 3,
+    "preview": false,
+    "_id": ""
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -661,7 +661,7 @@
         "__id__": 23
       },
       {
-        "__id__": 24
+        "__id__": 25
       }
     ],
     "_prefab": {
@@ -670,15 +670,15 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 0,
-      "g": 71,
-      "b": 79,
+      "r": 8,
+      "g": 151,
+      "b": 156,
       "a": 255
     },
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 100,
-      "height": 50
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -687,7 +687,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 60,
+      "x": 75,
       "y": 0,
       "z": 0
     },
@@ -787,8 +787,8 @@
     "_useOriginalSize": false,
     "_string": "NO",
     "_N$string": "NO",
-    "_fontSize": 25,
-    "_lineHeight": 30,
+    "_fontSize": 30,
+    "_lineHeight": 40,
     "_enableWrapText": false,
     "_N$file": {
       "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
@@ -856,18 +856,6 @@
     "_id": ""
   },
   {
-    "__type__": "3609aCjMFBEu7p3GIxARqvs",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 17
-    },
-    "_enabled": true,
-    "type": 9,
-    "preview": false,
-    "_id": ""
-  },
-  {
     "__type__": "cc.Button",
     "_name": "",
     "_objFlags": 0,
@@ -879,7 +867,7 @@
     "zoomScale": 1.2,
     "clickEvents": [
       {
-        "__id__": 25
+        "__id__": 24
       }
     ],
     "_N$interactable": true,
@@ -950,6 +938,18 @@
     "customEventData": ""
   },
   {
+    "__type__": "3609aCjMFBEu7p3GIxARqvs",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 17
+    },
+    "_enabled": true,
+    "type_index": 2,
+    "preview": false,
+    "_id": ""
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": {
       "__id__": 1
@@ -970,8 +970,8 @@
     "_enabled": true,
     "_layoutSize": {
       "__type__": "cc.Size",
-      "width": 220,
-      "height": 50
+      "width": 250,
+      "height": 60
     },
     "_resize": 1,
     "_N$layoutType": 1,
@@ -986,7 +986,7 @@
     "_N$paddingRight": 0,
     "_N$paddingTop": 0,
     "_N$paddingBottom": 0,
-    "_N$spacingX": 20,
+    "_N$spacingX": 50,
     "_N$spacingY": 0,
     "_N$verticalDirection": 1,
     "_N$horizontalDirection": 0,
@@ -1040,7 +1040,7 @@
       "__id__": 2
     },
     "_enabled": true,
-    "type": 10,
+    "type_index": 4,
     "preview": false,
     "_id": ""
   },

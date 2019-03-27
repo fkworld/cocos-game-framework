@@ -3,23 +3,28 @@ import { MVersion } from "./MVersion";
 const { ccclass, property, executeInEditMode } = cc._decorator;
 
 /** 颜色分类 */
-enum TYPE { none, cyan_1, cyan_2, cyan_3, cyan_4, cyan_5, cyan_6, cyan_7, cyan_8, cyan_9, cyan_10 }
-/** 颜色分类对应的颜色数值 */
-const COLOR: cc.Color[] = [
-    // none
-    cc.Color.WHITE,
-    // ant-design-cyan-1-10
-    cc.color().fromHEX('#e6fffb'),
-    cc.color().fromHEX('#b5f5ec'),
-    cc.color().fromHEX('#87e8de'),
-    cc.color().fromHEX('#5cdbd3'),
-    cc.color().fromHEX('#36cfc9'),
-    cc.color().fromHEX('#13c2c2'),
-    cc.color().fromHEX('#08979c'),
-    cc.color().fromHEX('#006d75'),
-    cc.color().fromHEX('#00474f'),
-    cc.color().fromHEX('#002329'),
-]
+enum TYPE {
+    none,
+    cyan_6, cyan_7, cyan_8, cyan_9, cyan_10,
+    volcano_6, volcano_7, volcano_8, volcano_9, volcano_10,
+}
+const C = {
+    DATA: {
+        none: cc.Color.WHITE,
+        // ant-design-cyan-6-10
+        cyan_6: cc.color().fromHEX('#13c2c2'),
+        cyan_7: cc.color().fromHEX('#08979c'),
+        cyan_8: cc.color().fromHEX('#006d75'),
+        cyan_9: cc.color().fromHEX('#00474f'),
+        cyan_10: cc.color().fromHEX('#002329'),
+        // ant-design-volcano-6-10
+        volcano_6: cc.color().fromHEX('#fa541c'),
+        volcano_7: cc.color().fromHEX('#d4380d'),
+        volcano_8: cc.color().fromHEX('#ad2102'),
+        volcano_9: cc.color().fromHEX('#871400'),
+        volcano_10: cc.color().fromHEX('#610b00'),
+    }
+}
 
 /**
  * [T] 颜色工具
@@ -33,12 +38,12 @@ export class TColor extends cc.Component {
     update() {
         if (MVersion.run_editor && this.preview) {
             this.preview = false
-            this.node.color = COLOR[this.type]
+            this.node.color = C.DATA[TYPE[this.type_index]]
         }
     }
 
     @property({ tooltip: '颜色类别', type: cc.Enum(TYPE) })
-    private type: TYPE = TYPE.none
+    private type_index: TYPE = TYPE.none
 
     @property({ tooltip: '预览' })
     private preview: boolean = false
