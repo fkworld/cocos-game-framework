@@ -1,27 +1,41 @@
 import { G } from "./G";
 import { MLog } from "./MLog";
-import { PanelTest } from "../panel/PanelTest";
 
 /** 移动方向 */
-enum DIRECTION { LEFT, RIGHT, TOP, BOTTOM, LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM }
+enum DIRECTION { left, right, up, down, left_up, left_down, right_up, right_down }
 const C = {
-    PATH: 'panel',
-    TIME: 0.5,
-    EASE_IN: cc.easeExponentialOut(),
-    EASE_OUT: cc.easeExponentialIn(),
-    DIRECTION_VEC2: [               // 移动方向对应的方向向量
-        cc.v2(-1, 0), cc.v2(1, 0), cc.v2(0, 1), cc.v2(0, -1),
-        cc.v2(-1, 1), cc.v2(-1, -1), cc.v2(1, 1), cc.v2(1, -1),
-    ],
-    SCALE_0: 0.001,                 // 某些组件在scale=0时会出现一些错位等问题，因此将初始值设为0.001
+    BASE_PATH: 'panel',
+    TIME: 0.3,
+    EASE_IN: cc.easeCubicActionOut(),
+    EASE_OUT: cc.easeCubicActionIn(),
+    DIRECTION_VEC2: {
+        left: cc.v2(-1, 0),
+        right: cc.v2(1, 0),
+        up: cc.v2(0, 1),
+        down: cc.v2(0, -1),
+        left_up: cc.v2(-1, 1),
+        left_down: cc.v2(-1, -1),
+        right_up: cc.v2(1, 1),
+        right_down: cc.v2(1, -1),
+    },
+    SCALE_0: 0.01,                  // 某些组件在scale=0时会出现异常，因此将初始值设为0.01
     SCALE_1: 1,
+    FADE_0: 1,                      // 某些组件在opacity=0时会出现异常，因此将初始值设为1
+    FADE_1: 255,
     FADE_MOVE_DISTANCE: 100,        // 在fade-move模式下的移动距离
     FADE_SCALE_TARGET: 2,           // 在fade-scale模式下的目标scale
 }
 
+/** 动作的基础参数 */
+interface ACTION_PARAM {
+    time?: number,
+    delay?: number,
+    ease?: any,
+}
+
 /** 每个子panel的实现类，通过implements */
 export class MPanelImplements extends cc.Component {
-    static path: string = ""                                    // 对应的prefab路径
+    static path: string = ''                                    // 对应的prefab路径
     static async open(...param: any[]): Promise<void> { }       // open方法，注意static+async，并内部实现MPanel.open()
     static async close(...param: any[]): Promise<void> { }      // close方法，注意static+async，并内部实现MPanel.close()
     async on_open(...param: any[]): Promise<void> { }           // open动画
@@ -53,9 +67,9 @@ export class MPanel {
     /** 当前的渲染层级 */
     private now_z_index: number
     /** panel-实例节点存储 */
-    private obj_node: { string: cc.Node } | {} = {}
+    private obj_node: { [key: string]: cc.Node } = {}
     /** panel-prefab存储 */
-    private obj_prefab: { string: cc.Prefab } | {} = {}
+    private obj_prefab: { [key: string]: cc.Prefab } = {}
 
     /**
      * 打开panel
@@ -67,19 +81,21 @@ export class MPanel {
         // 考虑异步延迟，记录当前打开panel应该的z_index
         const z_index = MPanel.ins.now_z_index += 1
         // 载入prefab
-        let prefab: cc.Prefab = MPanel.ins.obj_prefab[panel.name]
+        let prefab = MPanel.ins.obj_prefab[panel.name]
         if (!prefab) {
-            prefab = await G.load_res(`${C.PATH}/${panel.path}`, cc.Prefab)
+            prefab = await G.load_res(`${C.BASE_PATH}/${panel.path}`, cc.Prefab)
             MPanel.ins.obj_prefab[panel.name] = prefab
         }
         // 需要载入的prefab并不存在
         if (!prefab) {
-            MLog.error(`@${MPanel.name}: panel open fail, panel_name=${panel.name}`)
+            MLog.error(`@${MPanel.name}: panel open fail, path=${panel.path}`)
             return
         }
         // 删除同名节点
         let node = MPanel.ins.obj_node[panel.name]
-        if (node) { node.destroy() }
+        if (node) {
+            node.destroy()
+        }
         // 实例化prefab
         node = cc.instantiate(prefab)
         node.setParent(MPanel.ins.parent)
@@ -91,7 +107,7 @@ export class MPanel {
         // 保存节点
         MPanel.ins.obj_node[panel.name] = node
         // 执行节点打开动画
-        let c: MPanelImplements = node.getComponent(panel)
+        let c = node.getComponent(panel)
         if (c && c.on_open) {
             await c.on_open(...params)
         }
@@ -105,13 +121,13 @@ export class MPanel {
      */
     static async close(panel: typeof MPanelImplements, ...params: any[]) {
         // 获取节点
-        let node: cc.Node = MPanel.ins.obj_node[panel.name]
+        let node = MPanel.ins.obj_node[panel.name]
         if (!node) {
             MLog.error(`@${MPanel.name}: panel close fail, panel_name=${panel.name}`)
             return
         }
         // 执行节点关闭动画
-        let c: MPanelImplements = node.getComponent(panel)
+        let c = node.getComponent(panel)
         if (c && c.on_close) {
             await c.on_close(...params)
         }
@@ -127,7 +143,6 @@ export class MPanel {
     static get TIME() { return C.TIME }
     static get EASE_IN() { return C.EASE_IN }
     static get EASE_OUT() { return C.EASE_OUT }
-    static get DIRECTION() { return DIRECTION }
 
     //////////
     // UI方法
@@ -137,7 +152,7 @@ export class MPanel {
      * @param node
      * @static @async
      */
-    static async in_nothing(node: cc.Node) {
+    static in_nothing(node: cc.Node) {
         node.active = true
     }
 
@@ -145,109 +160,121 @@ export class MPanel {
      * @param node
      * @static @async
      */
-    static async out_nothing(node: cc.Node) {
+    static out_nothing(node: cc.Node) {
         node.active = false
     }
 
-    /** 
-     * @param node
-     * @param time
-     * @param ease
-     * @static @async
+    /**
+     * 
+     * @param node 
+     * @param params 
+     * @static
      */
-    static async in_scale(node: cc.Node, time: number = C.TIME, ease = C.EASE_IN) {
-        await new Promise(res => {
+    static in_scale(node: cc.Node, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
             node.scale = C.SCALE_0
             node.active = true
             node.runAction(cc.sequence(
-                cc.scaleTo(time, C.SCALE_1).easing(ease),
-                cc.callFunc(res),
-            ))
-        })
-    }
-
-    /** 
-     * @param node
-     * @param time
-     * @param ease
-     * @static @async
-     */
-    static async out_scale(node: cc.Node, time: number = C.TIME, ease = C.EASE_OUT) {
-        await new Promise(res => {
-            node.runAction(cc.sequence(
-                cc.scaleTo(time, C.SCALE_0).easing(ease),
-                cc.callFunc(res),
-            ))
-        })
-    }
-
-    /** 
-     * @param node
-     * @param time
-     * @param ease
-     * @static @async
-     */
-    static async in_fade(node: cc.Node, time: number = C.TIME, ease = C.EASE_IN) {
-        await new Promise(res => {
-            node.opacity = 0
-            node.active = true
-            node.runAction(cc.sequence(
-                cc.fadeIn(time).easing(ease),
-                cc.callFunc(res),
-            ))
-        })
-    }
-
-    /** 
-     * @param node
-     * @param time
-     * @param ease
-     * @static @async
-     */
-    static async out_fade(node: cc.Node, time: number = C.TIME, ease = C.EASE_OUT) {
-        await new Promise(res => {
-            node.runAction(cc.sequence(
-                cc.fadeOut(time).easing(ease),
+                cc.delayTime(params.delay || 0),
+                cc.scaleTo(params.time || C.TIME, C.SCALE_1).easing(params.ease || C.EASE_IN),
                 cc.callFunc(res),
             ))
         })
     }
 
     /**
+     * 
      * @param node 
-     * @param direction 
-     * @param time 
-     * @param ease 
-     * @static @async
+     * @param params 
+     * @static
      */
-    static async in_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        await new Promise(res => {
+    static out_scale(node: cc.Node, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay || 0),
+                cc.scaleTo(params.time || C.TIME, C.SCALE_0).easing(params.ease || C.EASE_OUT),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 
+     * @param node 
+     * @param params 
+     * @static
+     */
+    static in_fade(node: cc.Node, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
+            node.opacity = C.FADE_0
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay || 0),
+                cc.fadeIn(params.time || C.TIME).easing(params.ease || C.EASE_IN),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 
+     * @param node 
+     * @param params 
+     * @static
+     */
+    static out_fade(node: cc.Node, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay || 0),
+                cc.fadeOut(params.time || C.TIME).easing(params.ease || C.EASE_OUT),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 
+     * @param node 
+     * @param direction 方向
+     * @param distance 距离，默认为null，会计算Math.max(cc.winSize.width, cc.winSize.height)
+     * @param params 
+     * @static
+     */
+    static in_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
             G.check_widget(node)
-            const start_position: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(Math.max(cc.winSize.width, cc.winSize.height)))
-            const end_postion: cc.Vec2 = node.position
+            if (!distance) {
+                distance = Math.max(cc.winSize.width, cc.winSize.height)
+            }
+            const start_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance))
+            const end_postion = cc.Vec2.ZERO
             node.position = start_position
             node.active = true
             node.runAction(cc.sequence(
-                cc.moveTo(time, end_postion).easing(ease),
+                cc.delayTime(params.delay || 0),
+                cc.moveTo(params.time || C.TIME, end_postion).easing(params.ease || C.EASE_IN),
                 cc.callFunc(res),
             ))
         })
     }
 
     /**
+     * 
      * @param node 
      * @param direction 
      * @param time 
      * @param ease 
-     * @static @async
+     * @static
      */
-    static async out_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_OUT) {
-        await new Promise(res => {
-            G.check_widget(node)
-            const start_position: cc.Vec2 = node.position
-            const end_postion: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(Math.max(cc.winSize.width, cc.winSize.height)))
+    static out_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
+            if (!distance) {
+                distance = Math.max(cc.winSize.width, cc.winSize.height)
+            }
+            const end_postion = node.position.add(C.DIRECTION_VEC2[direction].mul(distance))
             node.runAction(cc.sequence(
-                cc.moveTo(time, end_postion).easing(ease),
+                cc.delayTime(params.delay || 0),
+                cc.moveTo(params.time || C.TIME, end_postion).easing(params.ease || C.EASE_OUT),
                 cc.callFunc(res),
             ))
         })
@@ -257,21 +284,24 @@ export class MPanel {
      * 组合效果：fade+move
      * @param node 
      * @param direction 
-     * @param time 
-     * @param ease 
-     * @static @async
+     * @param distance 
+     * @param params 
+     * @static
      */
-    static async in_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_IN) {
-        await new Promise(res => {
+    static in_fade_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
             G.check_widget(node)
-            const start_position: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(C.FADE_MOVE_DISTANCE))
-            const end_position: cc.Vec2 = node.position
+            const start_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance || C.FADE_MOVE_DISTANCE))
+            const end_position = cc.Vec2.ZERO
             node.position = start_position
-            node.opacity = 0
-            node.runAction(cc.spawn(
-                cc.moveTo(time, end_position).easing(ease),
-                cc.fadeIn(time).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
+            node.opacity = C.FADE_0
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay || 0),
+                cc.spawn(
+                    cc.fadeIn(params.time || C.TIME).easing(params.ease || C.EASE_IN),
+                    cc.moveTo(params.time || C.TIME, end_position).easing(params.ease || C.EASE_IN),
+                ),
+                cc.callFunc(res)
             ))
         })
     }
@@ -280,58 +310,19 @@ export class MPanel {
      * 组合效果：fade+move
      * @param node 
      * @param direction 
-     * @param time 
-     * @param ease 
-     * @static @async
+     * @param distance 
+     * @param params 
      */
-    static async out_fade_move(node: cc.Node, direction: DIRECTION = DIRECTION.LEFT, time = C.TIME, ease = C.EASE_OUT) {
-        await new Promise(res => {
-            G.check_widget(node)
-            const start_position: cc.Vec2 = node.position
-            const end_position: cc.Vec2 = node.position.add(C.DIRECTION_VEC2[direction].mul(C.FADE_MOVE_DISTANCE))
-            node.position = start_position
-            node.runAction(cc.spawn(
-                cc.moveTo(time, end_position).easing(ease),
-                cc.fadeOut(time).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
-            ))
-        })
-    }
-
-    /**
-     * 组合效果：fade+scale
-     * @param node 
-     * @param target_scale 
-     * @param time 
-     * @param ease 
-     * @static @async
-     */
-    static async in_fade_scale(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_IN) {
-        await new Promise(res => {
-            node.scale = target_scale
-            node.opacity = 0
-            node.runAction(cc.spawn(
-                cc.fadeIn(time).easing(ease),
-                cc.scaleTo(time, C.SCALE_1).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
-            ))
-        })
-    }
-
-    /**
-     * 组合效果：fade+scale
-     * @param node 
-     * @param target_scale 
-     * @param time 
-     * @param ease 
-     * @static @async
-     */
-    static async out_fade_sacle(node: cc.Node, target_scale: number = C.FADE_SCALE_TARGET, time = C.TIME, ease = C.EASE_OUT) {
-        await new Promise(res => {
-            node.runAction(cc.spawn(
-                cc.fadeOut(time).easing(ease),
-                cc.scaleTo(time, target_scale).easing(ease),
-                cc.sequence(cc.delayTime(time), cc.callFunc(res)),
+    static out_fade_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+        return new Promise(res => {
+            const end_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance || C.FADE_MOVE_DISTANCE))
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay || 0),
+                cc.spawn(
+                    cc.moveTo(params.time || C.TIME, end_position).easing(params.ease || C.EASE_IN),
+                    cc.fadeOut(params.time || C.TIME).easing(params.ease || C.EASE_IN),
+                ),
+                cc.callFunc(res)
             ))
         })
     }

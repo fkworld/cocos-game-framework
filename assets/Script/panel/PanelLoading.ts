@@ -1,10 +1,9 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
 import { MAction } from "../framework/MAction";
-import { G } from "../framework/G";
 
 const { ccclass, property } = cc._decorator
 const C = {
-    FADE_TIME: 1,
+    FADE_TIME: 2,
 }
 /**
  * [Panel] PanelLoading
@@ -24,11 +23,10 @@ export class PanelLoading extends cc.Component implements MPanelImplements {
 
     async on_open() {
         MAction.clock(this.wait_icon, 45, 0.2, cc.macro.REPEAT_FOREVER)
-        await MPanel.in_nothing(this.node)
     }
 
     async on_close() {
-        await MPanel.out_fade(this.node, C.FADE_TIME)
+        await MPanel.out_fade_move(this.node, "right_up", null, { time: C.FADE_TIME })
     }
 
     @property(cc.Node)
