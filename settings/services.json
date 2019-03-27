@@ -85,9 +85,9 @@
     },
     {
       "service_id": "242",
-      "service_name": "声网",
-      "service_desc": "稳定、低耗、76ms超低延时、全球200+数据中心覆盖；变声器、超高音质、听声辩位等丰富玩法极速接入；全平台支持：Android、iOS、Web。",
-      "service_title": "游戏内置实时音频SDK",
+      "service_name": "Agora Voice",
+      "service_desc": "稳定、低耗、76ms超低延时、全球200+数据中心覆盖；变声器、超高音质、听声辩位等丰富玩法极速接入；全平台支持：Android、iOS、Web。\n技术支持群QQ群：799099183",
+      "service_title": "游戏内置实时语音SDK",
       "service_icon": "https://account.cocos.com/uploads/client_icon/date(\"Y-m-d\")/50fe52b789c2fc1e1fff9eec161c1bb3.png",
       "service_guide_url": "https://docs.agora.io/cn/Interactive Gaming/game_c",
       "service_sample_url": "https://github.com/AgoraBeck/Hello_Agora_CocosCreator_Voice",

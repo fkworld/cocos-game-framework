@@ -48,7 +48,6 @@
     - [**`PanelWait`**] 一个通用的等待页面
     - [**`PanelGuide`**] 一个个人使用的新手引导页面
     - [**`PanelMessage`**] 一个通用的消息页面
-- [**`Action系列`**] 动画组，脚本命名方式为Anima*，包含一些游戏中常用的复杂动画
 - [**`System系列`**] 子系统组，脚本命名方式为S*，游戏子系统管理
 - [**`Controller系列`**] 控制器组，脚本命名方式为C*，游戏中重要组件的控制器
 
@@ -64,9 +63,17 @@
 ##### class or namespace
 * 目前量级较少，使用class来显示脚本与脚本的依赖关系，不使用namespace
 * 如果项目较大，则使用namespace做区域划分
+* cocos-creator暂时对namespace的支持不好，无法按照官方例子使用，因此本项建议全部使用class代替
 ##### public or private
 * typescript默认为public
 * 建议全部private化，只有需要外部调用的方法public
+##### 遍历
+* 任何情况下都**不**使用for...in循环
+* 数组遍历仅使用普通for循环，性能最高；大数组遍历时，最好提前计算好length
+* 数组遍历的部分特殊情况，为了逻辑更加明显，可以使用map()/every()/filter()等内置方法
+* 非数组的遍历，使用for...of循环
+##### 箭头函数
+* 总是使用箭头函数()=>{}代替function
 
 ### 两层逻辑设计：数据逻辑层system + 显示逻辑层controller
 1. 数据逻辑层system
