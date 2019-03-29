@@ -247,7 +247,7 @@ export class MPanel {
                 distance = Math.max(cc.winSize.width, cc.winSize.height)
             }
             const start_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance))
-            const end_postion = cc.Vec2.ZERO
+            const end_postion = node.position
             node.position = start_position
             node.active = true
             node.runAction(cc.sequence(
@@ -292,7 +292,7 @@ export class MPanel {
         return new Promise(res => {
             G.check_widget(node)
             const start_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance || C.FADE_MOVE_DISTANCE))
-            const end_position = cc.Vec2.ZERO
+            const end_position = node.position
             node.position = start_position
             node.opacity = C.FADE_0
             node.runAction(cc.sequence(
