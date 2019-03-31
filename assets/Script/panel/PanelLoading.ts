@@ -3,7 +3,7 @@ import { MAction } from "../framework/MAction";
 
 const { ccclass, property } = cc._decorator
 const C = {
-    FADE_TIME: 2,
+    FADE_TIME: 1,
 }
 /**
  * [Panel] PanelLoading
@@ -22,13 +22,22 @@ export class PanelLoading extends cc.Component implements MPanelImplements {
     }
 
     async on_open() {
-        MAction.clock(this.wait_icon, 45, 0.2, cc.macro.REPEAT_FOREVER)
+        for (let i = 0; i < this.page_list.length; i += 1) {
+            await MPanel.in_fade(this.page_list[i], { time: C.FADE_TIME })
+            await MPanel.out_fade_move(this.page_list[i], 'up', null, { time: C.FADE_TIME })
+        }
     }
 
     async on_close() {
-        await MPanel.out_fade_move(this.node, "right_up", null, { time: C.FADE_TIME })
+
+    }
+
+    onLoad() {
+        for (let i = 0; i < this.page_list.length; i += 1) {
+            this.page_list[i].active = false
+        }
     }
 
     @property(cc.Node)
-    wait_icon: cc.Node = null
+    page_list: cc.Node[] = []
 }
