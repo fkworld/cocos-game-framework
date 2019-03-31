@@ -190,6 +190,7 @@ export class MPanel {
      */
     static out_scale(node: cc.Node, params: ACTION_PARAM = {}) {
         return new Promise(res => {
+            node.active = true
             node.runAction(cc.sequence(
                 cc.delayTime(params.delay || 0),
                 cc.scaleTo(params.time || C.TIME, C.SCALE_0).easing(params.ease || C.EASE_OUT),
@@ -224,6 +225,7 @@ export class MPanel {
      */
     static out_fade(node: cc.Node, params: ACTION_PARAM = {}) {
         return new Promise(res => {
+            node.active = true
             node.runAction(cc.sequence(
                 cc.delayTime(params.delay || 0),
                 cc.fadeOut(params.time || C.TIME).easing(params.ease || C.EASE_OUT),
@@ -272,6 +274,7 @@ export class MPanel {
                 distance = Math.max(cc.winSize.width, cc.winSize.height)
             }
             const end_postion = node.position.add(C.DIRECTION_VEC2[direction].mul(distance))
+            node.active = true
             node.runAction(cc.sequence(
                 cc.delayTime(params.delay || 0),
                 cc.moveTo(params.time || C.TIME, end_postion).easing(params.ease || C.EASE_OUT),
@@ -295,6 +298,7 @@ export class MPanel {
             const end_position = node.position
             node.position = start_position
             node.opacity = C.FADE_0
+            node.active = true
             node.runAction(cc.sequence(
                 cc.delayTime(params.delay || 0),
                 cc.spawn(
@@ -316,6 +320,7 @@ export class MPanel {
     static out_fade_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
         return new Promise(res => {
             const end_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance || C.FADE_MOVE_DISTANCE))
+            node.active = true
             node.runAction(cc.sequence(
                 cc.delayTime(params.delay || 0),
                 cc.spawn(
