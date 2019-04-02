@@ -16,8 +16,8 @@
         "iOS",
         "HTML5"
       ],
-      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-analytics/1.1.6_2.0.1_2.0.2.zip",
-      "package_version_desc": "1、 更新 H5 SDK 版本至 2.0.2。<br>2、 去除 AppSecret 参数。<br>3、appid 参数自动选择当前游戏绑定的游戏 appid。<br>4、 如有相关问题咨询或者需求， 可以联系我们技术支持邮箱 <a href=' '>support-cocos@cocos.com</a>",
+      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-analytics/1.1.7_2.0.3.zip",
+      "package_version_desc": "1、 更新 H5 SDK 版本至 2.0.3。<br>2、 SDK 优化更新，删除 init 接口字段 'channel' ，改为 login 接口输入。<br>3、 如有相关问题咨询或者需求， 可以联系我们技术支持邮箱 <a href=' '>support-cocos@cocos.com</a>",
       "service_component_name": "service-analytics",
       "package_versions": [
         "1.0.0_1.0.5",
@@ -25,7 +25,8 @@
         "1.1.3_2.0.1",
         "1.1.4_2.0.1",
         "1.1.5_2.0.1",
-        "1.1.6_2.0.1_2.0.2"
+        "1.1.6_2.0.1_2.0.2",
+        "1.1.7_2.0.3"
       ],
       "build_platform": [
         "web-mobile",
