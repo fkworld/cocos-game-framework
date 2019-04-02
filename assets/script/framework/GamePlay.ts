@@ -1,10 +1,11 @@
-const { ccclass } = cc._decorator;
+const { ccclass, menu } = cc._decorator;
 
 /**
  * [framework] 游戏主控逻辑
  */
 @ccclass
-export default class GamePlay extends cc.Component {
+@menu("framework/GamePlay")
+export class GamePlay extends cc.Component {
 
     static ins: GamePlay
 

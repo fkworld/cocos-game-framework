@@ -1,5 +1,5 @@
-import { MVersion } from "./MVersion";
 import { PanelMessage } from "../panel/PanelMessage";
+import { MVersion } from "./MVersion";
 
 const C = {
     // 前缀，用来区分自定义的log信息和引擎\系统的log信息

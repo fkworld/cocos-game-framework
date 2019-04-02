@@ -1,13 +1,10 @@
 import { MLog } from "./MLog";
 
-const { ccclass, property } = cc._decorator;
-
 /**
  * [M] 动画管理
  * - 一些简单的、常用的UI动画
  */
-@ccclass
-export class MAction extends cc.Component {
+export class MAction {
 
     /**
      * 时钟动画：每次转动一定的角度

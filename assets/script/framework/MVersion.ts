@@ -1,4 +1,3 @@
-const { ccclass, property } = cc._decorator;
 /** 版本区分 */
 enum VERSION {
     dev,        // 开发者版本
@@ -15,7 +14,6 @@ const C = {
  * - 自定义综合判定，环境+版本
  * - [注意] 这里均使用getter函数来简化，如果都不使用getter函数也可以，保持一致即可
  */
-@ccclass
 export class MVersion {
 
     // 运行环境判定

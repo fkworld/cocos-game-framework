@@ -1,14 +1,14 @@
-import { L } from "./L";
+import { PanelLoading } from "../panel/PanelLoading";
+import { PanelTest } from "../panel/PanelTest";
 import { G } from "./G";
+import { L } from "./L";
+import { Mi18n } from "./Mi18n";
+import { MLog } from "./MLog";
 import { MPanel } from "./MPanel";
 import { MSound } from "./MSound";
-import { Mi18n } from "./Mi18n";
 import { MVersion } from "./MVersion";
-import { MLog } from "./MLog";
-import { PanelTest } from "../panel/PanelTest";
-import { PanelLoading } from "../panel/PanelLoading";
 
-const { ccclass, property } = cc._decorator
+const { ccclass, property, menu } = cc._decorator
 const C = {
     // 游戏信息
     GAME_NAME: 'cocos-game-framework',
@@ -22,6 +22,7 @@ const C = {
  * - 显式调用调整屏幕适配，本地存储初始化、游戏资源的初始化、声音初始化、界面初始化
  */
 @ccclass
+@menu("framework/AppMain")
 export class AppMain extends cc.Component {
 
     start() {

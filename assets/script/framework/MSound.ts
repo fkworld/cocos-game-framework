@@ -1,5 +1,5 @@
-import { L } from "./L";
 import { G } from "./G";
+import { L } from "./L";
 import { MLog } from "./MLog";
 
 interface ISound {

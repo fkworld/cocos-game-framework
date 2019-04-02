@@ -1,6 +1,6 @@
 import { MVersion } from "./MVersion";
 
-const { ccclass, property, executeInEditMode } = cc._decorator;
+const { ccclass, property, executeInEditMode, menu } = cc._decorator;
 
 /** 颜色分类 */
 enum TYPE {
@@ -33,6 +33,7 @@ const C = {
  */
 @ccclass
 @executeInEditMode
+@menu("framework/TColor")
 export class TColor extends cc.Component {
 
     update() {

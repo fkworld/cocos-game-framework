@@ -1,12 +1,12 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
-import { MSound } from "../framework/MSound";
 
-const { ccclass, property } = cc._decorator
+const { ccclass, property, menu } = cc._decorator
 
 /**
  * [Panel] PanelTest
  */
 @ccclass
+@menu("panel/PanelTest")
 export class PanelTest extends cc.Component implements MPanelImplements {
 
     static path = 'PanelTest'
@@ -20,7 +20,7 @@ export class PanelTest extends cc.Component implements MPanelImplements {
     }
 
     async on_open() {
-        MSound.play(MSound.SOUND.test_bgm)
+
     }
 
     async on_close() { }

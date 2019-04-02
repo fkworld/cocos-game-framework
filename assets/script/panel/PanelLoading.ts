@@ -1,7 +1,6 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
-import { MAction } from "../framework/MAction";
 
-const { ccclass, property } = cc._decorator
+const { ccclass, property, menu } = cc._decorator
 const C = {
     FADE_TIME: 1,
 }
@@ -9,6 +8,7 @@ const C = {
  * [Panel] PanelLoading
  */
 @ccclass
+@menu("panel/PanelLoading")
 export class PanelLoading extends cc.Component implements MPanelImplements {
 
     static path = 'PanelLoading'

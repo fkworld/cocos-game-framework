@@ -1,7 +1,7 @@
 import { MLog } from "./MLog";
 import { MVersion } from "./MVersion";
 
-const { ccclass, property, requireComponent, executeInEditMode } = cc._decorator;
+const { ccclass, property, requireComponent, executeInEditMode, menu } = cc._decorator;
 const C = {
 
 }
@@ -24,6 +24,7 @@ enum TYPE_CONTENT { layout, position }      // 列表中item的组合方式：la
 @ccclass
 @requireComponent(cc.ScrollView)
 @executeInEditMode
+@menu("framework/TScrollList")
 export class TScrollList extends cc.Component {
 
     static get(node: cc.Node) { return node.getComponent(TScrollList) }

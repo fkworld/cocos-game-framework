@@ -1,12 +1,13 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
 
-const { ccclass, property } = cc._decorator
+const { ccclass, property, menu } = cc._decorator
 
 /**
  * [Panel] PanelBase
  * - 建议直接通过复制PanelBase.prefab/PanelBase.ts来新建窗口
  */
 @ccclass
+@menu("panel/PanelBase")
 export class PanelBase extends cc.Component implements MPanelImplements {
 
     static path = 'PanelBase'

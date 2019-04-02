@@ -1,12 +1,12 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
-import { MLog } from "../framework/MLog";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
 /**
  * [Panel] Guide+system
  */
 @ccclass
+@menu("panel/PanelGuide")
 export class PanelGuide extends cc.Component implements MPanelImplements {
 
     static path = 'PanelGuide'

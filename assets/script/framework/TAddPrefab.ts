@@ -1,9 +1,10 @@
-const { ccclass, property } = cc._decorator
+const { ccclass, property, menu } = cc._decorator
 
 /**
  * [T] 动态添加prefab，一般在onLoad()时添加
  */
 @ccclass
+@menu("framework/TaddPrefab")
 export class TAddPrefab extends cc.Component {
 
     static get(node: cc.Node) { return node.getComponent(TAddPrefab) }

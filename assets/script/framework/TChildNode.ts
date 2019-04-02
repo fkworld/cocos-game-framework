@@ -1,6 +1,6 @@
 import { MLog } from "./MLog";
 
-const { ccclass, property } = cc._decorator
+const { ccclass, property, menu } = cc._decorator
 
 /**
  * [T] 子节点管理工具
@@ -10,6 +10,7 @@ const { ccclass, property } = cc._decorator
  * - [注意] 观察的子节点名称需要不同
  */
 @ccclass
+@menu("framework/TChildNode")
 export class TChildNode extends cc.Component {
 
     /**

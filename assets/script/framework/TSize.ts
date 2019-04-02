@@ -1,7 +1,7 @@
 import { G } from "./G";
 import { MVersion } from "./MVersion";
 
-const { ccclass, property, executeInEditMode } = cc._decorator
+const { ccclass, property, executeInEditMode, menu } = cc._decorator
 /** 基准类型 */
 enum TYPE { width, height }
 
@@ -13,6 +13,7 @@ enum TYPE { width, height }
  */
 @ccclass
 @executeInEditMode
+@menu("framework/TSize")
 export class TSize extends cc.Component {
 
     update() {

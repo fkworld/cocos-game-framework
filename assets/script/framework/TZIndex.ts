@@ -1,6 +1,6 @@
 import { MVersion } from "./MVersion";
 
-const { ccclass, property, executeInEditMode } = cc._decorator
+const { ccclass, property, executeInEditMode, menu } = cc._decorator
 
 /**
  * [framework-T] z轴顺序（zIndex）工具
@@ -8,6 +8,7 @@ const { ccclass, property, executeInEditMode } = cc._decorator
  */
 @ccclass
 @executeInEditMode
+@menu("framework/TZIndex")
 export class TZIndex extends cc.Component {
 
     update() {

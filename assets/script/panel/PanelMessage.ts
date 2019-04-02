@@ -1,6 +1,6 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 const C = {
     BORDER: 100,
     BTN_Y: -50,
@@ -10,6 +10,7 @@ const C = {
  * [Panel] 一个通用的message页面
  */
 @ccclass
+@menu("panel/PanelMessage")
 export class PanelMessage extends cc.Component implements MPanelImplements {
 
     static path = 'PanelMessage'

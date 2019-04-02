@@ -1,11 +1,11 @@
-import { L } from "./L";
 import { G } from "./G";
+import { L } from "./L";
 import { Mi18n_en } from "./Mi18n_en";
 import { Mi18n_zh } from "./Mi18n_zh";
-import { MVersion } from "./MVersion";
 import { MLog } from "./MLog";
+import { MVersion } from "./MVersion";
 
-const { ccclass, property, executeInEditMode, requireComponent } = cc._decorator
+const { ccclass, property, executeInEditMode, requireComponent, menu } = cc._decorator
 /** 语言类型 */
 enum TYPE { en, zh }
 const C = {
@@ -26,6 +26,7 @@ const C = {
 @ccclass
 @executeInEditMode
 @requireComponent(cc.Label)
+@menu("framework/Mi18n")
 export class Mi18n extends cc.Component {
 
     /** 初始化本地存储 */

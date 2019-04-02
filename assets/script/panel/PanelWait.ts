@@ -1,12 +1,13 @@
-import { MPanel, MPanelImplements } from "../framework/MPanel";
 import { MAction } from "../framework/MAction";
+import { MPanel, MPanelImplements } from "../framework/MPanel";
 
-const { ccclass, property } = cc._decorator
+const { ccclass, property, menu } = cc._decorator
 
 /**
  * [Panel] Wait+system，逻辑与UI合并
  */
 @ccclass
+@menu("panel/PanelWait")
 export class PanelWait extends cc.Component implements MPanelImplements {
 
     static path = 'PanelWait'

@@ -4,4 +4,3 @@
 export const Mi18n_zh = {
 
 }
-Object.freeze(Mi18n_zh)
