@@ -1,4 +1,5 @@
 # cocos游戏轻量级框架
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 * 以个人实践为主，某些处理可能并非是最佳实践。我刚入门游戏开发，还在不断学习中。
 * 个人游戏开发博客，欢迎交流。https://www.yuque.com/fengyong/game-develop-road
 
