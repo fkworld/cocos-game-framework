@@ -22,12 +22,16 @@ export class Gameplay extends cc.Component {
      * - 数据初始化
      * - 包括各子系统的初始化
      */
-    game_init() { }
+    game_init() {
+
+    }
 
     /**
      * 游戏开始运行
      */
-    game_start() { }
+    game_start() {
+
+    }
 
     /** 游戏是否处于暂停状态 */
     is_game_pause: boolean = false
