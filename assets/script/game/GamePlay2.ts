@@ -4,13 +4,13 @@ const { ccclass, menu } = cc._decorator;
  * [framework] 游戏主控逻辑
  */
 @ccclass
-@menu("framework/GamePlay")
-export class GamePlay extends cc.Component {
+@menu("framework/Gameplay")
+export class Gameplay extends cc.Component {
 
-    static ins: GamePlay
+    static ins: Gameplay;
 
     onLoad() {
-        GamePlay.ins = this
+        Gameplay.ins = this
     }
 
     start() {
