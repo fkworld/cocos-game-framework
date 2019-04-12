@@ -13,7 +13,7 @@ const C = {
 @menu("panel/PanelMessage")
 export class PanelMessage extends cc.Component implements MPanelImplements {
 
-    static path = 'PanelMessage'
+    static path = "PanelMessage"
 
     /**
      * 打开message页面
@@ -30,44 +30,31 @@ export class PanelMessage extends cc.Component implements MPanelImplements {
     }
 
     async on_open(item: string | cc.Node, f_yes: () => void, f_no: () => void) {
-        if (typeof item === 'string') {
+        if (typeof item === "string") {
             this.label_message.string = item
-            this.scheduleOnce(() => {
-                this.content.height = this.label_message.node.height + C.BORDER
-                this.layout_btn.y = -this.content.height / 2 + C.BTN_Y
-            }, 0)
         } else if (item instanceof cc.Node) {
-            this.label_message.string = ''
+            this.label_message.string = ""
             let n = cc.instantiate(item)
-            n.parent = this.content
+            n.parent = this.label_message.node
             n.active = true
-            this.content.height = n.height + C.BORDER
-            this.content.width = n.width + C.BORDER
         } else {
 
         }
         this.f_yes = f_yes
         this.f_no = f_no
-        this.layout_btn.y = -this.content.height / 2 + C.BTN_Y
         this.btn_no.active = !!f_no
-        await MPanel.in_scale(this.content)
+        await MPanel.in_scale(this.node)
     }
 
     async on_close() {
-        await MPanel.out_scale(this.content)
+        await MPanel.out_scale(this.node)
     }
 
     f_yes: () => void = null
     f_no: () => void = null
 
-    @property(cc.Node)
-    content: cc.Node = null
-
     @property(cc.Label)
     label_message: cc.Label = null
-
-    @property(cc.Node)
-    layout_btn: cc.Node = null
 
     @property(cc.Node)
     btn_no: cc.Node = null
