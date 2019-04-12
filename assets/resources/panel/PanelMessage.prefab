@@ -235,7 +235,7 @@
     "_lineHeight": 60,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
+      "__uuid__": "c43b6402-fdf6-451d-a84c-bd0bcfcc7164"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -243,7 +243,7 @@
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
-    "_N$overflow": 3,
+    "_N$overflow": 2,
     "_N$cacheMode": 0,
     "_id": ""
   },
@@ -342,18 +342,18 @@
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_string": "message-line",
-    "_N$string": "message-line",
+    "_string": "message-lines",
+    "_N$string": "message-lines",
     "_fontSize": 30,
     "_lineHeight": 50,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
+      "__uuid__": "7b66fb80-7f5e-4159-b680-9050d93c4ebe"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
-    "_N$horizontalAlign": 0,
+    "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
     "_N$overflow": 2,
@@ -586,13 +586,13 @@
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_string": "YES",
-    "_N$string": "YES",
+    "_string": "Yes",
+    "_N$string": "Yes",
     "_fontSize": 30,
     "_lineHeight": 40,
     "_enableWrapText": false,
     "_N$file": {
-      "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
+      "__uuid__": "c43b6402-fdf6-451d-a84c-bd0bcfcc7164"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -907,13 +907,13 @@
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_string": "NO",
-    "_N$string": "NO",
+    "_string": "No",
+    "_N$string": "No",
     "_fontSize": 30,
     "_lineHeight": 40,
     "_enableWrapText": false,
     "_N$file": {
-      "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
+      "__uuid__": "c43b6402-fdf6-451d-a84c-bd0bcfcc7164"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
@@ -1286,14 +1286,8 @@
       "__id__": 1
     },
     "_enabled": true,
-    "content": {
-      "__id__": 2
-    },
     "label_message": {
       "__id__": 8
-    },
-    "layout_btn": {
-      "__id__": 10
     },
     "btn_no": {
       "__id__": 21

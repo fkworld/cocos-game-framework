@@ -1,4 +1,5 @@
 import { MPanel, MPanelImplements } from "../framework/MPanel";
+import { PanelMessage } from "./PanelMessage";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -20,7 +21,7 @@ export class PanelTest extends cc.Component implements MPanelImplements {
     }
 
     async on_open() {
-
+        PanelMessage.open("JavaScript")
     }
 
     async on_close() { }

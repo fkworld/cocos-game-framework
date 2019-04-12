@@ -474,7 +474,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 350,
-      "height": 150
+      "height": 160
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -519,10 +519,10 @@
     "_string": "This is a line for guide info.\nThis is another line.",
     "_N$string": "This is a line for guide info.\nThis is another line.",
     "_fontSize": 30,
-    "_lineHeight": 30,
+    "_lineHeight": 40,
     "_enableWrapText": true,
     "_N$file": {
-      "__uuid__": "afb6377e-7d73-4260-9d97-a22d00a658ab"
+      "__uuid__": "7b66fb80-7f5e-4159-b680-9050d93c4ebe"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
