@@ -1,4 +1,4 @@
-import { MPanel, MPanelImplements } from "../framework/MPanel";
+import { MPanel, MPanelExtends } from "../framework/MPanel";
 
 const { ccclass, property, menu } = cc._decorator
 const C = {
@@ -9,17 +9,7 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelLoading")
-export class PanelLoading extends cc.Component implements MPanelImplements {
-
-    static path = 'PanelLoading'
-
-    static async open() {
-        await MPanel.open(PanelLoading)
-    }
-
-    static async close() {
-        await MPanel.close(PanelLoading)
-    }
+export class PanelLoading extends MPanelExtends {
 
     async on_open() {
         for (let i = 0; i < this.page_list.length; i += 1) {

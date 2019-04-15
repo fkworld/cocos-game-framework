@@ -1,4 +1,4 @@
-import { MPanel, MPanelImplements } from "../framework/MPanel";
+import { MPanel, MPanelExtends } from "../framework/MPanel";
 import { PanelMessage } from "./PanelMessage";
 
 const { ccclass, property, menu } = cc._decorator
@@ -8,20 +8,13 @@ const { ccclass, property, menu } = cc._decorator
  */
 @ccclass
 @menu("panel/PanelTest")
-export class PanelTest extends cc.Component implements MPanelImplements {
-
-    static path = 'PanelTest'
-
-    static async open() {
-        await MPanel.open(PanelTest)
-    }
-
-    static async close() {
-        await MPanel.close(PanelTest)
-    }
+export class PanelTest extends MPanelExtends {
 
     async on_open() {
-        PanelMessage.open("JavaScript")
+        for (let i = 0; i < 5; i += 1) {
+            await MPanel.open(PanelMessage, { item: "NoMercy" })
+        }
+
     }
 
     async on_close() { }

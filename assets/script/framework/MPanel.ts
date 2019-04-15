@@ -4,7 +4,7 @@ import { MLog } from "./MLog";
 /** 移动方向 */
 enum DIRECTION { left, right, up, down, left_up, left_down, right_up, right_down }
 const C = {
-    BASE_PATH: 'panel',
+    BASE_PATH: "panel",
     TIME: 0.3,
     EASE_IN: cc.easeCubicActionOut(),
     EASE_OUT: cc.easeCubicActionIn(),
@@ -18,38 +18,41 @@ const C = {
         right_up: cc.v2(1, 1),
         right_down: cc.v2(1, -1),
     },
-    SCALE_0: 0.01,                  // 某些组件在scale=0时会出现异常，因此将初始值设为0.01
+    SCALE_0: 0.01,                  // 某些组件在scale=0时会出现异常,因此将初始值设为0.01
     SCALE_1: 1,
-    FADE_0: 1,                      // 某些组件在opacity=0时会出现异常，因此将初始值设为1
+    FADE_0: 1,                      // 某些组件在opacity=0时会出现异常,因此将初始值设为1
     FADE_1: 255,
     FADE_MOVE_DISTANCE: 100,        // 在fade-move模式下的移动距离
     FADE_SCALE_TARGET: 2,           // 在fade-scale模式下的目标scale
 }
-
 /** 动作的基础参数 */
-interface ACTION_PARAM {
-    time?: number,
-    delay?: number,
-    ease?: any,
+interface ActionParams {
+    time?: number
+    delay?: number
+    ease?: any
 }
-
-/** 每个子panel的实现类，通过implements */
-export class MPanelImplements extends cc.Component {
-    static path: string = ''                                    // 对应的prefab路径
-    static async open(...param: any[]): Promise<void> { }       // open方法，注意static+async，并内部实现MPanel.open()
-    static async close(...param: any[]): Promise<void> { }      // close方法，注意static+async，并内部实现MPanel.close()
-    async on_open(...param: any[]): Promise<void> { }           // open动画
-    async on_close(...param: any[]): Promise<void> { }          // close动画
+/** panel-config */
+interface MPanelConfig {
+    path?: string           // 资源路径
+    open_type?: "false" | "true" | "chain"  // 打开方式,false-不允许再次打开;true-允许再次打开并覆盖;chain-加入chain,会在关闭界面后依次打开
+    open_params?: object    // 打开界面的参数结构
+    close_params?: object   // 关闭界面的参数结构
+}
+/** 每个子panel的实现类,通过implements */
+export class MPanelExtends extends cc.Component {
+    static config: MPanelConfig = {};       // panel-config-infomation
+    async on_open(params?: object) { };     // panel-open-process
+    async on_close(params?: object) { };    // panel-close-process
 }
 
 /**
  * [M] 游戏窗口管理
- * - 封装窗口打开的open\close接口，API为open\close
- * - 封装窗口中UI打开的in\out接口，API为in\out+type
- * - [注意] 为了避免通过MPanel调用时无法注释每个窗口参数对应的意义，建议在各子窗口中实现相应的static方法标明参数含义
+ * - 封装窗口打开的open/close接口,API为open/close
+ * - 封装窗口中UI打开的in/out接口,API为in/out+type
+ * - [注意] 为了避免通过MPanel调用时无法注释每个窗口参数对应的意义,建议在各子窗口中实现相应的static方法标明参数含义
  * - [注意] 未来可能需要调整并增加node.stopAllActions()
  * - [注意] 目前仅支持同种窗口单个单个显示
- * - [注意] 虽然格式上是static函数，但是需要在AppMain中实例化，使用到了MPanel.ins
+ * - [注意] 虽然格式上是static函数,但是需要在AppMain中实例化,使用到了MPanel.ins
  */
 export class MPanel {
 
@@ -70,6 +73,8 @@ export class MPanel {
     private obj_node: { [key: string]: cc.Node } = {}
     /** panel-prefab存储 */
     private obj_prefab: { [key: string]: cc.Prefab } = {}
+    /** 打开多个panel的array */
+    private arr_command: { panel: typeof MPanelExtends, params?: object }[] = []
 
     /**
      * 打开panel
@@ -77,24 +82,38 @@ export class MPanel {
      * @param params
      * @static @async
      */
-    static async open(panel: typeof MPanelImplements, ...params: any[]) {
-        // 考虑异步延迟，记录当前打开panel应该的z_index
+    static async open<T extends typeof MPanelExtends>(panel: T, params?: T["config"]["open_params"]) {
+        // 获取同名节点进行预处理  
+        let node = MPanel.ins.obj_node[panel.name]
+        switch (panel.config.open_type) {
+            default: case "false":
+                if (node) { return; }
+                break;
+            case "true":
+                if (node) { node.destroy() }
+                break;
+            case "chain":
+                if (node) {
+                    MPanel.ins.arr_command.push({ panel: panel, params: params })
+                    return;
+                }
+                break;
+        }
+        // 考虑异步延迟,记录当前打开panel时对应的zIndex,以及提前存储
         const z_index = MPanel.ins.now_z_index += 1
         // 载入prefab
+        if (!panel.config.path) {
+            panel.config.path = panel.name
+        }
         let prefab = MPanel.ins.obj_prefab[panel.name]
         if (!prefab) {
-            prefab = await G.load_res(`${C.BASE_PATH}/${panel.path}`, cc.Prefab)
+            prefab = await G.load_res(`${C.BASE_PATH}/${panel.config.path}`, cc.Prefab)
             MPanel.ins.obj_prefab[panel.name] = prefab
         }
         // 需要载入的prefab并不存在
         if (!prefab) {
-            MLog.error(`@${MPanel.name}: panel open fail, path=${panel.path}`)
+            MLog.error(`@${MPanel.name}: panel open fail, name=${panel.name}, path=${panel.config.path}`)
             return
-        }
-        // 删除同名节点
-        let node = MPanel.ins.obj_node[panel.name]
-        if (node) {
-            node.destroy()
         }
         // 实例化prefab
         node = cc.instantiate(prefab)
@@ -109,7 +128,7 @@ export class MPanel {
         // 执行节点打开动画
         let c = node.getComponent(panel)
         if (c && c.on_open) {
-            await c.on_open(...params)
+            await c.on_open(params)
         }
     }
 
@@ -119,7 +138,7 @@ export class MPanel {
      * @param param
      * @static @async
      */
-    static async close(panel: typeof MPanelImplements, ...params: any[]) {
+    static async close<T extends typeof MPanelExtends>(panel: T, params?: T["config"]["close_params"]) {
         // 获取节点
         let node = MPanel.ins.obj_node[panel.name]
         if (!node) {
@@ -129,11 +148,18 @@ export class MPanel {
         // 执行节点关闭动画
         let c = node.getComponent(panel)
         if (c && c.on_close) {
-            await c.on_close(...params)
+            await c.on_close(params)
         }
         // 删除节点存储
         node.destroy()
         delete MPanel.ins.obj_node[panel.name]
+        // 打开下一个窗口
+        if (panel.config.open_type === "chain") {
+            let command = MPanel.ins.arr_command.shift()
+            if (command) {
+                MPanel.open(command.panel, command.params) // 注意此处没有await
+            }
+        }
     }
 
     //////////
@@ -170,7 +196,7 @@ export class MPanel {
      * @param params 
      * @static
      */
-    static in_scale(node: cc.Node, params: ACTION_PARAM = {}) {
+    static in_scale(node: cc.Node, params: ActionParams = {}) {
         return new Promise(res => {
             node.scale = C.SCALE_0
             node.active = true
@@ -188,7 +214,7 @@ export class MPanel {
      * @param params 
      * @static
      */
-    static out_scale(node: cc.Node, params: ACTION_PARAM = {}) {
+    static out_scale(node: cc.Node, params: ActionParams = {}) {
         return new Promise(res => {
             node.active = true
             node.runAction(cc.sequence(
@@ -205,7 +231,7 @@ export class MPanel {
      * @param params 
      * @static
      */
-    static in_fade(node: cc.Node, params: ACTION_PARAM = {}) {
+    static in_fade(node: cc.Node, params: ActionParams = {}) {
         return new Promise(res => {
             node.opacity = C.FADE_0
             node.active = true
@@ -223,7 +249,7 @@ export class MPanel {
      * @param params 
      * @static
      */
-    static out_fade(node: cc.Node, params: ACTION_PARAM = {}) {
+    static out_fade(node: cc.Node, params: ActionParams = {}) {
         return new Promise(res => {
             node.active = true
             node.runAction(cc.sequence(
@@ -238,11 +264,11 @@ export class MPanel {
      * 
      * @param node 
      * @param direction 方向
-     * @param distance 距离，默认为null，会计算Math.max(cc.winSize.width, cc.winSize.height)
+     * @param distance 距离,默认为null,会计算Math.max(cc.winSize.width, cc.winSize.height)
      * @param params 
      * @static
      */
-    static in_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+    static in_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ActionParams = {}) {
         return new Promise(res => {
             G.check_widget(node)
             if (!distance) {
@@ -268,7 +294,7 @@ export class MPanel {
      * @param ease 
      * @static
      */
-    static out_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+    static out_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ActionParams = {}) {
         return new Promise(res => {
             if (!distance) {
                 distance = Math.max(cc.winSize.width, cc.winSize.height)
@@ -291,7 +317,7 @@ export class MPanel {
      * @param params 
      * @static
      */
-    static in_fade_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+    static in_fade_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ActionParams = {}) {
         return new Promise(res => {
             G.check_widget(node)
             const start_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance || C.FADE_MOVE_DISTANCE))
@@ -317,7 +343,7 @@ export class MPanel {
      * @param distance 
      * @param params 
      */
-    static out_fade_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ACTION_PARAM = {}) {
+    static out_fade_move(node: cc.Node, direction: keyof typeof DIRECTION, distance: number = null, params: ActionParams = {}) {
         return new Promise(res => {
             const end_position = node.position.add(C.DIRECTION_VEC2[direction].mul(distance || C.FADE_MOVE_DISTANCE))
             node.active = true
