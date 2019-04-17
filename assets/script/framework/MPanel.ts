@@ -102,17 +102,15 @@ export class MPanel {
         // 考虑异步延迟,记录当前打开panel时对应的zIndex,以及提前存储
         const z_index = MPanel.ins.now_z_index += 1
         // 载入prefab
-        if (!panel.config.path) {
-            panel.config.path = panel.name
-        }
+        let path = panel.config.path || panel.name
         let prefab = MPanel.ins.obj_prefab[panel.name]
         if (!prefab) {
-            prefab = await G.load_res(`${C.BASE_PATH}/${panel.config.path}`, cc.Prefab)
+            prefab = await G.load_res(`${C.BASE_PATH}/${path}`, cc.Prefab)
             MPanel.ins.obj_prefab[panel.name] = prefab
         }
         // 需要载入的prefab并不存在
         if (!prefab) {
-            MLog.error(`@${MPanel.name}: panel open fail, name=${panel.name}, path=${panel.config.path}`)
+            MLog.error(`@${MPanel.name}: panel open fail, name=${panel.name}, path=${path}`)
             return
         }
         // 实例化prefab
