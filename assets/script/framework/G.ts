@@ -167,8 +167,7 @@ export class G {
     ```
      */
     static fake_template_string(template: string, ...params: any[]): string {
-        let reg = /\{([0-9]+?)\}/g
-        return template.replace(reg, (match, index) => params[index])
+        return template.replace(/\{([0-9]+?)\}/g, (match, index) => params[index])
     }
 
     /**
@@ -177,9 +176,7 @@ export class G {
      * @param target 
      */
     static check_ins(target: any) {
-        if (target.ins) {
-            cc.error(`@${target.name}: repeat init ins, please check`)
-        }
+        target.ins && cc.error(`@${target.name}: repeat init ins, please check`)
     }
 
     /**
@@ -263,11 +260,7 @@ export class G {
     static load_res<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>> {
         return new Promise(res => {
             cc.loader.loadRes(path, type, (err, resource) => {
-                if (err) {
-                    res(null)
-                } else {
-                    res(resource)
-                }
+                err ? res(null) : res(resource)
             })
         })
     }
@@ -281,11 +274,7 @@ export class G {
     static load_res_dir<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>[]> {
         return new Promise(res => {
             cc.loader.loadResDir(path, type, (err, resource) => {
-                if (err) {
-                    res(null)
-                } else {
-                    res(resource)
-                }
+                err ? res(null) : res(resource)
             })
         })
     }
