@@ -159,14 +159,13 @@ export class G {
      * @param template 伪模板字符串，使用{index}来表示参数，index表示参数序号
      * @param params 多个参数；注意排序
      * @example
-    ```ts
-    function s = 'this is {0}, and {this1} is {1}, {1}, {2}'
-    function r = Mi18n.fake_template_string(s, 'param0', 'param1')
-    console.log(r)
-     'this is param0, and {this1} is param1, param1, undefined'
+    ```
+    let s = "this is {0}, and {this1} is {1}, {1}, {2}";
+    let r = G.fake_template_string(s, "param0", "param1");
+    console.log(r); // "this is param0, and {this1} is param1, param1, undefined"
     ```
      */
-    static fake_template_string(template: string, ...params: any[]): string {
+    static fake_template_string(template: string, ...params: string[]): string {
         return template.replace(/\{([0-9]+?)\}/g, (match, index) => params[index])
     }
 
@@ -247,19 +246,18 @@ export class G {
         for (let i = 0; i < length; i += 1) {
             result.push(random_string_list[Math.trunc(Math.random() * random_string_list.length)])
         }
-        return result.join('')
+        return result.join("")
     }
 
     /**
      * 载入单个资源
-     * - 输出log
-     * @todo ts的类型系统（特别是泛型这一块）需要进一步学习，争取去掉<any>强制类型转换
      * @param path 
      * @param type 
      */
     static load_res<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>> {
         return new Promise(res => {
             cc.loader.loadRes(path, type, (err, resource) => {
+                err && cc.warn(`load res fail, path=${path}, err=${err}`)
                 err ? res(null) : res(resource)
             })
         })
@@ -267,13 +265,14 @@ export class G {
 
     /**
      * 载入dir资源
-     * - [注意] 编辑器中的载入顺序与打包之后的载入顺序不同（不同的打包平台顺序也不同），因此在载入完成后需要对数组进行二次处理
+     * - [注意] 编辑器中的载入顺序与打包之后的载入顺序不同（不同的打包平台顺序也不同），因此在载入完成后需要对数组排序进行处理
      * @param path 
      * @param type 
      */
     static load_res_dir<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>[]> {
         return new Promise(res => {
             cc.loader.loadResDir(path, type, (err, resource) => {
+                err && cc.warn(`load res dir fail, path=${path}, err=${err}`)
                 err ? res(null) : res(resource)
             })
         })

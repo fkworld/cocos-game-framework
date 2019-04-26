@@ -4,7 +4,12 @@ enum VERSION {
     rc,         // 正式版本
 }
 const C = {
+    // 版本信息
     VERSION: VERSION.dev,   // 默认为dev版本，打包时需要修改
+    // 游戏信息
+    NAME: "cocos-game-framework",
+    VERSION_NUMBER: "0.0",
+    CREATOR: "skyfox-fengyong",
 }
 
 /**
@@ -15,6 +20,13 @@ const C = {
  * - [注意] 这里均使用getter函数来简化，如果都不使用getter函数也可以，保持一致即可
  */
 export class MVersion {
+
+    // 获取游戏信息
+
+    static get VERSION() { return VERSION[C.VERSION] }
+    static get NAME() { return C.NAME }
+    static get VERSION_NUMBER() { return C.VERSION_NUMBER }
+    static get CREATOR() { return C.CREATOR }
 
     // 运行环境判定
 
