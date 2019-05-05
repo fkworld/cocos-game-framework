@@ -7,9 +7,9 @@ enum TYPE { width, height }
 
 /**
  * [T] size工具，使其保持比例调整大小
- * - [使用流程] 添加脚本-点击save-修改type,修改current_size中的对应项-点击preview
+ * - [使用流程] 添加脚本,点击save,修改type,修改current_size中的对应项,点击preview
  * - [注意] 计算结果保留1位小数
- * - [注意] source_size是节点的源比例；尽量save后就不要进行修改
+ * - [注意] source_size是节点的源比例;尽量save后就不要进行修改
  */
 @ccclass
 @executeInEditMode
@@ -35,7 +35,7 @@ export class TSize extends cc.Component {
     @property({ tooltip: '保存' })
     private save: boolean = false
 
-    /** 初始size；x-width；y-height */
+    /** 初始size;x-width;y-height */
     @property({ tooltip: '基准size', readonly: true })
     private source_size: cc.Vec2 = cc.v2(1, 1)
 
@@ -43,7 +43,7 @@ export class TSize extends cc.Component {
     @property({ tooltip: '预览' })
     private preview: boolean = false
 
-    /** 当前size；x-width；y-height */
+    /** 当前size;x-width;y-height */
     @property({ tooltip: '当前size' })
     private current_size: cc.Vec2 = cc.v2(1, 1)
 

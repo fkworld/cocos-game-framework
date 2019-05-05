@@ -1,10 +1,10 @@
 const { ccclass, property, menu } = cc._decorator
 
 /**
- * [T] 动态添加prefab，一般在onLoad()时添加
+ * [T] 动态添加prefab,一般在onLoad()时添加
  */
 @ccclass
-@menu("framework/TaddPrefab")
+@menu("framework/TAddPrefab")
 export class TAddPrefab extends cc.Component {
 
     static get(node: cc.Node) { return node.getComponent(TAddPrefab) }
@@ -13,24 +13,22 @@ export class TAddPrefab extends cc.Component {
 
     static get_prefab_node(node: cc.Node) { return node.getComponent(TAddPrefab).prefab_node }
 
-    @property({ tooltip: '需要添加的prefab', type: cc.Prefab })
+    @property({ tooltip: "需要添加的prefab", type: cc.Prefab })
     private prefab: cc.Prefab = null
 
     /** 是否在onLoad()时自动创建 */
-    @property({ tooltip: '是否在onLoad()时自动添加' })
+    @property({ tooltip: "是否在onLoad()时自动添加" })
     private is_play_onload: boolean = true
 
     /** 创建时是否重置位置为0 */
-    @property({ tooltip: '是否初始化位置为(0,0)' })
+    @property({ tooltip: "是否初始化位置为(0,0)" })
     private is_reset_position: boolean = true
 
     /** prefab创建成功后对应的node */
     private prefab_node: cc.Node
 
     onLoad() {
-        if (this.is_play_onload) {
-            this.add_prefab()
-        }
+        this.is_play_onload && this.add_prefab()
     }
 
     /** 添加prefab */

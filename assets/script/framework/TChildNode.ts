@@ -5,7 +5,7 @@ const { ccclass, property, menu } = cc._decorator
 /**
  * [T] 子节点管理工具
  * - [目的] 用于解决需要在节点内部getChildByName()来获取到子节点的场景
- * - [用法] 需要将此作为需要观察节点的组件；并将需要观察节点的子节点拖入组件；后面的静态方法定义了使用接口
+ * - [用法] 需要将此作为需要观察节点的组件,并将需要观察节点的子节点拖入组件,后面的静态方法定义了使用接口
  * - [注意] 理论上可以观察非子节点，但是逻辑上并不推荐使用
  * - [注意] 观察的子节点名称需要不同
  */
@@ -46,7 +46,7 @@ export class TChildNode extends cc.Component {
 
 
     /**
-     * 获取被观察的子节点；如果找不到则返回undefined
+     * 获取被观察的子节点,如果找不到则返回undefined
      * @param name 
      */
     private get_child_node(name: string): cc.Node {

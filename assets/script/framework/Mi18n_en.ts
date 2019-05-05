@@ -1,7 +1,7 @@
 /**
  *  [Mi18n] 英文
- * - 作为基础显示，通过 ```:{ [key in keyof typeof Mi18n_en]?: string }``` 来进行类型管理。
- * - 标题首字母大写，尽量不要出现均大写的情况。
+ * - 作为基础显示,通过 ```:{ [key in keyof typeof Mi18n_en]?: string }``` 来进行类型管理.
+ * - 标题首字母大写,尽量不要出现均大写的情况.
  */
 export const Mi18n_en = {
 

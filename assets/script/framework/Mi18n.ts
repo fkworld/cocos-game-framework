@@ -14,7 +14,7 @@ const C = {
         zh: Mi18n_zh,
     },                              // 数据对应
     EDITOR_TYPE: TYPE[TYPE.en],     // 编辑器语言
-    DEFAULT_KEY: 'enter-a-key',     // 默认key
+    DEFAULT_KEY: "enter-a-key",     // 默认key
 }
 
 /**
@@ -38,7 +38,7 @@ export class Mi18n extends cc.Component {
      * @param param
      */
     static text(key: string, ...param: any[]): string {
-        let type = MVersion.run_editor || !L.language ? C.EDITOR_TYPE : L.language
+        let type = (MVersion.run_editor || !L.language) ? C.EDITOR_TYPE : L.language
         let value = C.DATA[type][key]
         if (!value) {
             value = key
@@ -58,16 +58,16 @@ export class Mi18n extends cc.Component {
         }
     }
 
-    /** key；无法使用notify() */
-    @property({ tooltip: '字符串key' })
+    /** key;无法使用notify() */
+    @property({ tooltip: "字符串key" })
     private key: string = C.DEFAULT_KEY
 
     /** 参数 */
-    @property({ tooltip: '字符串参数', type: cc.String })
+    @property({ tooltip: "字符串参数", type: cc.String })
     private param: string[] = []
 
     /** 预览（点击后刷新编辑器） */
-    @property({ tooltip: '预览1次；预览完毕后置于false' })
+    @property({ tooltip: "预览1次;预览完毕后置于false" })
     private preview: boolean = false
 
     /**

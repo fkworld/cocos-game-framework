@@ -2,7 +2,7 @@ import { MLog } from "./MLog";
 
 /**
  * [M] 动画管理
- * - 一些简单的、常用的UI动画
+ * - 封装一些简单的常用的动画
  */
 export class MAction {
 

@@ -25,6 +25,7 @@ const C = {
 export class PanelMessage extends MPanelExtends {
 
     static PATH = "PanelMessage"
+    static TYPE = <"chain">"chain"
     static OPEN_PARAMS: PanelParams["OpenParams"]
 
     async on_open(params: typeof PanelMessage.OPEN_PARAMS) {
@@ -58,16 +59,12 @@ export class PanelMessage extends MPanelExtends {
     btn_no: cc.Node = null
 
     event_ok() {
-        if (this.f_yes) {
-            this.f_yes()
-        }
+        this.f_yes && this.f_yes()
         MPanel.close(PanelMessage)
     }
 
     event_cancel() {
-        if (this.f_no) {
-            this.f_no()
-        }
+        this.f_no && this.f_no()
         MPanel.close(PanelMessage)
     }
 }

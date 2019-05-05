@@ -4,10 +4,10 @@ import { MLog } from "./MLog";
 
 interface ISound {
     url: string,            // 声音的资源字符串
-    loop?: boolean,         // 是否循环播放，是否为bgm，默认为false
-    volume?: number,        // 音量，默认为1
-    clip?: cc.AudioClip,    // 声音的cc.AudioClip资源，默认为null
-    id?: number,            // 声音的播放id，默认为null
+    loop?: boolean,         // 是否循环播放,是否为bgm,默认为false
+    volume?: number,        // 音量,默认为1
+    clip?: cc.AudioClip,    // 声音的cc.AudioClip资源,默认为null
+    id?: number,            // 声音的播放id,默认为null
 }
 const C = {
     PATH: 'sound',          // 资源路径
@@ -20,7 +20,7 @@ const C = {
 
 /**
  * [M] 声音管理
- * - 保存已经载入的声音，cc.AudioClip
+ * - 保存已经载入的声音,cc.AudioClip
  * - 保存已经播放的声音id
  */
 export class MSound {
@@ -50,7 +50,7 @@ export class MSound {
         }
     }
 
-    /** 设置声音开关（直接反向） */
+    /** 设置声音开关(直接反向) */
     static set_sound_switch() {
         L.sound = !L.sound
         if (L.sound) {
@@ -60,7 +60,7 @@ export class MSound {
         }
     }
 
-    /** 播放某一个声音：play/resume */
+    /** 播放某一个声音:play/resume */
     static async play(sound: keyof typeof C.SOUND) {
         if (!L.sound) { return }
         let info: ISound = MSound.ins.obj_sound_info[sound]
@@ -68,7 +68,7 @@ export class MSound {
         if (!info.clip) { info.clip = await G.load_res(`${C.PATH}/${info.url}`, cc.AudioClip) }
         if (!info.clip) { MLog.error(`@MSound: a not exsit audio clip, url=${info.url}`); return }
         if (info.loop) {
-            // bgm类型，循环播放，只需要播放1次即可
+            // bgm类型,循环播放,只需要播放1次即可
             switch (cc.audioEngine.getState(info.id)) {
                 case cc.audioEngine.AudioState.ERROR: case cc.audioEngine.AudioState.STOPPED:
                     MSound.ins.obj_sound_info[sound].id = cc.audioEngine.play(info.clip, info.loop, info.volume)
@@ -80,24 +80,24 @@ export class MSound {
                     break;
             }
         } else {
-            // 普通音效类型，重复播放，相互独立
+            // 普通音效类型,重复播放,相互独立
             MSound.ins.obj_sound_info[sound].id = cc.audioEngine.play(info.clip, info.loop, info.volume)
         }
     }
 
-    /** 停止某一个声音：stop/pause */
+    /** 停止某一个声音:stop/pause */
     static stop(sound: keyof typeof C.SOUND) {
         let info: ISound = MSound.ins.obj_sound_info[sound]
         if (info.loop) {
-            // bgm类型，pause
+            // bgm类型,pause
             cc.audioEngine.pause(info.id)
         } else {
-            // 普通音效类型，stop
+            // 普通音效类型,stop
             cc.audioEngine.stop(info.id)
         }
     }
 
-    /** 暂停所有声音（现有），主要用于关闭声音，引导界面等 */
+    /** 暂停所有声音(现有),主要用于关闭声音,引导界面等 */
     static pause_all() {
         cc.audioEngine.pauseAll()
     }
@@ -113,7 +113,7 @@ export class MSound {
         MSound.play("bgm-test")
     }
 
-    /** 常用的声音：按钮 */
+    /** 常用的声音:按钮 */
     static play_btn() {
         MSound.play("btn")
     }

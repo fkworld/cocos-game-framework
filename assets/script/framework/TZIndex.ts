@@ -3,7 +3,7 @@ import { MVersion } from "./MVersion";
 const { ccclass, property, executeInEditMode, menu } = cc._decorator
 
 /**
- * [framework-T] z轴顺序（zIndex）工具
+ * [framework-T] z轴顺序(zIndex)工具
  * - [注意] 仅在编辑器中执行，不在onLoad()时执行
  */
 @ccclass
