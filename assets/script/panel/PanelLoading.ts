@@ -11,6 +11,8 @@ const C = {
 @menu("panel/PanelLoading")
 export class PanelLoading extends MPanelExtends {
 
+    static PATH = "PanelLoading"
+
     async on_open() {
         for (let i = 0; i < this.page_list.length; i += 1) {
             await MPanel.in_fade(this.page_list[i], { time: C.FADE_TIME })

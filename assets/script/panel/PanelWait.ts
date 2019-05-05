@@ -10,6 +10,8 @@ const { ccclass, property, menu } = cc._decorator
 @menu("panel/PanelWait")
 export class PanelWait extends MPanelExtends {
 
+    static PATH = "PanelWait"
+
     async on_open() {
         MAction.clock(this.wait_icon, 45, 0.1, cc.macro.REPEAT_FOREVER)
     }

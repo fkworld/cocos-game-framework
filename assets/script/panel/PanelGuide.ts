@@ -1,11 +1,13 @@
 import { MPanel, MPanelExtends } from "../framework/MPanel";
 
 const { ccclass, property, menu } = cc._decorator;
-interface OpenParams {
-    world_position: cc.Vec2
-    info: string
+interface PanelParams {
+    /** 打开参数 */
+    OpenParams: {
+        world_position: cc.Vec2
+        info: string
+    }
 }
-interface CloseParams { }
 
 /**
  * [Panel] Guide+system
@@ -14,13 +16,10 @@ interface CloseParams { }
 @menu("panel/PanelGuide")
 export class PanelGuide extends MPanelExtends {
 
-    static config = {
-        open_type: <"chain">"chain",
-        open_params: <OpenParams>{},
-        close_params: <CloseParams>{},
-    }
+    static PATH = "PanelGuide"
+    static OPEN_PARAMS: PanelParams["OpenParams"];
 
-    async on_open(params: OpenParams) {
+    async on_open(params: typeof PanelGuide.OPEN_PARAMS) {
         this.arrow_point.position = this.arrow_point.parent.convertToNodeSpaceAR(params.world_position)
         this.label_info.string = params.info
         MPanel.in_fade_move(this.arrow_point, "down")

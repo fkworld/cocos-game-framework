@@ -1,14 +1,20 @@
 import { MPanel, MPanelExtends } from "../framework/MPanel";
 
 const { ccclass, property, menu } = cc._decorator;
+/** 界面参数 */
+interface PanelParams {
+    /** 打开参数 */
+    OpenParams: {
+        item: string | cc.Node
+        f_yes?: () => void
+        f_no?: () => void
+    }
+    /** 关闭参数 */
+    CloseParams: {}
+}
 const C = {
     BORDER: 100,
     BTN_Y: -50,
-}
-interface OpenParams {
-    item: string | cc.Node
-    f_yes?: () => void
-    f_no?: () => void
 }
 
 /**
@@ -18,12 +24,10 @@ interface OpenParams {
 @menu("panel/PanelMessage")
 export class PanelMessage extends MPanelExtends {
 
-    static config = {
-        open_type: <"chain">"chain",
-        open_params: <OpenParams>{},
-    }
+    static PATH = "PanelMessage"
+    static OPEN_PARAMS: PanelParams["OpenParams"]
 
-    async on_open(params: OpenParams) {
+    async on_open(params: typeof PanelMessage.OPEN_PARAMS) {
         if (typeof params.item === "string") {
             this.label_message.string = params.item
         } else if (params.item instanceof cc.Node) {

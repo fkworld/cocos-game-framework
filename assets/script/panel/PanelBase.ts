@@ -1,11 +1,16 @@
 import { MPanel, MPanelExtends } from "../framework/MPanel";
 
 const { ccclass, property, menu } = cc._decorator
+/** 界面参数 */
+interface PanelParams {
+    /** 打开参数 */
+    OpenParams: {}
+    /** 关闭参数 */
+    CloseParams: {}
+}
 const C = {
 
 }
-interface OpenParams { }
-interface CloseParams { }
 
 /**
  * [Panel] PanelBase
@@ -17,17 +22,16 @@ interface CloseParams { }
 @menu("panel/PanelBase")
 export class PanelBase extends MPanelExtends {
 
-    static config = {
-        open_type: <"false">"false",
-        open_params: <OpenParams>{},
-        close_params: <CloseParams>{},
+    static PATH = "PanelBase"
+    static TYPE = <"single">"single"
+    static OPEN_PARAMS: PanelParams["OpenParams"]
+    static CLOSE_PARAMS: PanelParams["CloseParams"]
+
+    async on_open(params: typeof PanelBase.OPEN_PARAMS) {
+
     }
 
-    async on_open(params: OpenParams) {
-
-    }
-
-    async on_close(params: CloseParams) {
+    async on_close(params: typeof PanelBase.CLOSE_PARAMS) {
 
     }
 }
