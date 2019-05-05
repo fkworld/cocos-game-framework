@@ -33,11 +33,11 @@ export class TChildNode extends cc.Component {
         for (let i = 0; i < this.list_child_node.length; i += 1) {
             let child_node = this.list_child_node[i]
             if (!child_node) {
-                MLog.warn(`@${TChildNode.name}: get a null node, node-name=${this.node.name}`)
+                MLog.warn(`@TChildNode: get a null node, node-name=${this.node.name}`)
                 continue;
             }
             if (this.obj_child_node[child_node.name]) {
-                MLog.warn(`@${TChildNode.name}: get a same-name node, node-name=${this.node.name}, same-name=${child_node.name}`)
+                MLog.warn(`@TChildNode: get a same-name node, node-name=${this.node.name}, same-name=${child_node.name}`)
                 continue;
             }
             this.obj_child_node[child_node.name] = child_node
@@ -54,7 +54,7 @@ export class TChildNode extends cc.Component {
             this.trans_data()
         }
         if (!this.obj_child_node[name]) {
-            MLog.error(`@${TChildNode.name}: get a undefined node, name=${name}`)
+            MLog.error(`@TChildNode: get a undefined node, name=${name}`)
         }
         return this.obj_child_node[name]
     }

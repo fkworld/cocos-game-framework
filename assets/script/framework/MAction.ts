@@ -27,7 +27,7 @@ export class MAction {
      */
     static count_down(node: cc.Node, number: number, f = () => { }) {
         let label = node.getComponent(cc.Label)
-        if (!label) { MLog.warn(`@${MAction.name}: no label component`); return }
+        if (!label) { MLog.warn(`@MAction: no label component`); return }
         label.unscheduleAllCallbacks()
         label.string = `${number}`
         node.active = true

@@ -42,7 +42,7 @@ export class Mi18n extends cc.Component {
         let value = C.DATA[type][key]
         if (!value) {
             value = key
-            MLog.warn(`@${Mi18n.name}: get a not exist key, key=${key}`)
+            MLog.warn(`@Mi18n: get a not exist key, key=${key}`)
         }
         return G.fake_template_string(value, ...param)
     }

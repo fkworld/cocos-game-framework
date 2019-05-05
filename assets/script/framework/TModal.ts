@@ -48,7 +48,7 @@ export class TModal extends cc.Component {
     let btn = this.getComponent(cc.Button)
     let event = new cc.Component.EventHandler();
     event.target = this.node
-    event.component = TModal.name
+    event.component = "TModal"
     event.handler = "event_click"
     btn.clickEvents[0] = event
   }

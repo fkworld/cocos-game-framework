@@ -66,7 +66,7 @@ export class MSound {
         let info: ISound = MSound.ins.obj_sound_info[sound]
         // 载入audio clip资源
         if (!info.clip) { info.clip = await G.load_res(`${C.PATH}/${info.url}`, cc.AudioClip) }
-        if (!info.clip) { MLog.error(`@${MSound.name}: a not exsit audio clip, url=${info.url}`); return }
+        if (!info.clip) { MLog.error(`@MSound: a not exsit audio clip, url=${info.url}`); return }
         if (info.loop) {
             // bgm类型，循环播放，只需要播放1次即可
             switch (cc.audioEngine.getState(info.id)) {

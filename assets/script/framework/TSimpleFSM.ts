@@ -13,7 +13,7 @@ export class TSimpleFSM {
         // check，只检查并报错，不进行额外处理
         for (let s in obj_state) {
             if (typeof obj_state[s] != 'function') {
-                MLog.error(`@${TSimpleFSM.name}: get a not-function value, state=${s}`)
+                MLog.error(`@TSimpleFSM: get a not-function value, state=${s}`)
                 // return
             }
         }
@@ -34,7 +34,7 @@ export class TSimpleFSM {
         if (typeof f === 'function') {
             f()
         } else {
-            MLog.error(`@${TSimpleFSM.name}: get a not-function value, state=${new_state}`)
+            MLog.error(`@TSimpleFSM: get a not-function value, state=${new_state}`)
         }
     }
 }
