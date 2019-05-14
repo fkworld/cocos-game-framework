@@ -166,7 +166,7 @@ export class G {
     ```
      */
     static fake_template_string(template: string, ...params: string[]): string {
-        return template.replace(/\{([0-9]+?)\}/g, (match, index) => params[index])
+        return template.replace(/\{([0-9]+?)\}/g, (match, index) => params[index] || `\{${index}\}`)
     }
 
     /**

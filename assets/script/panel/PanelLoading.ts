@@ -1,4 +1,6 @@
 import { MPanel, MPanelExtends } from "../framework/MPanel";
+import { Mi18n } from "../framework/Mi18n";
+import { MVersion } from "../framework/MVersion";
 
 const { ccclass, property, menu } = cc._decorator
 const C = {
@@ -14,13 +16,20 @@ export class PanelLoading extends MPanelExtends {
     static PATH = "PanelLoading"
 
     async on_open() {
-        this.page_list.forEach(v => v.active = false)
-        for (let node of this.page_list) {
-            await MPanel.in_fade(node, { time: C.FADE_TIME })
-            await MPanel.out_fade_move(node, "up", null, { time: C.FADE_TIME })
-        }
+        this.label_game_info.string = Mi18n.text(
+            "panel_loading_game_info",
+            MVersion.NAME,
+            MVersion.CREATOR,
+            MVersion.VERSION_NUMBER,
+            MVersion.VERSION_TIME
+        )
+        await MPanel.in_fade_move(this.node, "down", null, { time: C.FADE_TIME })
     }
 
-    @property(cc.Node)
-    private page_list: cc.Node[] = []
+    async on_close() {
+        await MPanel.out_fade_move(this.node, "up", null, { time: C.FADE_TIME })
+    }
+
+    @property(cc.Label)
+    private label_game_info: cc.Label = null
 }

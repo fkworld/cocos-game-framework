@@ -256,9 +256,9 @@
     "_N$string": "This is a game panel.",
     "_fontSize": 30,
     "_lineHeight": 40,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_N$file": {
-      "__uuid__": "7b66fb80-7f5e-4159-b680-9050d93c4ebe"
+      "__uuid__": "c43b6402-fdf6-451d-a84c-bd0bcfcc7164"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,

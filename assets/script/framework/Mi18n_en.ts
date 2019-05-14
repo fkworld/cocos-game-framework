@@ -5,8 +5,8 @@
  */
 export const Mi18n_en = {
 
-    "panel_loading_creator": "Created by skyfoxgame-fengyong",
-    "panel_loading_version": "Version:0.0 @2019-4-12",
+
+    "panel_loading_game_info": "{0}\nCreated by {1}\nV {2} @{3}",
 
     "panel_message_title": "Message",
     "panel_message_yes": "Yes",

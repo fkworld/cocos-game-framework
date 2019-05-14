@@ -9,6 +9,7 @@ const { ccclass, property, executeInEditMode, requireComponent, menu } = cc._dec
 /** 语言类型 */
 enum TYPE { en, zh }
 const C = {
+    // 对应数据
     DATA: {
         en: Mi18n_en,
         zh: Mi18n_zh,
@@ -37,7 +38,7 @@ export class Mi18n extends cc.Component {
      * @param key
      * @param param
      */
-    static text(key: string, ...param: any[]): string {
+    static text(key: keyof typeof C.DATA["en"], ...param: any[]): string {
         let type = (MVersion.run_editor || !L.language) ? C.EDITOR_TYPE : L.language
         let value = C.DATA[type][key]
         if (!value) {
@@ -48,7 +49,7 @@ export class Mi18n extends cc.Component {
     }
 
     onLoad() {
-        this.update_label()
+        this.play_onload && this.update_label()
     }
 
     update() {
@@ -70,12 +71,20 @@ export class Mi18n extends cc.Component {
     @property({ tooltip: "预览1次;预览完毕后置于false" })
     private preview: boolean = false
 
+    @property({ tooltip: "是否在onLoad()时候修改" })
+    private play_onload: boolean = true
+
+    private label: cc.Label;
+
     /**
      * 更新label
      * - 目前仅支持cc.Label组件
      * @param label node中的cc.Label组件
      */
     private update_label() {
-        this.node.getComponent(cc.Label).string = Mi18n.text(this.key, ...this.param)
+        if (!this.label) {
+            this.label = this.node.getComponent(cc.Label)
+        }
+        this.label.string = Mi18n.text(<any>this.key, ...this.param)
     }
 }

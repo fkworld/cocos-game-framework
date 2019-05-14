@@ -8,8 +8,9 @@ const C = {
     VERSION: VERSION.dev,   // 默认为dev版本,打包时需要修改
     // 游戏信息
     NAME: "cocos-game-framework",
-    VERSION_NUMBER: "0.0",
     CREATOR: "skyfox-fengyong",
+    VERSION_NUMBER: "0.0",
+    VERSION_TIME: "2019-5-14",
 }
 
 /**
@@ -25,8 +26,9 @@ export class MVersion {
 
     static get VERSION() { return VERSION[C.VERSION] }
     static get NAME() { return C.NAME }
-    static get VERSION_NUMBER() { return C.VERSION_NUMBER }
     static get CREATOR() { return C.CREATOR }
+    static get VERSION_NUMBER() { return C.VERSION_NUMBER }
+    static get VERSION_TIME() { return C.VERSION_TIME }
 
     // 运行环境判定
 
