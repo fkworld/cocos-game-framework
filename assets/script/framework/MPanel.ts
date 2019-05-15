@@ -1,10 +1,12 @@
 import { G } from "./G";
 import { MLog } from "./MLog";
+import { MVersion } from "./MVersion";
 
 /** 移动方向 */
 enum DIRECTION { left, right, up, down, left_up, left_down, right_up, right_down }
 const C = {
     BASE_PATH: "panel",
+    MAGIC_PANEL_NAME: "FTS",
     TIME: 0.3,
     EASE_IN: cc.easeCubicActionOut(),
     EASE_OUT: cc.easeCubicActionIn(),
@@ -31,20 +33,49 @@ interface ActionParams {
     delay?: number
     ease?: any
 }
+/** panel-config,panel配置 */
+interface PanelConfig {
+    /** 资源路径;同时也作为唯一key使用 */
+    PATH: string
+    /** 打开方式;single-不允许再次打开;cover-再次打开时覆盖;chain-再次打开时会加入chain */
+    TYPE?: "single" | "cover" | "chain"
+}
+/** panel-instance,panel实例 */
+interface PanelInstance {
+    /** 对应的prefab */
+    prefab: cc.Prefab
+    /** 实例node,单个 */
+    node: cc.Node
+    /** 命令集合 */
+    cmd: object[]
+}
+/** 装饰器函数,panel配置参数;装饰器的设置会覆盖内部设置 */
+export function MPanelConfig(config: PanelConfig) {
+    return (constructor: typeof MPanelExtends) => {
+        // 特别注意,由于js中原型继承的bug,这里的config必须创建新的object而不是修改
+        constructor.CONFIG = {
+            PATH: config.PATH || constructor.CONFIG.PATH,
+            TYPE: config.TYPE || constructor.CONFIG.TYPE,
+        }
+        // 注意,冻结之后在严格模式下会报错,在非严格模式下会跳过;cocos脚本运行方式为严格模式
+        Object.freeze(constructor.CONFIG)
+    }
+}
 /** 每个子panel的抽象类;注意必须实现CONFIG-PATH属性. */
 export abstract class MPanelExtends extends cc.Component {
-    /** 资源路径;同时也作为唯一key使用 */
-    static PATH: string;
-    /** 打开方式;single-不允许再次打开;cover-再次打开时覆盖;chain-再次打开时会加入chain */
-    static TYPE?: "single" | "cover" | "chain";
+    /** panel的配置参数 */
+    static CONFIG: PanelConfig = {
+        PATH: C.MAGIC_PANEL_NAME,
+        TYPE: "single",
+    }
     /** 打开界面的参数结构 */
-    static OPEN_PARAMS?: object;
+    static OPEN_PARAMS: object;
     /** 关闭界面的参数结构 */
-    static CLOSE_PARAMS?: object;
+    static CLOSE_PARAMS: object;
     /** panel-open-process */
-    async on_open(params?: object) { };
+    async on_open(params: object) { };
     /** panel-close-process */
-    async on_close(params?: object) { };
+    async on_close(params: object) { };
 }
 
 /**
@@ -58,7 +89,7 @@ export abstract class MPanelExtends extends cc.Component {
  */
 export class MPanel {
 
-    static ins: MPanel
+    static ins: MPanel;
 
     static init(parent_node: cc.Node) {
         G.check_ins(MPanel)
@@ -72,7 +103,7 @@ export class MPanel {
     /** 当前的渲染层级 */
     private now_z_index: number;
     /** panel-实例的map结构存储;包括prefab,node,cmd */
-    private map_ins: Map<string, { prefab: cc.Prefab, node: cc.Node, cmd: object[] }> = new Map()
+    private map_ins: Map<string, PanelInstance> = new Map()
 
     /**
      * 打开panel
@@ -80,15 +111,23 @@ export class MPanel {
      * @param params
      * @static @async
      */
-    static async open<T extends typeof MPanelExtends>(panel: T, params?: T["OPEN_PARAMS"]) {
+    static async open<T extends typeof MPanelExtends>(panel: T, params: T["OPEN_PARAMS"]) {
+        // 判定是否配置了panel-config
+        if (panel.CONFIG.PATH === C.MAGIC_PANEL_NAME) {
+            MLog.error(`@MPanel, panel-config-not-exist, name=${panel.name}`)
+            return
+        }
+        // 判断在编辑器模式下PATH是否包含name,仅在编辑器模式下;打包后会压缩代码,name会被丢弃
+        if (MVersion.run_editor && panel.CONFIG.PATH.includes(panel.name)) {
+            MLog.error(`@MPanel, panel-path-wrong, name=${panel.name}`)
+        }
         // 获取key,value,z_index
-        let key = panel.PATH;
-        let value = MPanel.ins.map_ins.get(key)
-        value = value || { prefab: null, node: null, cmd: [] }
+        let key = panel.CONFIG.PATH
+        let value = MPanel.ins.map_ins.get(key) || { prefab: null, node: null, cmd: [] }
         let z_index = MPanel.ins.now_z_index += 1 // 考虑异步延迟,需要提前获取
         // 获取同名节点进行预处理
-        switch (panel.TYPE) {
-            default: case "single":
+        switch (panel.CONFIG.TYPE) {
+            case "single":
                 if (value.node) { return }
                 break;
             case "cover":
@@ -97,13 +136,13 @@ export class MPanel {
             case "chain":
                 if (value.node) { value.cmd.push(params); return }
                 break;
+            default: break;
         }
         // 载入prefab
-        let path = panel.PATH
-        let prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${path}`, cc.Prefab)
+        let prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${key}`, cc.Prefab)
         // 需要载入的prefab并不存在时,输出log并return;注意name属性在打包后(或者代码混淆后)不可用
         if (!prefab) {
-            MLog.error(`@MPanel: panel-prefab-not-exist, name=${panel.name}, path=${path}`)
+            MLog.error(`@MPanel: panel-prefab-not-exist, name=${panel.name}, path=${key}`)
             return
         }
         // 实例化prefab
@@ -129,14 +168,13 @@ export class MPanel {
      * @param param
      * @static @async
      */
-    static async close<T extends typeof MPanelExtends>(panel: T, params?: T["CLOSE_PARAMS"]) {
+    static async close<T extends typeof MPanelExtends>(panel: T, params: T["CLOSE_PARAMS"]) {
         // 获取key,value
-        let key = panel.PATH;
-        let value = MPanel.ins.map_ins.get(key)
-        value = value || { prefab: null, node: null, cmd: [] }
+        let key = panel.CONFIG.PATH;
+        let value = MPanel.ins.map_ins.get(key) || { prefab: null, node: null, cmd: [] }
         // 如果node实例不存在,则输出log并返回
         if (!value.node) {
-            MLog.error(`@MPanel: panel-node-not-exist, name=${panel.name}, path=${panel.PATH}`)
+            MLog.error(`@MPanel: panel-node-not-exist, name=${panel.name}, path=${key}`)
             return
         }
         // 执行节点关闭动画
@@ -144,7 +182,7 @@ export class MPanel {
         panel_script && await panel_script.on_close(params)
         value.node.destroy()
         // 打开下一个窗口
-        if (panel.TYPE === "chain") {
+        if (panel.CONFIG.TYPE === "chain") {
             let cmd = value.cmd.shift()
             if (cmd) {
                 MPanel.open(panel, cmd) // 注意此处没有await
@@ -152,7 +190,7 @@ export class MPanel {
         }
         // 重新保存value
         value.node = null
-        MPanel.ins.map_ins.set(key, value)
+        // MPanel.ins.map_ins.set(key, value)
     }
 
     //////////

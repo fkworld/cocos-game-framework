@@ -27,9 +27,9 @@ export class AppMain extends cc.Component {
         MPanel.init(this.panel_parent)
         MSound.init()
         // 加载loading页面,加载n个载入流程,加载完毕后进入游戏
-        await MPanel.open(PanelLoading)
-        await MPanel.close(PanelLoading)
-        await MPanel.open(PanelGame)
+        await MPanel.open(PanelLoading, {})
+        await MPanel.close(PanelLoading, {})
+        await MPanel.open(PanelGame, {})
     }
 
     @property({ tooltip: "panel所挂载的父节点", type: cc.Node })

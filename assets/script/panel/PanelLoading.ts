@@ -1,19 +1,18 @@
-import { MPanel, MPanelExtends } from "../framework/MPanel";
+import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
 import { Mi18n } from "../framework/Mi18n";
 import { MVersion } from "../framework/MVersion";
-
 const { ccclass, property, menu } = cc._decorator
+
 const C = {
-    FADE_TIME: 1,
+    FADE_TIME: MPanel.TIME * 3,
 }
 /**
  * [Panel] PanelLoading
  */
 @ccclass
 @menu("panel/PanelLoading")
+@MPanelConfig({ PATH: "PanelLoading" })
 export class PanelLoading extends MPanelExtends {
-
-    static PATH = "PanelLoading"
 
     async on_open() {
         this.label_game_info.string = Mi18n.text(
@@ -21,7 +20,7 @@ export class PanelLoading extends MPanelExtends {
             MVersion.NAME,
             MVersion.CREATOR,
             MVersion.VERSION_NUMBER,
-            MVersion.VERSION_TIME
+            MVersion.VERSION_TIME,
         )
         await MPanel.in_fade_move(this.node, "down", null, { time: C.FADE_TIME })
     }

@@ -60,13 +60,14 @@
         "iOS",
         "HTML5"
       ],
-      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-matchvs/1.0.6_3.7.9.2.zip",
-      "package_version_desc": "更新日期：2019-03-20<br>更新内容：<br>1、添加多节点相关接口 <br>2、优化独立部署wss和ws切换<br>3、优化login参数容错<br>4、添加组队中踢人和消息发送接口<br>5、添加取消组队匹配接口",
+      "package_download_url": "http://download.cocos.com/CocosServices/plugins/service-matchvs/1.0.7_3.7.9.6.zip",
+      "package_version_desc": "更新日期：2019-05-15<br>更新内容：<br>1、调整getRoomListEx接口，获取系统创建房间<br>2、增加appkey等的校验<br>3、新增以下平台支持:<li>VIVO 小游戏<li>OPPO 小游戏<li>HUAWEI 快游戏<li>百度小游戏（默认不支持，需修改代码强制开启WSS选项）",
       "service_component_name": "service-matchvs",
       "package_versions": [
         "1.0.3_3.7.6.4",
         "1.0.5_3.7.7.3",
-        "1.0.6_3.7.9.2"
+        "1.0.6_3.7.9.2",
+        "1.0.7_3.7.9.6"
       ],
       "build_platform": [
         "web-mobile",

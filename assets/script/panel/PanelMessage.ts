@@ -1,16 +1,11 @@
-import { MPanel, MPanelExtends } from "../framework/MPanel";
-
+import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
 const { ccclass, property, menu } = cc._decorator;
-/** 界面参数 */
-interface PanelParams {
-    /** 打开参数 */
-    OpenParams: {
-        item: string | cc.Node
-        f_yes?: () => void
-        f_no?: () => void
-    }
-    /** 关闭参数 */
-    CloseParams: {}
+
+/** 界面打开参数接口 */
+interface OpenParams {
+    item: string | cc.Node
+    f_yes?: () => void
+    f_no?: () => void
 }
 const C = {
     BORDER: 100,
@@ -22,13 +17,12 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelMessage")
+@MPanelConfig({ PATH: "PanelMessage", TYPE: "chain" })
 export class PanelMessage extends MPanelExtends {
 
-    static PATH = "PanelMessage"
-    static TYPE = <"chain">"chain"
-    static OPEN_PARAMS: PanelParams["OpenParams"]
+    static OPEN_PARAMS: OpenParams;
 
-    async on_open(params: typeof PanelMessage.OPEN_PARAMS) {
+    async on_open(params: OpenParams) {
         if (typeof params.item === "string") {
             this.label_message.string = params.item
         } else if (params.item instanceof cc.Node) {
@@ -60,11 +54,11 @@ export class PanelMessage extends MPanelExtends {
 
     event_ok() {
         this.f_yes && this.f_yes()
-        MPanel.close(PanelMessage)
+        MPanel.close(PanelMessage, {})
     }
 
     event_cancel() {
         this.f_no && this.f_no()
-        MPanel.close(PanelMessage)
+        MPanel.close(PanelMessage, {})
     }
 }

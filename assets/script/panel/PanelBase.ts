@@ -1,37 +1,34 @@
-import { MPanel, MPanelExtends } from "../framework/MPanel";
-
+import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
 const { ccclass, property, menu } = cc._decorator
-/** 界面参数 */
-interface PanelParams {
-    /** 打开参数 */
-    OpenParams: {}
-    /** 关闭参数 */
-    CloseParams: {}
-}
+
+/** 界面打开参数接口 */
+interface OpenParams { }
+/** 界面关闭参数接口 */
+interface CloseParams { }
+/** 界面内部配置参数 */
 const C = {
 
 }
 
 /**
  * [Panel] PanelBase
- * - 建议直接通过复制PanelBase.prefab/PanelBase.ts来新建窗口.
- * - 如果config省略,或者config没有配置完全,则为默认值;如果on_open()和on_close()省略,则为空函数.
- * - 配置config时,属性需要强制类型转换.
+ * - [建议] 直接通过复制PanelBase.prefab/PanelBase.ts来新建窗口.
+ * - [注意] 需要通过MPanelConfig配置界面参数.
+ * - [注意] 如果有的话,需要配置OPEN_PARAMS/CLOSE_PARAMS来进行类型提示.
  */
 @ccclass
 @menu("panel/PanelBase")
+@MPanelConfig({ PATH: "PanelBase", TYPE: "single" })
 export class PanelBase extends MPanelExtends {
 
-    static PATH = "PanelBase"
-    static TYPE = <"single">"single"
-    static OPEN_PARAMS: PanelParams["OpenParams"]
-    static CLOSE_PARAMS: PanelParams["CloseParams"]
+    static OPEN_PARAMS: OpenParams;
+    static CLOSE_PARAMS: CloseParams;
 
-    async on_open(params: typeof PanelBase.OPEN_PARAMS) {
+    async on_open(params: OpenParams) {
 
     }
 
-    async on_close(params: typeof PanelBase.CLOSE_PARAMS) {
+    async on_close(params: CloseParams) {
 
     }
 }
