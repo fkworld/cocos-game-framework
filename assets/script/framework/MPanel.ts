@@ -50,7 +50,7 @@ interface PanelInstance {
     cmd: object[]
 }
 /** 装饰器函数,panel配置参数;装饰器的设置会覆盖内部设置 */
-export function MPanelConfig(config: PanelConfig) {
+export const MPanelConfig = (config: PanelConfig) => {
     return (constructor: typeof MPanelExtends) => {
         // 特别注意,由于js中原型继承的bug,这里的config必须创建新的object而不是修改
         constructor.CONFIG = {
