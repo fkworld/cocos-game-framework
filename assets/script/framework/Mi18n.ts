@@ -1,7 +1,7 @@
+import { en } from "../data/en";
+import { zh } from "../data/zh";
 import { G } from "./G";
 import { L } from "./L";
-import { Mi18n_en } from "./Mi18n_en";
-import { Mi18n_zh } from "./Mi18n_zh";
 import { MLog } from "./MLog";
 import { MVersion } from "./MVersion";
 
@@ -11,8 +11,8 @@ enum TYPE { en, zh }
 const C = {
     // 对应数据
     DATA: {
-        en: Mi18n_en,
-        zh: Mi18n_zh,
+        en: en,
+        zh: zh,
     },                              // 数据对应
     EDITOR_TYPE: TYPE[TYPE.en],     // 编辑器语言
     DEFAULT_KEY: "enter-a-key",     // 默认key
