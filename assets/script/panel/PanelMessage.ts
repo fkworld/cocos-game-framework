@@ -1,5 +1,10 @@
 import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
+
 const { ccclass, property, menu } = cc._decorator;
+const C = {
+    BORDER: 100,
+    BTN_Y: -50,
+}
 
 /** 界面打开参数接口 */
 interface OpenParams {
@@ -7,17 +12,13 @@ interface OpenParams {
     f_yes?: () => void
     f_no?: () => void
 }
-const C = {
-    BORDER: 100,
-    BTN_Y: -50,
-}
 
 /**
  * [Panel] 一个通用的message页面
  */
 @ccclass
 @menu("panel/PanelMessage")
-@MPanelConfig({ PATH: "PanelMessage", TYPE: "chain" })
+@MPanelConfig("PanelMessage", "chain")
 export class PanelMessage extends MPanelExtends {
 
     static OPEN_PARAMS: OpenParams;

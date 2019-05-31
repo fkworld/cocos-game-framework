@@ -950,7 +950,7 @@
       "__id__": 16
     },
     "_enabled": true,
-    "type_index": 2,
+    "key": "none",
     "preview": false,
     "_id": ""
   },
@@ -1272,7 +1272,7 @@
       "__id__": 26
     },
     "_enabled": true,
-    "type_index": 2,
+    "key": "none",
     "preview": false,
     "_id": ""
   },
@@ -1367,7 +1367,7 @@
       "__id__": 7
     },
     "_enabled": true,
-    "type_index": 4,
+    "key": "cyan_9",
     "preview": false,
     "_id": ""
   },

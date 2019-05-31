@@ -1,7 +1,7 @@
 import { MAction } from "../framework/MAction";
 import { MPanelExtends, MPanelConfig } from "../framework/MPanel";
-const { ccclass, property, menu } = cc._decorator
 
+const { ccclass, property, menu } = cc._decorator
 const C = {
     ANGLE: 45,
     TIME: 0.1,
@@ -12,7 +12,7 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelWait")
-@MPanelConfig({ PATH: "PanelWait" })
+@MPanelConfig("PanelWait")
 export class PanelWait extends MPanelExtends {
 
     async on_open() {

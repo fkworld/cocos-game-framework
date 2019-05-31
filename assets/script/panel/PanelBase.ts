@@ -1,14 +1,14 @@
 import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
+
 const { ccclass, property, menu } = cc._decorator
+const C = {
+
+}
 
 /** 界面打开参数接口 */
 interface OpenParams { }
 /** 界面关闭参数接口 */
 interface CloseParams { }
-/** 界面内部配置参数 */
-const C = {
-
-}
 
 /**
  * [Panel] PanelBase
@@ -18,7 +18,7 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelBase")
-@MPanelConfig({ PATH: "PanelBase", TYPE: "single" })
+@MPanelConfig("PanelBase", "single")
 export class PanelBase extends MPanelExtends {
 
     static OPEN_PARAMS: OpenParams;

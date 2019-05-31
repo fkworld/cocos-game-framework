@@ -2,20 +2,24 @@ import { G } from "./G";
 import { L } from "./L";
 import { MLog } from "./MLog";
 
-interface ISound {
+const C = {
+    PATH: "sound",      // 资源路径
+    SWITCH: true,       // 默认声音开关
+    SOUND: {            // 声音极其对应的url数据
+        "bgm": "test",
+        "btn": "test",
+    },
+}
+
+/** 声音类型 */
+type TypeSound = keyof typeof C.SOUND;
+/** 声音信息 */
+interface InfoSound {
     url: string,            // 声音的资源字符串
     loop?: boolean,         // 是否循环播放,是否为bgm,默认为false
     volume?: number,        // 音量,默认为1
     clip?: cc.AudioClip,    // 声音的cc.AudioClip资源,默认为null
     id?: number,            // 声音的播放id,默认为null
-}
-const C = {
-    BASE_PATH: "sound",     // 资源路径
-    DEFAULT_SWITCH: true,   // 默认声音开关
-    SOUND: {                // 声音类型以及其对应的url
-        "bgm-test": "test",
-        "btn": "test",
-    },
 }
 
 /**
@@ -27,7 +31,7 @@ export class MSound {
 
     /** 初始化本地存储 */
     static init_local() {
-        L.sound = C.DEFAULT_SWITCH
+        L.sound = C.SWITCH
     }
 
     static ins: MSound;
@@ -37,7 +41,7 @@ export class MSound {
         G.check_ins(MSound)
         MSound.ins = new MSound()
         // 初始化声音
-        MSound.ins.map_sound_ins.set("bgm-test", { url: C.SOUND["bgm-test"], loop: true })
+        MSound.ins.map_sound_ins.set("bgm", { url: C.SOUND["bgm"], loop: true })
         MSound.ins.map_sound_ins.set("btn", { url: C.SOUND["btn"] })
         // check
         if (MSound.ins.map_sound_ins.size != Object.keys(C.SOUND).length) {
@@ -46,7 +50,7 @@ export class MSound {
     }
 
     /** 声音的实例存储 */
-    private map_sound_ins: Map<keyof typeof C.SOUND, ISound> = new Map()
+    private map_sound_ins: Map<keyof typeof C.SOUND, InfoSound> = new Map()
 
     /** 获取声音开关 */
     static get_sound_switch(): boolean {
@@ -69,7 +73,7 @@ export class MSound {
         let info = MSound.ins.map_sound_ins.get(sound)
         // 载入audio clip资源
         if (!info.clip) {
-            info.clip = await G.load_res(`${C.BASE_PATH}/${info.url}`, cc.AudioClip)
+            info.clip = await G.load_res(`${C.PATH}/${info.url}`, cc.AudioClip)
         }
         if (!info.clip) {
             MLog.error(`@MSound: audio clip no exsit, url=${info.url}`)
@@ -108,10 +112,9 @@ export class MSound {
     // 常用声音
 
     static play_bgm() {
-        MSound.play("bgm-test")
+        MSound.play("bgm")
     }
 
-    /** 常用的声音:按钮 */
     static play_btn() {
         MSound.play("btn")
     }

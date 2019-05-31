@@ -33,8 +33,9 @@
     - [**`MAction`**] 动画管理
     - [**`MLog`**] log信息管理
     - [**`MVersion`**] 版本管理，运行环境管理
+    - [**`MHttp`**] 网络
 - [**`T系列`**] 工具组，一般需要挂载到节点上
-    - [**`TAddPrefab`**] onLoad()时添加一个prefab
+    - [**`TAddPrefab`**] `onLoad()`时添加一个prefab
     - [**`TChildNode`**] 子节点管理
     - [**`TNull`**] 空脚本
     - [**`TSize`**] 节点比例化修改大小
@@ -43,6 +44,7 @@
     - [**`TColor`**] 颜色控制工具
     - [**`TFollow`**] 节点跟随工具
     - [**`TScrollList`**] 滑动列表工具
+    - [**`TModal`**] 子对话框组件
 - [**`Panel系列`**] 界面组，脚本命名方式为Panel*，需要挂载在界面的同名prefab下
     - [**`PanelLoading`**] 开场时的loading页面
     - [**`PanelBase`**] 标准页面（建议新建panel时直接复制PanelBase.prefab和PanelBase.ts并重命名）
@@ -51,30 +53,31 @@
     - [**`PanelMessage`**] 一个通用的消息页面
 - [**`System系列`**] 子系统组，脚本命名方式为S*，游戏子系统管理
 - [**`Controller系列`**] 控制器组，脚本命名方式为C*，游戏中重要组件的控制器
+- [**`Data系列`**] 数据文件,一般是i18n的语言脚本,color的颜色脚本等
 
 ### 规范
 ##### 命名规范
 * 文件名采用PascalCase，类名采用PascalCase。
-* 文件的主类名和文件同名，特别是继承cc.Component的类，因为可以通过getComponent()方法直接传入字符串找到。
+* 文件的主类名和文件同名，特别是继承`cc.Component`的类，因为可以通过`getComponent()`方法直接传入字符串找到。
 * 常量采用“大写字母+下划线”命名
 * 类中的变量、方法采用“小写字母+下划线”命名，本项是为了与引擎自带方法区分开，如果引擎是“小写字母+下划线”写的方法，则使用camelCase
+##### 脚本规范
+* 依次分别为`import,ccclass/C,enum/interface/type,other-class,main-class`
 ##### export规范
-* 使用export而不是export default
-* 一般一个文件只有一个export，如果有enum，interface类型的数据也可以有多个export，注意命名冲突
+* 使用`export`而不是`export default`
+* 一般一个文件只有一个`export`，如果有`enum`，`interface`类型的数据也可以有多个`export`，注意命名冲突
 ##### class or namespace
-* 目前量级较少，使用class来显示脚本与脚本的依赖关系，不使用namespace
-* 如果项目较大，则使用namespace做区域划分
-* cocos-creator暂时对namespace的支持不好，无法按照官方例子使用，因此本项建议全部使用class代替
+* cocos-creator暂时对`namespace`的支持不好，无法按照官方例子使用，因此本项建议全部使用`class`代替
 ##### public or private
-* typescript默认为public
-* 建议全部private化，只有需要外部调用的方法public
+* typescript默认为`public`
+* 建议全部`private`化，只有需要外部调用的方法`public`
 ##### 遍历
-* 任何情况下都**不**使用for...in循环
-* 数组遍历仅使用普通for循环，性能最高；大数组遍历时，最好提前计算好length
-* 数组遍历的部分特殊情况，为了逻辑更加明显，可以使用map()/every()/filter()等内置方法
-* 非数组的遍历，使用for...of循环
+* 通用情况：针对`Array`和`Map`类型，完全遍历(指不需要`break`或者`continue`)时候，使用`forEach()`；不完全遍历使用`for...of`。
+* 数组遍历的特殊情况下，使得逻辑更加明显，可以使用一些特定的内置方法。参考：https://www.yuque.com/fengyong/game-develop-road/gwv8xo
+* 大数组遍历时，使用性能最高的`普通for循环`，并提前计算好`length`。
+* 尽量避免直接遍历`Object`；如果不可避免，则使用`Object.keys()`转换为`Array`后遍历。
 ##### 箭头函数
-* 总是使用箭头函数`()=>{}`代替function
+* 总是使用箭头函数`()=>{}`代替`function`
 
 ### 两层逻辑设计：数据逻辑层system + 显示逻辑层controller
 1. 数据逻辑层system

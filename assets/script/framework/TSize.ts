@@ -2,8 +2,9 @@ import { G } from "./G";
 import { MVersion } from "./MVersion";
 
 const { ccclass, property, executeInEditMode, menu } = cc._decorator
-/** 基准类型 */
-enum TYPE { width, height }
+
+/** 基准类型枚举 */
+enum TypeBase { width, height }
 
 /**
  * [T] size工具，使其保持比例调整大小
@@ -27,29 +28,22 @@ export class TSize extends cc.Component {
         }
     }
 
-    /** 类型 */
-    @property({ tooltip: '基准类型', type: cc.Enum(TYPE) })
-    private type: TYPE = TYPE.width
+    @property({ tooltip: "基准类型", type: cc.Enum(TypeBase) })
+    private type: TypeBase = TypeBase.width
 
-    /** 保存（点击后刷新编辑器） */
-    @property({ tooltip: '保存' })
-    private save: boolean = false
-
-    /** 初始size;x-width;y-height */
-    @property({ tooltip: '基准size', readonly: true })
+    @property({ tooltip: "基准size", readonly: true })
     private source_size: cc.Vec2 = cc.v2(1, 1)
 
-    /** 预览（点击后刷新编辑器） */
-    @property({ tooltip: '预览' })
-    private preview: boolean = false
-
-    /** 当前size;x-width;y-height */
-    @property({ tooltip: '当前size' })
+    @property({ tooltip: "当前size" })
     private current_size: cc.Vec2 = cc.v2(1, 1)
 
-    /**
-     * 保存size
-     */
+    @property({ tooltip: "保存" })
+    private save: boolean = false
+
+    @property({ tooltip: "预览" })
+    private preview: boolean = false
+
+    /** 保存size */
     private save_size() {
         this.source_size.x = this.node.width
         this.source_size.y = this.node.height
@@ -61,10 +55,10 @@ export class TSize extends cc.Component {
     /** 更新size，保留1位小数 */
     private update_size() {
         switch (this.type) {
-            case TYPE.width:
+            case TypeBase.width:
                 this.current_size.y = G.number_fixed(this.current_size.x / this.source_size.x * this.source_size.y)
                 break;
-            case TYPE.height:
+            case TypeBase.height:
                 this.current_size.x = G.number_fixed(this.current_size.y * this.source_size.x / this.source_size.y)
                 break;
             default:

@@ -26,36 +26,31 @@ export class TChildNode extends cc.Component {
     @property(cc.Node)
     private list_child_node: cc.Node[] = []
 
-    private obj_child_node: { [key: string]: cc.Node } = {}
-
-    /** 数据转化，在第1次调用时使用 */
-    private trans_data() {
-        for (let i = 0; i < this.list_child_node.length; i += 1) {
-            let child_node = this.list_child_node[i]
-            if (!child_node) {
-                MLog.warn(`@TChildNode: get a null node, node-name=${this.node.name}`)
-                continue;
-            }
-            if (this.obj_child_node[child_node.name]) {
-                MLog.warn(`@TChildNode: get a same-name node, node-name=${this.node.name}, same-name=${child_node.name}`)
-                continue;
-            }
-            this.obj_child_node[child_node.name] = child_node
-        }
-    }
-
+    private map_child_node: Map<string, cc.Node> = new Map()
 
     /**
      * 获取被观察的子节点,如果找不到则返回undefined
      * @param name 
      */
     private get_child_node(name: string): cc.Node {
-        if (this.list_child_node.length === 0 || Object.keys(this.obj_child_node).length === 0) {
-            this.trans_data()
+        // 第一次查询时写入map
+        if (this.list_child_node.length != 0 && this.map_child_node.size === 0) {
+            this.list_child_node.forEach(v => {
+                if (!v) {
+                    MLog.warn(`@TChildNode: get a null node, node-name=${this.node.name}`)
+                    return
+                }
+                if (this.map_child_node.get(v.name)) {
+                    MLog.warn(`@TChildNode: get a same-name node, node-name=${this.node.name}, same-name=${v.name}`)
+                    return;
+                }
+                this.map_child_node.set(v.name, v)
+            })
         }
-        if (!this.obj_child_node[name]) {
+        let n = this.map_child_node.get(name)
+        if (!n) {
             MLog.error(`@TChildNode: get a undefined node, name=${name}`)
         }
-        return this.obj_child_node[name]
+        return n
     }
 }

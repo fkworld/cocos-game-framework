@@ -1,8 +1,8 @@
 import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
 import { Mi18n } from "../framework/Mi18n";
 import { MVersion } from "../framework/MVersion";
-const { ccclass, property, menu } = cc._decorator
 
+const { ccclass, property, menu } = cc._decorator
 const C = {
     FADE_TIME: MPanel.TIME * 3,
 }
@@ -11,7 +11,7 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelLoading")
-@MPanelConfig({ PATH: "PanelLoading" })
+@MPanelConfig("PanelLoading")
 export class PanelLoading extends MPanelExtends {
 
     async on_open() {

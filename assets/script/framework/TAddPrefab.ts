@@ -16,15 +16,12 @@ export class TAddPrefab extends cc.Component {
     @property({ tooltip: "需要添加的prefab", type: cc.Prefab })
     private prefab: cc.Prefab = null
 
-    /** 是否在onLoad()时自动创建 */
     @property({ tooltip: "是否在onLoad()时自动添加" })
     private is_play_onload: boolean = true
 
-    /** 创建时是否重置位置为0 */
     @property({ tooltip: "是否初始化位置为(0,0)" })
     private is_reset_position: boolean = true
 
-    /** prefab创建成功后对应的node */
     private prefab_node: cc.Node
 
     onLoad() {

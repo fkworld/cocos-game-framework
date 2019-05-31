@@ -1,17 +1,13 @@
-/** 版本区分 */
-enum VERSION {
-    dev,        // 开发者版本
-    rc,         // 正式版本
-}
 const C = {
-    // 版本信息
-    VERSION: VERSION.dev,   // 默认为dev版本,打包时需要修改
-    // 游戏信息
+    VERSION: <MVersionType>"dev",   // 默认为dev版本,打包时需要修改
     NAME: "cocos-game-framework",
     CREATOR: "skyfox-fengyong",
     VERSION_NUMBER: "0.0",
     VERSION_TIME: "2019-5-14",
 }
+
+/** 版本类型 */
+type MVersionType = "dev" | "rc";
 
 /**
  * [M] 环境管理,版本管理
@@ -24,10 +20,14 @@ export class MVersion {
 
     // 获取游戏信息
 
-    static get VERSION() { return VERSION[C.VERSION] }
+    static get VERSION() { return C.VERSION }
+
     static get NAME() { return C.NAME }
+
     static get CREATOR() { return C.CREATOR }
+
     static get VERSION_NUMBER() { return C.VERSION_NUMBER }
+
     static get VERSION_TIME() { return C.VERSION_TIME }
 
     // 运行环境判定
@@ -38,10 +38,10 @@ export class MVersion {
     // 运行版本判定
 
     /** 开发版本 */
-    static get version_dev() { return C.VERSION === VERSION.dev }
+    static get version_dev() { return C.VERSION === "dev" }
 
     // 自定义综合判定
 
     /** 编辑器环境+开发版本 */
-    static get is_editor_and_dev() { return CC_EDITOR && C.VERSION === VERSION.dev }
+    static get is_editor_and_dev() { return CC_EDITOR && C.VERSION === "dev" }
 }

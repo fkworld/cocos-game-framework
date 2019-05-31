@@ -1,4 +1,5 @@
 import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
+
 const { ccclass, property, menu } = cc._decorator
 
 /**
@@ -6,7 +7,7 @@ const { ccclass, property, menu } = cc._decorator
  */
 @ccclass
 @menu("panel/PanelTest")
-@MPanelConfig({ PATH: "PanelTest" })
+@MPanelConfig("PanelTest")
 export class PanelTest extends MPanelExtends {
 
 }

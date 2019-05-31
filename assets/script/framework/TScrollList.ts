@@ -5,8 +5,11 @@ const { ccclass, property, requireComponent, executeInEditMode, menu } = cc._dec
 const C = {
 
 }
-enum TYPE_SV { hor, ver }                   // 列表方向：横向,纵向
-enum TYPE_CONTENT { layout, position }      // 列表中item的组合方式：layout自动拼装,无layout修改位置
+
+/** 列表方向:横向,纵向 */
+enum TypeSv { hor, ver }
+/** 列表中item的组合方式：layout自动拼装,无layout修改位置 */
+enum TypeContent { layout, position }
 
 /**
  * [T] 常用的滑动列表,针对ScrollView进行简化
@@ -22,8 +25,8 @@ enum TYPE_CONTENT { layout, position }      // 列表中item的组合方式：la
  * @todo 更多的针对item的操作,比如滑动到某个列表项,搜索某个列表项等
  */
 @ccclass
-@requireComponent(cc.ScrollView)
 @executeInEditMode
+@requireComponent(cc.ScrollView)
 @menu("framework/TScrollList")
 export class TScrollList extends cc.Component {
 
@@ -48,13 +51,13 @@ export class TScrollList extends cc.Component {
     @property(cc.Node)
     private item: cc.Node = null
 
-    @property({ type: cc.Enum(TYPE_SV) })
-    private type_sv: TYPE_SV = TYPE_SV.ver
+    @property({ type: cc.Enum(TypeSv) })
+    private type_sv: TypeSv = TypeSv.ver
 
-    @property({ type: cc.Enum(TYPE_CONTENT) })
-    private type_content: TYPE_CONTENT = TYPE_CONTENT.layout
+    @property({ type: cc.Enum(TypeContent) })
+    private type_content: TypeContent = TypeContent.layout
 
-    @property({ tooltip: '' })
+    @property({ tooltip: "" })
     private check_and_change_flag = true
 
     @property()
@@ -80,10 +83,10 @@ export class TScrollList extends cc.Component {
             f(node, index, data_list[index])
             node.active = true
             // 更新每个item的位置信息
-            if (this.type_content === TYPE_CONTENT.layout) {
+            if (this.type_content === TypeContent.layout) {
                 // 如果为layout模式,则由layout自动排序,无需修改位置信息
             } else {
-                if (this.type_sv === TYPE_SV.hor) {
+                if (this.type_sv === TypeSv.hor) {
                     node.position = cc.v2(node.width / 2 + node.width * index, 0)
                 } else {
                     node.position = cc.v2(0, -node.height / 2 - node.height * index)
@@ -91,10 +94,10 @@ export class TScrollList extends cc.Component {
             }
         }
         // 更新整个cotent的大小
-        if (this.type_content === TYPE_CONTENT.layout) {
+        if (this.type_content === TypeContent.layout) {
             // 如果为layout模式,则由layout自动扩容,无需修改大小
         } else {
-            if (this.type_sv === TYPE_SV.hor) {
+            if (this.type_sv === TypeSv.hor) {
                 this.content.width = this.item.width * data_list.length
             } else {
                 this.content.height = this.item.height * data_list.length
@@ -118,12 +121,12 @@ export class TScrollList extends cc.Component {
 
     /* 检查scroll-view组件的滑动方向是否正确 */
     private check_scroll_view_direction() {
-        let f = this.type_sv === TYPE_SV.hor ? this.sv.horizontal && !this.sv.vertical : !this.sv.horizontal && this.sv.vertical
+        let f = this.type_sv === TypeSv.hor ? this.sv.horizontal && !this.sv.vertical : !this.sv.horizontal && this.sv.vertical
         if (this.check_and_change_flag) {
-            this.sv.horizontal = this.type_sv === TYPE_SV.hor
+            this.sv.horizontal = this.type_sv === TypeSv.hor
             this.sv.vertical = !this.sv.horizontal
         }
-        MLog.log('scroll-view-direction', f)
+        MLog.log("scroll-view-direction", f)
     }
 
     /* 检查scroll-view节点与mask节点的大小是否统一 */
@@ -133,7 +136,7 @@ export class TScrollList extends cc.Component {
             this.content.parent.width = this.node.width
             this.content.parent.height = this.node.height
         }
-        MLog.log('scroll-view-size', f)
+        MLog.log("scroll-view-size", f)
     }
 
     /* 检查mask节点的位置是否在原点 */
@@ -142,7 +145,7 @@ export class TScrollList extends cc.Component {
         if (this.check_and_change_flag) {
             this.content.parent.position = cc.Vec2.ZERO
         }
-        MLog.log('mask-position', f)
+        MLog.log("mask-position", f)
     }
 
     /* 检查item的anchor中间,position为原点 */
@@ -152,45 +155,45 @@ export class TScrollList extends cc.Component {
             this.item.setAnchorPoint(cc.v2(0.5, 0.5))
             this.item.position = cc.Vec2.ZERO
         }
-        MLog.log('item-anchor', f)
+        MLog.log("item-anchor", f)
     }
 
     /* 检查content节点的anchor设置是否正确 */
     private check_content_anchor() {
-        let target_anchor = this.type_sv === TYPE_SV.hor ? cc.v2(0, 0.5) : cc.v2(0.5, 1)
+        let target_anchor = this.type_sv === TypeSv.hor ? cc.v2(0, 0.5) : cc.v2(0.5, 1)
         let f = this.content.getAnchorPoint().equals(target_anchor)
         if (this.check_and_change_flag) {
             this.content.setAnchorPoint(target_anchor)
         }
-        MLog.log('content-anchor', f)
+        MLog.log("content-anchor", f)
     }
 
     /* 检查content节点的位置是否正确 */
     private check_content_position() {
-        let target_position = this.type_sv === TYPE_SV.hor ? cc.v2(-this.node.width / 2, 0) : cc.v2(0, this.node.height / 2)
+        let target_position = this.type_sv === TypeSv.hor ? cc.v2(-this.node.width / 2, 0) : cc.v2(0, this.node.height / 2)
         let f = this.content.position.equals(target_position)
         if (this.check_and_change_flag) {
             this.content.position = target_position
         }
-        MLog.log('content-position', f)
+        MLog.log("content-position", f)
     }
 
     /* 如果有layout,检查layout的设置是否正确 */
     private check_content_layout() {
-        if (this.type_content != TYPE_CONTENT.layout) { return }
+        if (this.type_content != TypeContent.layout) { return }
         let f = false
         let layout = this.content.getComponent(cc.Layout)
         if (layout) {
-            f = this.type_sv === TYPE_SV.hor ? layout.type === cc.Layout.Type.HORIZONTAL : layout.type === cc.Layout.Type.VERTICAL
+            f = this.type_sv === TypeSv.hor ? layout.type === cc.Layout.Type.HORIZONTAL : layout.type === cc.Layout.Type.VERTICAL
             f = f && layout.resizeMode === cc.Layout.ResizeMode.CONTAINER
         } else {
             f = false
         }
         if (this.check_and_change_flag) {
             if (!layout) { layout = this.content.addComponent(cc.Layout) }
-            layout.type = this.type_sv === TYPE_SV.hor ? cc.Layout.Type.HORIZONTAL : cc.Layout.Type.VERTICAL
+            layout.type = this.type_sv === TypeSv.hor ? cc.Layout.Type.HORIZONTAL : cc.Layout.Type.VERTICAL
             layout.resizeMode = cc.Layout.ResizeMode.CONTAINER
         }
-        MLog.log('content-layout', f)
+        MLog.log("content-layout", f)
     }
 }

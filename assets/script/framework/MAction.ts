@@ -1,5 +1,3 @@
-import { MLog } from "./MLog";
-
 /**
  * [M] 动画管理
  * - 封装一些简单的常用的动画
@@ -21,23 +19,27 @@ export class MAction {
 
     /**
      * 倒计时动画
-     * @param node 
-     * @param number 
-     * @param f 
+     * @param label 
+     * @param n 
      */
-    static count_down(node: cc.Node, number: number, f = () => { }) {
-        let label = node.getComponent(cc.Label)
-        if (!label) { MLog.warn(`@MAction: no label component`); return }
-        label.unscheduleAllCallbacks()
-        label.string = `${number}`
-        node.active = true
-        label.schedule(() => {
-            number -= 1
-            label.string = `${number}`
-            if (number <= 0) {
-                node.active = false
-                f()
-            }
-        }, 1, number)
+    static count_down(label: cc.Label, n: number) {
+        return new Promise(res => {
+            label.string = `${n}`
+            label.node.scale = 0
+            label.node.active = true
+            label.node.runAction(cc.sequence(
+                cc.delayTime(0.6),
+                cc.scaleTo(0.2, 0).easing(cc.easeBackIn()),
+                cc.callFunc(() => {
+                    n -= 1
+                    label.string = `${n}`
+                    if (n < 0) {
+                        label.node.stopAllActions()
+                        res()
+                    }
+                }),
+                cc.scaleTo(0.2, 1).easing(cc.easeBounceOut()),
+            ).repeatForever())
+        })
     }
 }

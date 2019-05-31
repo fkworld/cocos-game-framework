@@ -56,30 +56,22 @@ export class G {
     }
 
     /**
-     * 逐帧执行
-     * - 使用cc.Component.schedule()方法,在interval参数为0时表示逐帧调用
-     * @param f 需要执行的方法
-     * @param nc 执行方法的节点脚本
-     * @param all_count 执行的总数
-     */
-    static run_by_each_frame(f: () => void, nc: cc.Component, all_count: number) {
-        nc.schedule(f, 0, all_count - 1)
-    }
-
-    /**
      * 间隔帧执行
      * @param f 
      * @param nc 
      * @param all_count 
      * @param interval 间隔帧;默认为1,表示连续帧
      */
-    static run_by_interval_frame(f: () => void, nc: cc.Component, all_count: number, interval: number) {
-        let c = 0
-        nc.schedule(() => {
-            c === 0 && f()
-            c += 1
-            c %= interval
-        }, 0, (all_count - 1) * interval)
+    static run_by_interval_frame(f: () => void, ccc: cc.Component, all_count: number, interval: number) {
+        return new Promise(res => {
+            let i = 0
+            let count = (all_count - 1) * interval
+            ccc.schedule(() => {
+                i % interval === 0 && f()
+                i += 1
+                i > count && res()
+            }, 0, count)
+        })
     }
 
     /**
@@ -88,6 +80,16 @@ export class G {
      */
     static get_node_world_position(node: cc.Node): cc.Vec2 {
         return node.convertToWorldSpaceAR(cc.Vec2.ZERO)
+    }
+
+    /**
+     * 获取节点的在其父节点坐标系中的本地坐标
+     * - [注意] 描述的有点绕,请注意本地坐标系的原点是node.parent
+     * @param node 
+     * @param w_position 
+     */
+    static get_node_local_position(node: cc.Node, w_position: cc.Vec2) {
+        return node.parent.convertToNodeSpaceAR(w_position)
     }
 
     /**
@@ -275,6 +277,40 @@ export class G {
                 err && cc.warn(`load res dir fail, path=${path}, err=${err}`)
                 err ? res(null) : res(resource)
             })
+        })
+    }
+
+    /**
+     * 模运算,针对负数进行统一化
+     * - [区别] n为正数时与%运算相同,n为负数:-1%10=-1;modulo_operation(-1,10)=9
+     * @param n 
+     */
+    static modulo_operation(n: number, module: number): number {
+        if (n < 0) {
+            n += Math.max(module, module * Math.floor(-n))
+        }
+        return n % module
+    }
+
+    /**
+     * 抖动
+     * @param node 
+     */
+    static shake(node: cc.Node) {
+        return new Promise(res => {
+            let base_position = node.position
+            node.runAction(cc.sequence(
+                cc.moveTo(0.02, base_position.add(cc.v2(5, 7))),
+                cc.moveTo(0.02, base_position.add(cc.v2(-6, 7))),
+                cc.moveTo(0.02, base_position.add(cc.v2(-13, 3))),
+                cc.moveTo(0.02, base_position.add(cc.v2(3, -6))),
+                cc.moveTo(0.02, base_position.add(cc.v2(-5, 5))),
+                cc.moveTo(0.02, base_position.add(cc.v2(2, -8))),
+                cc.moveTo(0.02, base_position.add(cc.v2(-8, -10))),
+                cc.moveTo(0.02, base_position.add(cc.v2(3, 10))),
+                cc.moveTo(0.02, base_position.add(cc.v2(0, 0))),
+                cc.callFunc(res)
+            ))
         })
     }
 

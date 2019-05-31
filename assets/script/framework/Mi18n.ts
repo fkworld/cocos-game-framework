@@ -6,17 +6,17 @@ import { MLog } from "./MLog";
 import { MVersion } from "./MVersion";
 
 const { ccclass, property, executeInEditMode, requireComponent, menu } = cc._decorator
-/** 语言类型 */
-enum TYPE { en, zh }
 const C = {
-    // 对应数据
-    DATA: {
-        en: en,
-        zh: zh,
-    },                              // 数据对应
-    EDITOR_TYPE: TYPE[TYPE.en],     // 编辑器语言
-    DEFAULT_KEY: "enter-a-key",     // 默认key
+    LANGUAGE: {
+        "english": en,  // 英文
+        "chinese": zh,  // 中文
+    },
+    EDITOR_TYPE: "english",     // 编辑器语言
+    DEFAULT_KEY: "enter-a-key", // 默认key
 }
+
+/** 语言类型 */
+type TypeLanguage = keyof typeof C.LANGUAGE;
 
 /**
  * [M] 国际化-多语言
@@ -31,19 +31,21 @@ const C = {
 export class Mi18n extends cc.Component {
 
     /** 初始化本地存储 */
-    static init_local() { L.language = C.EDITOR_TYPE }
+    static init_local() {
+        L.language = C.EDITOR_TYPE
+    }
 
     /**
      * 获取key对应的value并组合成为字符串
      * @param key
      * @param param
      */
-    static text(key: keyof typeof C.DATA["en"], ...param: any[]): string {
+    static text(key: keyof typeof en, ...param: any[]): string {
         let type = (MVersion.run_editor || !L.language) ? C.EDITOR_TYPE : L.language
-        let value = C.DATA[type][key]
+        let value = C.LANGUAGE[type][key]
         if (!value) {
             value = key
-            MLog.warn(`@Mi18n: get a not exist key, key=${key}`)
+            MLog.warn(`@Mi18n: 获取了一个不存在的key, key=${key}`)
         }
         return G.fake_template_string(value, ...param)
     }
@@ -59,22 +61,17 @@ export class Mi18n extends cc.Component {
         }
     }
 
-    /** key;无法使用notify() */
-    @property({ tooltip: "字符串key" })
+    @property({ tooltip: "字符串key;无法使用notify()函数" })
     private key: string = C.DEFAULT_KEY
 
-    /** 参数 */
     @property({ tooltip: "字符串参数", type: cc.String })
     private param: string[] = []
 
-    /** 预览（点击后刷新编辑器） */
     @property({ tooltip: "预览1次;预览完毕后置于false" })
     private preview: boolean = false
 
     @property({ tooltip: "是否在onLoad()时候修改" })
     private play_onload: boolean = true
-
-    private label: cc.Label;
 
     /**
      * 更新label
@@ -82,9 +79,6 @@ export class Mi18n extends cc.Component {
      * @param label node中的cc.Label组件
      */
     private update_label() {
-        if (!this.label) {
-            this.label = this.node.getComponent(cc.Label)
-        }
-        this.label.string = Mi18n.text(<any>this.key, ...this.param)
+        this.node.getComponent(cc.Label).string = Mi18n.text(<any>this.key, ...this.param)
     }
 }
