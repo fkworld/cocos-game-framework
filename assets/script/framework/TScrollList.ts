@@ -1,20 +1,21 @@
 import { MLog } from "./MLog";
 import { MVersion } from "./MVersion";
+import { G } from "./G";
 
 const { ccclass, property, requireComponent, executeInEditMode, menu } = cc._decorator;
 const C = {
-
+    INTERVAL_FRAME: 1,  // 间隔帧
 }
 
 /** 列表方向:横向,纵向 */
 enum TypeSv { hor, ver }
-/** 列表中item的组合方式：layout自动拼装,无layout修改位置 */
-enum TypeContent { layout, position }
+/** 创建方式:单帧创建,逐帧创建 */
+enum TypeCreate { single_frame, next_frame }
 
 /**
  * [T] 常用的滑动列表,针对ScrollView进行简化
  * - [注意] 目前仅支持横向、纵向两种滑动列表
- * - [注意] 目前支持layout自动排序和手动position排序
+ * - [注意] 仅支持layout方式自动排列,需要手动设置layout的属性
  * - [使用方式]
  *  1. 新建一个ScrollView节点,仅有mask节点(view),content节点,item节点有效,其余可以自由删减
  *  2. 将TScrollList脚本挂载在ScrollView组件所在的节点上,将item节点拖入,设置好方向和位置排序方式
@@ -44,23 +45,24 @@ export class TScrollList extends cc.Component {
         }
     }
 
-    private sv: cc.ScrollView = null
-    private content: cc.Node = null
-    item_list: cc.Node[] = []
+    private sv: cc.ScrollView;
+    private content: cc.Node;
+    private data_list: any[] = [];      // 数据列表
+    private item_list: cc.Node[] = [];  // item-node列表
 
     @property(cc.Node)
     private item: cc.Node = null
 
-    @property({ type: cc.Enum(TypeSv) })
+    @property({ tooltip: "列表方向:横向,纵向", type: cc.Enum(TypeSv) })
     private type_sv: TypeSv = TypeSv.ver
 
-    @property({ type: cc.Enum(TypeContent) })
-    private type_content: TypeContent = TypeContent.layout
+    @property({ tooltip: "创建方式:单帧创建,逐帧创建", type: cc.Enum(TypeCreate) })
+    private type_create: TypeCreate = TypeCreate.single_frame
 
-    @property({ tooltip: "" })
+    @property({ tooltip: "是否在check时修改" })
     private check_and_change_flag = true
 
-    @property()
+    @property({ tooltip: "check" })
     private check = false
 
     /**
@@ -68,41 +70,33 @@ export class TScrollList extends cc.Component {
      * @param data_list 数据列表
      * @param f 初始化函数
      */
-    create(data_list: any[], f: (node: cc.Node, index: number, data: any) => void) {
+    create<T>(data_list: T[], f_init: (node: cc.Node, data: T, index: number) => void) {
+        this.data_list = data_list
         this.item_list = []
-        // 将源item置为false
         this.item.active = false
-        for (let index = 0; index < data_list.length; index += 1) {
-            // 创建新的item
-            let node = cc.instantiate(this.item)
-            node.parent = this.content
-            node.position = cc.Vec2.ZERO
-            // 保存item
-            this.item_list.push(node)
-            // 给新的item执行初始化函数
-            f(node, index, data_list[index])
-            node.active = true
-            // 更新每个item的位置信息
-            if (this.type_content === TypeContent.layout) {
-                // 如果为layout模式,则由layout自动排序,无需修改位置信息
-            } else {
-                if (this.type_sv === TypeSv.hor) {
-                    node.position = cc.v2(node.width / 2 + node.width * index, 0)
-                } else {
-                    node.position = cc.v2(0, -node.height / 2 - node.height * index)
-                }
-            }
+        switch (this.type_create) {
+            case TypeCreate.single_frame:
+                data_list.forEach((v, i) => {
+                    f_init(this.create_item_node(), v, i)
+                })
+                break;
+            case TypeCreate.next_frame:
+                G.run_by_interval_frame((i) => {
+                    f_init(this.create_item_node(), data_list[i], i)
+                }, this, data_list.length, C.INTERVAL_FRAME)
+                break;
+            default:
+                break;
         }
-        // 更新整个cotent的大小
-        if (this.type_content === TypeContent.layout) {
-            // 如果为layout模式,则由layout自动扩容,无需修改大小
-        } else {
-            if (this.type_sv === TypeSv.hor) {
-                this.content.width = this.item.width * data_list.length
-            } else {
-                this.content.height = this.item.height * data_list.length
-            }
-        }
+    }
+
+    /** 创建一个item-node */
+    private create_item_node(): cc.Node {
+        let node = cc.instantiate(this.item)
+        node.parent = this.content
+        node.active = true
+        this.item_list.push(node)
+        return node
     }
 
     /** 检查所有设置是否正确 */
@@ -115,8 +109,6 @@ export class TScrollList extends cc.Component {
         this.check_content_anchor()
         this.check_content_position()
         this.check_content_layout()
-        this.content.width = 0
-        this.content.height = 0
     }
 
     /* 检查scroll-view组件的滑动方向是否正确 */
@@ -178,21 +170,12 @@ export class TScrollList extends cc.Component {
         MLog.log("content-position", f)
     }
 
-    /* 如果有layout,检查layout的设置是否正确 */
+    /* 如果有layout,检查是否有layout,检查layout的设置是否正确 */
     private check_content_layout() {
-        if (this.type_content != TypeContent.layout) { return }
-        let f = false
         let layout = this.content.getComponent(cc.Layout)
-        if (layout) {
-            f = this.type_sv === TypeSv.hor ? layout.type === cc.Layout.Type.HORIZONTAL : layout.type === cc.Layout.Type.VERTICAL
-            f = f && layout.resizeMode === cc.Layout.ResizeMode.CONTAINER
-        } else {
-            f = false
-        }
-        if (this.check_and_change_flag) {
-            if (!layout) { layout = this.content.addComponent(cc.Layout) }
-            layout.type = this.type_sv === TypeSv.hor ? cc.Layout.Type.HORIZONTAL : cc.Layout.Type.VERTICAL
-            layout.resizeMode = cc.Layout.ResizeMode.CONTAINER
+        let f = !!layout
+        if (this.check_and_change_flag && !f) {
+            layout = this.content.addComponent(cc.Layout)
         }
         MLog.log("content-layout", f)
     }
