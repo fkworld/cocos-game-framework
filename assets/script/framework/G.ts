@@ -62,15 +62,18 @@ export class G {
      * @param all_count 
      * @param interval 间隔帧;默认为1,表示连续帧
      */
-    static run_by_interval_frame(f: () => void, ccc: cc.Component, all_count: number, interval: number) {
+    static run_by_interval_frame(f: (index: number) => void, ccc: cc.Component, all_count: number, interval: number) {
         return new Promise(res => {
             let i = 0
-            let count = (all_count - 1) * interval
+            let index = 0
             ccc.schedule(() => {
-                i % interval === 0 && f()
+                if (i % interval === 0) {
+                    f(index)
+                    index += 1
+                }
                 i += 1
-                i > count && res()
-            }, 0, count)
+                index >= all_count - 1 && res()
+            }, 0, (all_count - 1) * interval)
         })
     }
 
