@@ -1,40 +1,39 @@
 import { MLog } from "./MLog";
 
 /**
- * [framework-T] simple finite state machine - 简单的状态机实现
+ * [T] simple finite state machine - 简单的状态机
  * - 一个适合游戏中使用的简单状态机实现
  * - 只有状态和行为，触发由change_state()方法触发
  */
 export class TSimpleFSM {
 
-    obj_state: object
-
-    constructor(obj_state: object) {
-        // check，只检查并报错，不进行额外处理
-        for (let s in obj_state) {
-            if (typeof obj_state[s] != 'function') {
-                MLog.error(`@TSimpleFSM: get a not-function value, state=${s}`)
-                // return
-            }
-        }
-        // save
-        this.obj_state = obj_state
+    /**
+     * 创建并返回一个简单状态机
+     * @param map 状态-行为一一对应的map
+     */
+    static create(map: Map<string, () => void>): TSimpleFSM {
+        let fsm = new TSimpleFSM()
+        fsm.map_state = map
+        return fsm
     }
 
     /** 当前状态 */
-    state: string
+    private state: string;
+
+    /** 状态以及其对应的处理函数 */
+    private map_state: Map<string, () => void> = new Map()
 
     /**
      * 更改当前状态
      * @param new_state 
      */
     change_state(new_state: string) {
-        this.state = new_state
-        let f = this.obj_state[new_state]
-        if (typeof f === 'function') {
-            f()
-        } else {
-            MLog.error(`@TSimpleFSM: get a not-function value, state=${new_state}`)
+        if (!this.map_state.has(new_state)) {
+            MLog.error(`@TSimpleFSM: 获取了一个不存在的状态, state=${new_state}`)
+            return
         }
+        this.state = new_state
+        this.map_state.get(this.state)()
     }
+
 }
