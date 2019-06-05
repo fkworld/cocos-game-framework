@@ -2,7 +2,7 @@ import { MLog } from "./MLog";
 import { MVersion } from "./MVersion";
 import { G } from "./G";
 
-const { ccclass, property, requireComponent, executeInEditMode, menu } = cc._decorator;
+const { ccclass, property, requireComponent, menu } = cc._decorator;
 const C = {
     INTERVAL_FRAME: 1,  // 间隔帧
 }
@@ -26,7 +26,6 @@ enum TypeCreate { single_frame, next_frame }
  * @todo 更多的针对item的操作,比如滑动到某个列表项,搜索某个列表项等
  */
 @ccclass
-@executeInEditMode
 @requireComponent(cc.ScrollView)
 @menu("framework/TScrollList")
 export class TScrollList extends cc.Component {
@@ -36,13 +35,6 @@ export class TScrollList extends cc.Component {
     onLoad() {
         this.sv = this.node.getComponent(cc.ScrollView)
         this.content = this.sv.content
-    }
-
-    update() {
-        if (MVersion.run_editor && this.check) {
-            this.check = false
-            this.check_all()
-        }
     }
 
     private sv: cc.ScrollView;
@@ -62,8 +54,11 @@ export class TScrollList extends cc.Component {
     @property({ tooltip: "是否在check时修改" })
     private check_and_change_flag = true
 
-    @property({ tooltip: "check" })
-    private check = false
+    @property({ tooltip: "check-all", type: cc.Boolean })
+    private get check() { return false }
+    private set check(v: boolean) {
+        MVersion.run_editor && this.check_all()
+    }
 
     /**
      * 创建item

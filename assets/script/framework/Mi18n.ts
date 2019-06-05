@@ -5,7 +5,7 @@ import { L } from "./L";
 import { MLog } from "./MLog";
 import { MVersion } from "./MVersion";
 
-const { ccclass, property, executeInEditMode, requireComponent, menu } = cc._decorator
+const { ccclass, property, requireComponent, menu } = cc._decorator
 const C = {
     LANGUAGE: {
         "english": en,  // 英文
@@ -25,7 +25,6 @@ type TypeLanguage = keyof typeof C.LANGUAGE;
  * - [用法] 使用静态接口text()
  */
 @ccclass
-@executeInEditMode
 @requireComponent(cc.Label)
 @menu("framework/Mi18n")
 export class Mi18n extends cc.Component {
@@ -54,24 +53,22 @@ export class Mi18n extends cc.Component {
         this.play_onload && this.update_label()
     }
 
-    update() {
-        if (MVersion.run_editor && this.preview) {
-            this.preview = false
-            this.update_label()
-        }
-    }
-
     @property({ tooltip: "字符串key;无法使用notify()函数" })
     private key: string = C.DEFAULT_KEY
 
     @property({ tooltip: "字符串参数", type: cc.String })
     private param: string[] = []
 
-    @property({ tooltip: "预览1次;预览完毕后置于false" })
-    private preview: boolean = false
+    @property({ tooltip: "预览1次;预览完毕后置于false", type: cc.Boolean })
+    private get preview() { return false }
+    private set preview(v: boolean) {
+        MVersion.run_editor && this.update_label()
+    }
 
     @property({ tooltip: "是否在onLoad()时候修改" })
     private play_onload: boolean = true
+
+    private label: cc.Label;
 
     /**
      * 更新label
@@ -79,6 +76,9 @@ export class Mi18n extends cc.Component {
      * @param label node中的cc.Label组件
      */
     private update_label() {
-        this.node.getComponent(cc.Label).string = Mi18n.text(<any>this.key, ...this.param)
+        if (!this.label) {
+            this.label = this.node.getComponent(cc.Label)
+        }
+        this.label.string = Mi18n.text(<any>this.key, ...this.param)
     }
 }

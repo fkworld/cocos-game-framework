@@ -1,6 +1,6 @@
 import { MVersion } from "./MVersion";
 
-const { ccclass, property, requireComponent, executeInEditMode, menu } = cc._decorator;
+const { ccclass, property, requireComponent, menu } = cc._decorator;
 const C = {
     TIME: 0.3,
 }
@@ -12,24 +12,12 @@ const C = {
  */
 @ccclass
 @requireComponent(cc.Button)
-@executeInEditMode
 @menu("framework/TModal")
 export class TModal extends cc.Component {
 
     onLoad() {
-        if (MVersion.run_editor) {
-            return
-        }
-        // 保存信息
         this.modal_position = this.modal.position
         this.modal.active = this.state
-    }
-
-    update() {
-        if (MVersion.run_editor && this.preview) {
-            this.preview = false
-            this.set()
-        }
     }
 
     @property({ tooltip: "子窗口节点", type: cc.Node })
@@ -38,8 +26,11 @@ export class TModal extends cc.Component {
     @property({ tooltip: "载入时的状态是否显示" })
     private state = true
 
-    @property()
-    private preview = false
+    @property({ tooltip: "预览", type: cc.Boolean })
+    private get preview() { return false }
+    private set preview(v: boolean) {
+        MVersion.run_editor && this.set()
+    }
 
     private modal_position: cc.Vec2;
 
