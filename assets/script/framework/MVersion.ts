@@ -33,7 +33,10 @@ export class MVersion {
     // 运行环境判定
 
     /** 编辑器环境 */
-    static get run_editor() { return CC_EDITOR }
+    static get is_editor() { return CC_EDITOR }
+
+    /** 预览环境 */
+    static get is_preview() { return CC_PREVIEW }
 
     // 运行版本判定
 

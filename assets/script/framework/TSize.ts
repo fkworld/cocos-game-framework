@@ -28,13 +28,13 @@ export class TSize extends cc.Component {
     @property({ tooltip: "保存", type: cc.Boolean })
     private get save() { return false }
     private set save(v: boolean) {
-        MVersion.run_editor && this.save_size()
+        MVersion.is_editor && this.save_size()
     }
 
     @property({ tooltip: "预览", type: cc.Boolean })
     private get preview() { return false }
     private set preview(v: boolean) {
-        MVersion.run_editor && this.update_size()
+        MVersion.is_editor && this.update_size()
     }
 
     /** 保存size */

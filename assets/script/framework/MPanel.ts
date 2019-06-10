@@ -130,7 +130,7 @@ export class MPanel {
             return
         }
         // 判断在编辑器模式下PATH是否包含name,仅在编辑器模式下;打包后会压缩代码,name会被丢弃
-        if (MVersion.run_editor && panel.CONFIG.path.includes(panel.name)) {
+        if (MVersion.is_preview && !panel.CONFIG.path.includes(panel.name)) {
             MLog.error(`@MPanel, panel-config-path错误, name=${panel.name}`)
         }
         // 获取key,value,z_index;考虑异步延迟,需要提前获取
@@ -143,7 +143,7 @@ export class MPanel {
                 if (value.node) { return }
                 break;
             case "cover":
-                if (value.node) { value.node.destroy() }
+                if (value.node) { await MPanel.close(panel, {}) }
                 break;
             case "chain":
                 if (value.node) { value.cmd.push(params); return }
@@ -152,7 +152,6 @@ export class MPanel {
         }
         // 载入prefab
         let prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${key}`, cc.Prefab)
-        // 需要载入的prefab并不存在时,输出log并return;注意name属性在打包后(或者代码混淆后)不可用
         if (!prefab) {
             MLog.error(`@MPanel: panel-prefab不存在, name=${panel.name}, path=${key}`)
             return

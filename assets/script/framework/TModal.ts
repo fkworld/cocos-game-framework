@@ -29,7 +29,7 @@ export class TModal extends cc.Component {
     @property({ tooltip: "预览", type: cc.Boolean })
     private get preview() { return false }
     private set preview(v: boolean) {
-        MVersion.run_editor && this.set()
+        MVersion.is_editor && this.set()
     }
 
     private modal_position: cc.Vec2;

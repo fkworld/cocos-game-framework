@@ -57,7 +57,7 @@ export class TScrollList extends cc.Component {
     @property({ tooltip: "check-all", type: cc.Boolean })
     private get check() { return false }
     private set check(v: boolean) {
-        MVersion.run_editor && this.check_all()
+        MVersion.is_editor && this.check_all()
     }
 
     /**

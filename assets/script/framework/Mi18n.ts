@@ -40,7 +40,7 @@ export class Mi18n extends cc.Component {
      * @param param
      */
     static text(key: keyof typeof en, ...param: any[]): string {
-        let type = (MVersion.run_editor || !L.language) ? C.EDITOR_TYPE : L.language
+        let type = (MVersion.is_editor || !L.language) ? C.EDITOR_TYPE : L.language
         let value = C.LANGUAGE[type][key]
         if (!value) {
             value = key
@@ -62,7 +62,7 @@ export class Mi18n extends cc.Component {
     @property({ tooltip: "预览1次;预览完毕后置于false", type: cc.Boolean })
     private get preview() { return false }
     private set preview(v: boolean) {
-        MVersion.run_editor && this.update_label()
+        MVersion.is_editor && this.update_label()
     }
 
     @property({ tooltip: "是否在onLoad()时候修改" })

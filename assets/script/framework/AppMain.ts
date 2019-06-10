@@ -48,7 +48,7 @@ export class AppMain extends cc.Component {
     /** 初始化本地数据 */
     private init_local_data() {
         // 预处理
-        L.init = MVersion.version_dev ? false : L.init
+        if (MVersion.version_dev) { L.init = false }
         MLog.log(`@AppMain: ${L.init ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
         if (L.init) { return }
         // 子系统初始化
