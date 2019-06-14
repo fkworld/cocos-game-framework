@@ -18,7 +18,7 @@ interface OpenParams {
  */
 @ccclass
 @menu("panel/PanelMessage")
-@MPanelConfig("PanelMessage", "chain")
+@MPanelConfig("PanelMessage", "cover")
 export class PanelMessage extends MPanelExtends {
 
     static OPEN_PARAMS: OpenParams;

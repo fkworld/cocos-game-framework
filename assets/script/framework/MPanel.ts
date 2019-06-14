@@ -27,8 +27,8 @@ const C = {
 
 /** 方向类型 */
 type TypeDirection = keyof typeof C.DIRECTION;
-/** 打开方式类型;single-不允许再次打开;cover-再次打开时覆盖;chain-再次打开时会加入chain */
-type TypeOpen = "single" | "cover" | "chain";
+/** 打开方式类型;single-不允许再次打开;cover-再次打开时覆盖; */
+type TypeOpen = "single" | "cover";
 /** 动作的基础参数 */
 interface ActionParams {
     time?: number;      // 时间
@@ -38,13 +38,20 @@ interface ActionParams {
 /** panel-config,panel配置 */
 interface PanelConfig {
     path: string;       // 资源路径;同时也作为唯一key使用
-    type: TypeOpen;     //打开方式
+    type: TypeOpen;     // 打开方式
 }
 /** panel-instance,panel实例 */
 interface PanelInstance {
-    prefab: cc.Prefab;  // 对应的prefab
-    node: cc.Node;      // 实例node,单个
-    cmd: object[];      // 命令集合
+    // 静态部分
+    prefab?: cc.Prefab;         // prefab
+    is_check?: boolean;         // 是否通过check
+    // 数据部分
+    state?: "open" | "close";   // 当前的数据状态
+    params_open?: object;       // 打开参数
+    params_close?: object;      // 关闭参数
+    z_index?: number;           // open时设定的node-z-index
+    // 实例部分
+    node?: cc.Node;             // 实例节点
 }
 
 /** 装饰器函数,panel配置参数;装饰器的设置会覆盖内部设置 */
@@ -94,6 +101,81 @@ export class MPanel {
     }
 
     //////////
+    // 向外暴露两个静态的open和close方法供调用
+    //////////
+
+    /**
+     * 打开panel,写入cmd并执行cmd
+     * @param panel 传入panel的类型
+     * @param params
+     */
+    static async open<T extends typeof MPanelExtends>(panel: T, params: T["OPEN_PARAMS"]) {
+        let value = MPanel.ins.get_panel_instance(panel)
+        // 如果状态为open,则根据panel-config-type执行不同逻辑
+        if (value.state === "open") {
+            MLog.warn(`@mpanel: panel-state=open, 拦截处理, name=${panel.name}`)
+            switch (panel.CONFIG.type) {
+                // single:直接return
+                default: case "single": return;
+                // cover:如果节点已经创建,则删除节点后新建;如果节点未创建,则跳过本次创建
+                case "cover":
+                    if (value.node) {
+                        value.node.destroy()
+                        break
+                    } else {
+                        return
+                    }
+            }
+        }
+        // 修改数据部分
+        value.state = "open"
+        value.params_open = params
+        value.z_index = MPanel.ins.now_z_index += 1
+        // 创建实例部分
+        value.prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${panel.CONFIG.path}`, cc.Prefab)
+        if (!value.prefab) {
+            MLog.error(`@mpanel: panel-prefab不存在, name=${panel.name}, path=${panel.CONFIG.path}`)
+            return
+        }
+        if (value.state != "open") {
+            // 如果载入完prefab后state不为open,则跳过创建
+            MLog.warn(`@mpanel: panel-state已经为close, 表示还未打开即关闭, name=${panel.name}`)
+            return
+        }
+        value.node = cc.instantiate(value.prefab)
+        value.node.parent = MPanel.ins.parent
+        value.node.position = cc.Vec2.ZERO
+        value.node.width = cc.winSize.width
+        value.node.height = cc.winSize.height
+        value.node.zIndex = value.z_index
+        value.node.active = true
+        value.node.getComponent(panel) && await value.node.getComponent(panel).on_open(value.params_open)
+    }
+
+    /**
+     * 关闭panel
+     * @param panel 传入panel的类型
+     * @param param
+     */
+    static async close<T extends typeof MPanelExtends>(panel: T, params: T["CLOSE_PARAMS"]) {
+        let value = MPanel.ins.get_panel_instance(panel)
+        // 如果状态已经为close,则跳过本次删除
+        if (value.state === "close") {
+            MLog.warn(`@mpanel: panel-state=close, 跳过本次关闭`)
+            return
+        }
+        // 更改数据部分
+        value.state = "close"
+        value.params_close = params
+        // 更改实例部分
+        if (value.node) {
+            value.node.getComponent(panel) && await value.node.getComponent(panel).on_close(value.params_close)
+            value.node.destroy()
+            value.node = null
+        }
+    }
+
+    //////////
     // 配置的默认数值
     //////////
 
@@ -107,100 +189,40 @@ export class MPanel {
 
     /** 挂载父节点 */
     private parent: cc.Node;
-
     /** 当前的渲染层级 */
     private now_z_index: number;
-
     /** panel-实例的map结构存储;包括prefab,node,cmd */
     private map_ins: Map<string, PanelInstance> = new Map()
 
-    //////////
-    // 向外暴露两个静态的open和close方法供调用
-    //////////
-
     /**
-     * 打开panel
-     * @param panel 传入panel的类型
-     * @param params
+     * 获取panel的instance,如果不存在,则初始化
+     * @param panel 
      */
-    static async open<T extends typeof MPanelExtends>(panel: T, params: T["OPEN_PARAMS"]) {
-        // 判定是否配置了panel-config
+    private get_panel_instance(panel: typeof MPanelExtends): PanelInstance {
+        let key = panel.CONFIG.path
+        let value = this.map_ins.get(key)
+        if (!value) {
+            value = {}
+            this.map_ins.set(key, value)
+        }
+        if (!value.is_check) {
+            value.is_check = this.check_panel(panel)
+        }
+        return value
+    }
+
+    /** 校验panel */
+    private check_panel(panel: typeof MPanelExtends): boolean {
+        // 判断是否配置了panel-config
         if (!panel.CONFIG) {
             MLog.error(`@MPanel, panel-config不存在, name=${panel.name}`)
-            return
+            return false
         }
         // 判断在编辑器模式下PATH是否包含name,仅在编辑器模式下;打包后会压缩代码,name会被丢弃
         if (MVersion.is_preview && !panel.CONFIG.path.includes(panel.name)) {
             MLog.error(`@MPanel, panel-config-path错误, name=${panel.name}`)
         }
-        // 获取key,value,z_index;考虑异步延迟,需要提前获取
-        let key = panel.CONFIG.path
-        let value = MPanel.ins.map_ins.get(key) || { prefab: null, node: null, cmd: [] }
-        let z_index = MPanel.ins.now_z_index += 1
-        // 获取同名节点进行预处理
-        switch (panel.CONFIG.type) {
-            case "single":
-                if (value.node) { return }
-                break;
-            case "cover":
-                if (value.node) { await MPanel.close(panel, {}) }
-                break;
-            case "chain":
-                if (value.node) { value.cmd.push(params); return }
-                break;
-            default: break;
-        }
-        // 载入prefab
-        let prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${key}`, cc.Prefab)
-        if (!prefab) {
-            MLog.error(`@MPanel: panel-prefab不存在, name=${panel.name}, path=${key}`)
-            return
-        }
-        // 实例化prefab
-        let node = cc.instantiate(prefab)
-        node.parent = MPanel.ins.parent
-        node.position = cc.Vec2.ZERO
-        node.width = cc.winSize.width
-        node.height = cc.winSize.height
-        node.zIndex = z_index
-        node.active = true
-        // 重新保存value
-        value.node = node
-        value.prefab = prefab
-        MPanel.ins.map_ins.set(key, value)
-        // 执行节点打开动画
-        let panel_script = node.getComponent(panel)
-        panel_script && await panel_script.on_open(params)
-    }
-
-    /**
-     * 关闭panel
-     * @param panel 传入panel的类型
-     * @param param
-     */
-    static async close<T extends typeof MPanelExtends>(panel: T, params: T["CLOSE_PARAMS"]) {
-        // 获取key,value
-        let key = panel.CONFIG.path;
-        let value = MPanel.ins.map_ins.get(key) || { prefab: null, node: null, cmd: [] }
-        // 如果node实例不存在,则输出log并返回
-        if (!value.node) {
-            MLog.error(`@MPanel: panel-node不存在, name=${panel.name}, path=${key}`)
-            return
-        }
-        // 执行节点关闭动画
-        let panel_script = value.node.getComponent(panel)
-        panel_script && await panel_script.on_close(params)
-        value.node.destroy()
-        // 打开下一个窗口
-        if (panel.CONFIG.type === "chain") {
-            let cmd = value.cmd.shift()
-            if (cmd) {
-                this.open(panel, cmd) // 注意此处没有await
-            }
-        }
-        // 重新保存value
-        value.node = null
-        // this.map_ins.set(key, value)
+        return true
     }
 
     //////////
