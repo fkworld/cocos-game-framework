@@ -1,4 +1,4 @@
-import { MLog } from "./MLog";
+import { FMLog } from "./fm-log";
 
 /**
  * [M] 网络连接
@@ -6,7 +6,7 @@ import { MLog } from "./MLog";
  * - [注意] 考虑await无法对reject()进行处理,需要进行try-catch封装,并在catch中返回null
  * - [注意] 需要处理浏览器跨域请求;如果是cros方案,需要后端(目标url)进行配合才可以实现
  */
-export class MHttp {
+export class FMHttp {
 
     /**
      * fetch+post+json
@@ -24,7 +24,7 @@ export class MHttp {
             let json = await response.json()
             return json
         } catch (error) {
-            MLog.error(error)
+            FMLog.error(error)
             return null
         }
     }

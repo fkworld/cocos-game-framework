@@ -2,7 +2,7 @@
  * [M] 动画管理
  * - 封装一些简单的常用的动画
  */
-export class MAction {
+export class FMAnima {
 
     /**
      * 时钟动画：每次转动一定的角度

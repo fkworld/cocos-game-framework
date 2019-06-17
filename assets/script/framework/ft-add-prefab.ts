@@ -4,14 +4,14 @@ const { ccclass, property, menu } = cc._decorator
  * [T] 动态添加prefab,一般在onLoad()时添加
  */
 @ccclass
-@menu("framework/TAddPrefab")
-export class TAddPrefab extends cc.Component {
+@menu("framework/FTAddPrefab")
+export class FTAddPrefab extends cc.Component {
 
-    static get(node: cc.Node) { return node.getComponent(TAddPrefab) }
+    static get(node: cc.Node) { return node.getComponent(FTAddPrefab) }
 
-    static get_perfab(node: cc.Node) { return node.getComponent(TAddPrefab).prefab }
+    static get_perfab(node: cc.Node) { return node.getComponent(FTAddPrefab).prefab }
 
-    static get_prefab_node(node: cc.Node) { return node.getComponent(TAddPrefab).prefab_node }
+    static get_prefab_node(node: cc.Node) { return node.getComponent(FTAddPrefab).prefab_node }
 
     @property({ tooltip: "需要添加的prefab", type: cc.Prefab })
     private prefab: cc.Prefab = null

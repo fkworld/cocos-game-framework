@@ -1,6 +1,6 @@
-import { MLog } from "./MLog";
-import { MVersion } from "./MVersion";
-import { G } from "./G";
+import { FMLog } from "./fm-log";
+import { FMVersion } from "./fm-version";
+import { G } from "./f-global";
 
 const { ccclass, property, requireComponent, menu } = cc._decorator;
 const C = {
@@ -18,19 +18,19 @@ enum TypeCreate { single_frame, next_frame }
  * - [注意] 仅支持layout方式自动排列,需要手动设置layout的属性
  * - [使用方式]
  *  1. 新建一个ScrollView节点,仅有mask节点(view),content节点,item节点有效,其余可以自由删减
- *  2. 将TScrollList脚本挂载在ScrollView组件所在的节点上,将item节点拖入,设置好方向和位置排序方式
- *  3. 将TScrollList的check_and_change置true,自动修改；如果要手动修改,可以使用check_only
- *  4. 在需要的地方,使用TScrollList的实例方法create()进行创建,传入数据列表
+ *  2. 将FTScrollList脚本挂载在ScrollView组件所在的节点上,将item节点拖入,设置好方向和位置排序方式
+ *  3. 将FTScrollList的check_and_change置true,自动修改；如果要手动修改,可以使用check_only
+ *  4. 在需要的地方,使用FTScrollList的实例方法create()进行创建,传入数据列表
  * - [注意] 并没有分批次创建,而是一次创建完毕,所以如果列表项目较多可能有性能压力
  * @todo 分批次创建
  * @todo 更多的针对item的操作,比如滑动到某个列表项,搜索某个列表项等
  */
 @ccclass
 @requireComponent(cc.ScrollView)
-@menu("framework/TScrollList")
-export class TScrollList extends cc.Component {
+@menu("framework/FTScrollList")
+export class FTScrollList extends cc.Component {
 
-    static get(node: cc.Node) { return node.getComponent(TScrollList) }
+    static get(node: cc.Node) { return node.getComponent(FTScrollList) }
 
     onLoad() {
         this.sv = this.node.getComponent(cc.ScrollView)
@@ -57,7 +57,7 @@ export class TScrollList extends cc.Component {
     @property({ tooltip: "check-all", type: cc.Boolean })
     private get check() { return false }
     private set check(v: boolean) {
-        MVersion.is_editor && this.check_all()
+        FMVersion.is_editor && this.check_all()
     }
 
     /**
@@ -96,7 +96,7 @@ export class TScrollList extends cc.Component {
 
     /** 检查所有设置是否正确 */
     private check_all() {
-        MLog.log(`@${this.node.name}: check-scroll-view-setting`)
+        FMLog.log(`@${this.node.name}: check-scroll-view-setting`)
         this.check_scroll_view_direction()
         this.check_scroll_view_size()
         this.check_mask_position()
@@ -113,7 +113,7 @@ export class TScrollList extends cc.Component {
             this.sv.horizontal = this.type_sv === TypeSv.hor
             this.sv.vertical = !this.sv.horizontal
         }
-        MLog.log("scroll-view-direction", f)
+        FMLog.log("scroll-view-direction", f)
     }
 
     /* 检查scroll-view节点与mask节点的大小是否统一 */
@@ -123,7 +123,7 @@ export class TScrollList extends cc.Component {
             this.content.parent.width = this.node.width
             this.content.parent.height = this.node.height
         }
-        MLog.log("scroll-view-size", f)
+        FMLog.log("scroll-view-size", f)
     }
 
     /* 检查mask节点的位置是否在原点 */
@@ -132,7 +132,7 @@ export class TScrollList extends cc.Component {
         if (this.check_and_change_flag) {
             this.content.parent.position = cc.Vec2.ZERO
         }
-        MLog.log("mask-position", f)
+        FMLog.log("mask-position", f)
     }
 
     /* 检查item的anchor中间,position为原点 */
@@ -142,7 +142,7 @@ export class TScrollList extends cc.Component {
             this.item.setAnchorPoint(cc.v2(0.5, 0.5))
             this.item.position = cc.Vec2.ZERO
         }
-        MLog.log("item-anchor", f)
+        FMLog.log("item-anchor", f)
     }
 
     /* 检查content节点的anchor设置是否正确 */
@@ -152,7 +152,7 @@ export class TScrollList extends cc.Component {
         if (this.check_and_change_flag) {
             this.content.setAnchorPoint(target_anchor)
         }
-        MLog.log("content-anchor", f)
+        FMLog.log("content-anchor", f)
     }
 
     /* 检查content节点的位置是否正确 */
@@ -162,7 +162,7 @@ export class TScrollList extends cc.Component {
         if (this.check_and_change_flag) {
             this.content.position = target_position
         }
-        MLog.log("content-position", f)
+        FMLog.log("content-position", f)
     }
 
     /* 如果有layout,检查是否有layout,检查layout的设置是否正确 */
@@ -172,6 +172,6 @@ export class TScrollList extends cc.Component {
         if (this.check_and_change_flag && !f) {
             layout = this.content.addComponent(cc.Layout)
         }
-        MLog.log("content-layout", f)
+        FMLog.log("content-layout", f)
     }
 }

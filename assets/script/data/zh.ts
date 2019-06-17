@@ -1,8 +1,6 @@
-import { en } from "./en";
+import { TypeI18n } from "./en";
 
-/**
- * [Mi18n] 中文 
- */
-export const zh: { [key in keyof typeof en]?: string } = {
+/** i18n-中文  */
+export const zh: Partial<TypeI18n> = {
 
 }

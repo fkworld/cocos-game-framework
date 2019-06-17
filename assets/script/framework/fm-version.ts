@@ -1,5 +1,5 @@
 const C = {
-    VERSION: <MVersionType>"dev",   // 默认为dev版本,打包时需要修改
+    VERSION: "dev" as const,        // 默认为dev版本,打包时需要修改
     NAME: "cocos-game-framework",
     CREATOR: "skyfox-fengyong",
     VERSION_NUMBER: "0.0",
@@ -7,7 +7,7 @@ const C = {
 }
 
 /** 版本类型 */
-type MVersionType = "dev" | "rc";
+type FMVersionType = "dev" | "rc";
 
 /**
  * [M] 环境管理,版本管理
@@ -16,7 +16,7 @@ type MVersionType = "dev" | "rc";
  * - 自定义综合判定,环境+版本
  * - [注意] 这里均使用getter函数来简化,如果都不使用getter函数也可以,保持一致即可
  */
-export class MVersion {
+export class FMVersion {
 
     // 获取游戏信息
 

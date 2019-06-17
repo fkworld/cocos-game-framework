@@ -1,4 +1,4 @@
-import { MLog } from "./MLog";
+import { FMLog } from "./fm-log";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -10,8 +10,8 @@ const { ccclass, property, menu } = cc._decorator
  * - [注意] 观察的子节点名称需要不同
  */
 @ccclass
-@menu("framework/TChildNode")
-export class TChildNode extends cc.Component {
+@menu("framework/FTChild")
+export class FTChild extends cc.Component {
 
     /**
      * 获取节点中被观察的子节点
@@ -20,7 +20,7 @@ export class TChildNode extends cc.Component {
      * @static
      */
     static get_child_node(parent_node: cc.Node, child_node_nodename: string) {
-        return parent_node.getComponent(TChildNode).get_child_node(child_node_nodename)
+        return parent_node.getComponent(FTChild).get_child_node(child_node_nodename)
     }
 
     @property(cc.Node)
@@ -37,11 +37,11 @@ export class TChildNode extends cc.Component {
         if (this.list_child_node.length != 0 && this.map_child_node.size === 0) {
             this.list_child_node.forEach(v => {
                 if (!v) {
-                    MLog.warn(`@TChildNode: get a null node, node-name=${this.node.name}`)
+                    FMLog.warn(`@FTChild: get a null node, node-name=${this.node.name}`)
                     return
                 }
                 if (this.map_child_node.get(v.name)) {
-                    MLog.warn(`@TChildNode: get a same-name node, node-name=${this.node.name}, same-name=${v.name}`)
+                    FMLog.warn(`@FTChild: get a same-name node, node-name=${this.node.name}, same-name=${v.name}`)
                     return;
                 }
                 this.map_child_node.set(v.name, v)
@@ -49,7 +49,7 @@ export class TChildNode extends cc.Component {
         }
         let n = this.map_child_node.get(name)
         if (!n) {
-            MLog.error(`@TChildNode: get a undefined node, name=${name}`)
+            FMLog.error(`@FTChild: get a undefined node, name=${name}`)
         }
         return n
     }
