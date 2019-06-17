@@ -1,5 +1,5 @@
-import { G } from "./G";
-import { MLog } from "./MLog";
+import { G } from "./f-global";
+import { FMLog } from "./fm-log";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
@@ -20,20 +20,20 @@ Object.freeze(C)
  * - 新建像素点数组来记录擦除点，实现擦除完成后的回调方法
  * - 注意：之前版本的creator中cc.Mask有bug（在GitHub上已经修复），建议使用2.0.5以上版本，或者使用修复引擎功能修复
  * - 注意：考虑有限像素存储
- * @example 新建一个节点，节点大小为0，拖入TErase组件，会自动补充cc.Mask组件并调整参数，在此节点下的图片是被擦除部分
+ * @example 新建一个节点，节点大小为0，拖入FTErase组件，会自动补充cc.Mask组件并调整参数，在此节点下的图片是被擦除部分
  * @todo 性能优化
  * @todo 完全像素存储->间隔像素存储，即使用300-300个像素来表示600-600个像素
  */
 @ccclass
 @requireComponent(cc.Mask)
-export class TErase extends cc.Component {
+export class FFTErase extends cc.Component {
 
     /**
      * 获取节点的对应组件
      * @param node 
      * @static
      */
-    static get(node: cc.Node): TErase { return node.getComponent(TErase) }
+    static get(node: cc.Node): FFTErase { return node.getComponent(FFTErase) }
 
     onLoad() {
         // 初始化mask
@@ -150,7 +150,7 @@ export class TErase extends cc.Component {
 
     /** 检查是否开启近路功能 */
     check_save() {
-        if (!this.is_save) { MLog.error(`@TErase: 记录功能未开启，无法实现完成回调功能，已自动开启，请检查node=${this.node}`) }
+        if (!this.is_save) { FMLog.error(`@FFTErase: 记录功能未开启，无法实现完成回调功能，已自动开启，请检查node=${this.node}`) }
         this.is_save = true
     }
 

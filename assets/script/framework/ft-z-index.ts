@@ -1,4 +1,4 @@
-import { MVersion } from "./MVersion";
+import { FMVersion } from "./fm-version";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -7,8 +7,8 @@ const { ccclass, property, menu } = cc._decorator
  * - [注意] 仅在编辑器中执行，不在onLoad()时执行
  */
 @ccclass
-@menu("framework/TZIndex")
-export class TZIndex extends cc.Component {
+@menu("framework/FTZIndex")
+export class FTZIndex extends cc.Component {
 
     @property({ tooltip: '当前的zIndex', readonly: true })
     private now_z_index = 0
@@ -19,7 +19,7 @@ export class TZIndex extends cc.Component {
     @property({ tooltip: "预览", type: cc.Boolean })
     private get preview() { return false }
     private set preview(v: boolean) {
-        MVersion.is_editor && this.update_z_index()
+        FMVersion.is_editor && this.update_z_index()
     }
 
     private update_z_index() {

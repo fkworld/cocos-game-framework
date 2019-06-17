@@ -1,5 +1,5 @@
-import { G } from "./G";
-import { MVersion } from "./MVersion";
+import { G } from "./f-global";
+import { FMVersion } from "./fm-version";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -13,8 +13,8 @@ enum TypeBase { width, height }
  * - [注意] source_size是节点的源比例;尽量save后就不要进行修改
  */
 @ccclass
-@menu("framework/TSize")
-export class TSize extends cc.Component {
+@menu("framework/FTSize")
+export class FTSize extends cc.Component {
 
     @property({ tooltip: "基准类型", type: cc.Enum(TypeBase) })
     private type: TypeBase = TypeBase.width
@@ -28,13 +28,13 @@ export class TSize extends cc.Component {
     @property({ tooltip: "保存", type: cc.Boolean })
     private get save() { return false }
     private set save(v: boolean) {
-        MVersion.is_editor && this.save_size()
+        FMVersion.is_editor && this.save_size()
     }
 
     @property({ tooltip: "预览", type: cc.Boolean })
     private get preview() { return false }
     private set preview(v: boolean) {
-        MVersion.is_editor && this.update_size()
+        FMVersion.is_editor && this.update_size()
     }
 
     /** 保存size */

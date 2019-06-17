@@ -1,4 +1,4 @@
-import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
+import { FMPanel, FMPanelExtends, FMPanelConfig } from "../framework/fm-panel";
 
 const { ccclass, property, menu } = cc._decorator;
 const C = {
@@ -18,8 +18,8 @@ interface OpenParams {
  */
 @ccclass
 @menu("panel/PanelMessage")
-@MPanelConfig("PanelMessage", "cover")
-export class PanelMessage extends MPanelExtends {
+@FMPanelConfig("PanelMessage", "cover")
+export class PanelMessage extends FMPanelExtends {
 
     static OPEN_PARAMS: OpenParams;
 
@@ -37,11 +37,11 @@ export class PanelMessage extends MPanelExtends {
         this.f_yes = params.f_yes
         this.f_no = params.f_no
         this.btn_no.active = !!this.f_no
-        await MPanel.in_scale(this.node)
+        await FMPanel.in_scale(this.node)
     }
 
     async on_close() {
-        await MPanel.out_scale(this.node)
+        await FMPanel.out_scale(this.node)
     }
 
     f_yes: () => void = null
@@ -55,11 +55,11 @@ export class PanelMessage extends MPanelExtends {
 
     event_ok() {
         this.f_yes && this.f_yes()
-        MPanel.close(PanelMessage, {})
+        FMPanel.close(PanelMessage, {})
     }
 
     event_cancel() {
         this.f_no && this.f_no()
-        MPanel.close(PanelMessage, {})
+        FMPanel.close(PanelMessage, {})
     }
 }

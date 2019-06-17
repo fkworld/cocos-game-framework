@@ -1,11 +1,11 @@
-import { PanelGame } from "../panel/PanelGame";
-import { PanelLoading } from "../panel/PanelLoading";
-import { L } from "./L";
-import { Mi18n } from "./Mi18n";
-import { MLog } from "./MLog";
-import { MPanel } from "./MPanel";
-import { MSound } from "./MSound";
-import { MVersion } from "./MVersion";
+import { PanelGame } from "../panel/panel-game";
+import { PanelLoading } from "../panel/panel-loading";
+import { L } from "./f-local";
+import { FMI18n } from "./fm-i18n";
+import { FMLog } from "./fm-log";
+import { FMPanel } from "./fm-panel";
+import { FMSound } from "./fm-sound";
+import { FMVersion } from "./fm-version";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -14,26 +14,31 @@ const { ccclass, property, menu } = cc._decorator
  * - 显式调用调整屏幕适配,本地存储初始化,游戏资源的初始化,声音初始化,界面初始化
  */
 @ccclass
-@menu("framework/AppMain")
-export class AppMain extends cc.Component {
+@menu("framework/FApp")
+export class FApp extends cc.Component {
 
-    async start() {
-        // 屏幕设配
-        this.adjust_screen()
-        // 打印游戏信息
-        MLog.log("@game-info:", MVersion.NAME, MVersion.CREATOR, MVersion.VERSION_NUMBER, MVersion.VERSION)
-        // 各子系统初始化
-        this.init_local_data()
-        MPanel.init(this.panel_parent)
-        MSound.init()
-        // 加载loading页面,加载n个载入流程,加载完毕后进入游戏
-        await MPanel.open(PanelLoading, {})
-        await MPanel.close(PanelLoading, {})
-        await MPanel.open(PanelGame, {})
+    start() {
+        this.app_start()
     }
 
     @property({ tooltip: "panel所挂载的父节点", type: cc.Node })
     private panel_parent: cc.Node = null
+
+    /** app启动逻辑 */
+    private async app_start() {
+        // 打印游戏信息
+        FMLog.log("@game-info:", FMVersion.NAME, FMVersion.CREATOR, FMVersion.VERSION_NUMBER, FMVersion.VERSION)
+        // 屏幕设配
+        this.adjust_screen()
+        // 各子系统初始化
+        this.init_local_data()
+        FMPanel.init(this.panel_parent)
+        FMSound.init()
+        // 加载loading页面,加载n个载入流程,加载完毕后进入游戏
+        await FMPanel.open(PanelLoading, {})
+        await FMPanel.close(PanelLoading, {})
+        await FMPanel.open(PanelGame, {})
+    }
 
     /** 调整屏幕适配 */
     private adjust_screen() {
@@ -48,12 +53,12 @@ export class AppMain extends cc.Component {
     /** 初始化本地数据 */
     private init_local_data() {
         // 预处理
-        if (MVersion.version_dev) { L.init = false }
-        MLog.log(`@AppMain: ${L.init ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
+        if (FMVersion.version_dev) { L.init = false }
+        FMLog.log(`@FApp: ${L.init ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
         if (L.init) { return }
         // 子系统初始化
-        MSound.init_local()
-        Mi18n.init_local()
+        FMSound.init_local()
+        FMI18n.init_local()
         // 初始化完毕之后,置is_init为true
         L.init = true
     }

@@ -10,13 +10,13 @@ const C = {
  * [M] log信息管理工具
  * - 可以直接使用cc.log(),cc.warn(),cc.error()进行log输出
  * - 添加在log输出时进行的额外操作,包括记录信息,上传等
- * - [注意] MLog.log()没有函数调用的堆栈信息,如果需要,可以:
+ * - [注意] FMLog.log()没有函数调用的堆栈信息,如果需要,可以:
  *  1. 直接使用cc.log()调试
  *  2. 使用Chrome-Source进行调试
  *  3. 使用console.trace()输出堆栈信息
- * @todo 添加MLog的函数调用堆栈信息输出,管理
+ * @todo 添加FMLog的函数调用堆栈信息输出,管理
  */
-export class MLog {
+export class FMLog {
 
     /**
      * log信息

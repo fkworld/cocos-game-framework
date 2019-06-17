@@ -1,9 +1,9 @@
 import { en } from "../data/en";
 import { zh } from "../data/zh";
-import { G } from "./G";
-import { L } from "./L";
-import { MLog } from "./MLog";
-import { MVersion } from "./MVersion";
+import { G } from "./f-global";
+import { L } from "./f-local";
+import { FMLog } from "./fm-log";
+import { FMVersion } from "./fm-version";
 
 const { ccclass, property, requireComponent, menu } = cc._decorator
 const C = {
@@ -26,8 +26,8 @@ type TypeLanguage = keyof typeof C.LANGUAGE;
  */
 @ccclass
 @requireComponent(cc.Label)
-@menu("framework/Mi18n")
-export class Mi18n extends cc.Component {
+@menu("framework/FMI18n")
+export class FMI18n extends cc.Component {
 
     /** 初始化本地存储 */
     static init_local() {
@@ -40,11 +40,11 @@ export class Mi18n extends cc.Component {
      * @param param
      */
     static text(key: keyof typeof en, ...param: any[]): string {
-        let type = (MVersion.is_editor || !L.language) ? C.EDITOR_TYPE : L.language
+        let type = (FMVersion.is_editor || !L.language) ? C.EDITOR_TYPE : L.language
         let value = C.LANGUAGE[type][key]
         if (!value) {
             value = key
-            MLog.warn(`@Mi18n: 获取了一个不存在的key, key=${key}`)
+            FMLog.warn(`@FMI18n: 获取了一个不存在的key, key=${key}`)
         }
         return G.fake_template_string(value, ...param)
     }
@@ -62,7 +62,7 @@ export class Mi18n extends cc.Component {
     @property({ tooltip: "预览1次;预览完毕后置于false", type: cc.Boolean })
     private get preview() { return false }
     private set preview(v: boolean) {
-        MVersion.is_editor && this.update_label()
+        FMVersion.is_editor && this.update_label()
     }
 
     @property({ tooltip: "是否在onLoad()时候修改" })
@@ -79,6 +79,6 @@ export class Mi18n extends cc.Component {
         if (!this.label) {
             this.label = this.node.getComponent(cc.Label)
         }
-        this.label.string = Mi18n.text(<any>this.key, ...this.param)
+        this.label.string = FMI18n.text(<any>this.key, ...this.param)
     }
 }

@@ -1,4 +1,4 @@
-import { MPanel, MPanelExtends, MPanelConfig } from "../framework/MPanel";
+import { FMPanel, FMPanelExtends, FMPanelConfig } from "../framework/fm-panel";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -13,23 +13,23 @@ interface OpenParams {
  */
 @ccclass
 @menu("panel/PanelGuide")
-@MPanelConfig("PanelGuide")
-export class PanelGuide extends MPanelExtends {
+@FMPanelConfig("PanelGuide")
+export class PanelGuide extends FMPanelExtends {
 
     static OPEN_PARAMS: OpenParams;
 
     async on_open(params: OpenParams) {
         this.arrow_point.position = this.arrow_point.parent.convertToNodeSpaceAR(params.w_position)
         this.label_info.string = params.info
-        MPanel.in_fade_move(this.arrow_point, "down")
-        await MPanel.in_move(this.bg_info, "down")
+        FMPanel.in_fade_move(this.arrow_point, "down")
+        await FMPanel.in_move(this.bg_info, "down")
         cc.director.pause()
     }
 
     async on_close() {
         cc.director.resume()
-        MPanel.out_fade_move(this.arrow_point, "up")
-        await MPanel.out_move(this.bg_info, "down")
+        FMPanel.out_fade_move(this.arrow_point, "up")
+        await FMPanel.out_move(this.bg_info, "down")
     }
 
     @property(cc.Node)
@@ -43,6 +43,6 @@ export class PanelGuide extends MPanelExtends {
 
     /** click event close */
     event_close() {
-        MPanel.close(PanelGuide, {})
+        FMPanel.close(PanelGuide, {})
     }
 }

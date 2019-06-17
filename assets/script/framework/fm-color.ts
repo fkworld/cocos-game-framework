@@ -1,4 +1,4 @@
-import { MVersion } from "./MVersion";
+import { FMVersion } from "./fm-version";
 import { color } from "../data/color";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -13,8 +13,8 @@ const C = {
  * - [参考资料] Ant-design推荐的颜色设计:https://ant.design/docs/spec/colors-cn
  */
 @ccclass
-@menu("framework/TColor")
-export class TColor extends cc.Component {
+@menu("framework/FMColor")
+export class FMColor extends cc.Component {
 
     @property({ tooltip: "颜色字符串" })
     private key: string = C.DEFAULT_KEY
@@ -22,7 +22,7 @@ export class TColor extends cc.Component {
     @property({ tooltip: "预览", type: cc.Boolean })
     private get preview() { return false }
     private set preview(v: boolean) {
-        MVersion.is_editor && this.update_color()
+        FMVersion.is_editor && this.update_color()
     }
 
     update_color() {

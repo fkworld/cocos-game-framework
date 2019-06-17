@@ -1,4 +1,4 @@
-import { G } from "./G";
+import { G } from "./f-global";
 
 const { ccclass, property } = cc._decorator;
 enum TYPE { relative, absolute }
@@ -12,9 +12,9 @@ enum TYPE_AXIS { all, x, y }
  * @todo 跟随的边缘限制
  */
 @ccclass
-export class TFollow extends cc.Component {
+export class FTFollow extends cc.Component {
 
-    static get(node: cc.Node) { return node.getComponent(TFollow) }
+    static get(node: cc.Node) { return node.getComponent(FTFollow) }
 
     @property({ tooltip: '目标节点', type: cc.Node })
     target: cc.Node = null
