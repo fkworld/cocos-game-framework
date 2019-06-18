@@ -29,8 +29,14 @@ const C = {
 type TypeDirection = keyof typeof C.DIRECTION;
 /** 打开方式类型;single-不允许再次打开;cover-再次打开时覆盖; */
 type TypeOpen = "single" | "cover";
+/** panel的传入类型 */
+type TypePanel = typeof FMPanelExtends;
+/** panel的open参数类型 */
+type TypePanelOpen<T extends TypePanel> = Parameters<T["prototype"]["on_open"]>[0] extends undefined ? object : Parameters<T["prototype"]["on_open"]>[0];
+/** panel的close参数类型 */
+type TypePanelClose<T extends TypePanel> = Parameters<T["prototype"]["on_close"]>[0] extends undefined ? object : Parameters<T["prototype"]["on_close"]>[0];
 /** 动作的基础参数 */
-interface ActionParams {
+interface ParamAction {
     time?: number;      // 时间
     delay?: number;     // 延迟
     ease?: any;         // ease函数
@@ -71,14 +77,10 @@ export const FMPanelConfig = (path: string, type?: TypeOpen) => {
 export abstract class FMPanelExtends extends cc.Component {
     /** panel的配置参数 */
     static CONFIG: PanelConfig;
-    /** 打开界面的参数结构;只需要给定类型即可,不需要赋值 */
-    static OPEN_PARAMS: object;
-    /** 关闭界面的参数结构;只需要给定类型即可,不需要赋值 */
-    static CLOSE_PARAMS: object;
     /** panel-open-process */
-    async on_open(params: object) { };
+    async on_open(param?: object) { };
     /** panel-close-process */
-    async on_close(params: object) { };
+    async on_close(param?: object) { };
 }
 
 /**
@@ -107,9 +109,9 @@ export class FMPanel {
     /**
      * 打开panel,写入cmd并执行cmd
      * @param panel 传入panel的类型
-     * @param params
+     * @param param
      */
-    static async open<T extends typeof FMPanelExtends>(panel: T, params: T["OPEN_PARAMS"]) {
+    static async open<T extends TypePanel>(panel: T, param: TypePanelOpen<T>) {
         let value = FMPanel.ins.get_panel_instance(panel)
         // 如果状态为open,则根据panel-config-type执行不同逻辑
         if (value.state === "open") {
@@ -129,7 +131,7 @@ export class FMPanel {
         }
         // 修改数据部分
         value.state = "open"
-        value.params_open = params
+        value.params_open = param
         value.z_index = FMPanel.ins.now_z_index += 1
         // 创建实例部分
         value.prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${panel.CONFIG.path}`, cc.Prefab)
@@ -157,7 +159,7 @@ export class FMPanel {
      * @param panel 传入panel的类型
      * @param param
      */
-    static async close<T extends typeof FMPanelExtends>(panel: T, params: T["CLOSE_PARAMS"]) {
+    static async close<T extends TypePanel>(panel: T, param: TypePanelClose<T>) {
         let value = FMPanel.ins.get_panel_instance(panel)
         // 如果状态已经为close,则跳过本次删除
         if (value.state === "close") {
@@ -166,7 +168,7 @@ export class FMPanel {
         }
         // 更改数据部分
         value.state = "close"
-        value.params_close = params
+        value.params_close = param
         // 更改实例部分
         if (value.node) {
             value.node.getComponent(panel) && await value.node.getComponent(panel).on_close(value.params_close)
@@ -251,15 +253,15 @@ export class FMPanel {
     /**
      * 以scale形式进入;初始值为0,终点值为1
      * @param node 
-     * @param params 
+     * @param param 
      */
-    static in_scale(node: cc.Node, params: ActionParams = {}) {
+    static in_scale(node: cc.Node, param: ParamAction = {}) {
         return new Promise(res => {
             node.scale = C.SCALE_0
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
-                cc.scaleTo(params.time || C.TIME, C.SCALE_1).easing(params.ease || C.EASE_IN),
+                cc.delayTime(param.delay || 0),
+                cc.scaleTo(param.time || C.TIME, C.SCALE_1).easing(param.ease || C.EASE_IN),
                 cc.callFunc(res),
             ))
         })
@@ -268,14 +270,14 @@ export class FMPanel {
     /**
      * 以scale形式离开;初始值为当前值,终点值为0
      * @param node 
-     * @param params 
+     * @param param 
      */
-    static out_scale(node: cc.Node, params: ActionParams = {}) {
+    static out_scale(node: cc.Node, param: ParamAction = {}) {
         return new Promise(res => {
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
-                cc.scaleTo(params.time || C.TIME, C.SCALE_0).easing(params.ease || C.EASE_OUT),
+                cc.delayTime(param.delay || 0),
+                cc.scaleTo(param.time || C.TIME, C.SCALE_0).easing(param.ease || C.EASE_OUT),
                 cc.callFunc(res),
             ))
         })
@@ -284,15 +286,15 @@ export class FMPanel {
     /**
      * 以fade形式进入;初始值为0,终点值为1
      * @param node 
-     * @param params 
+     * @param param 
      */
-    static in_fade(node: cc.Node, params: ActionParams = {}) {
+    static in_fade(node: cc.Node, param: ParamAction = {}) {
         return new Promise(res => {
             node.opacity = C.FADE_0
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
-                cc.fadeIn(params.time || C.TIME).easing(params.ease || C.EASE_IN),
+                cc.delayTime(param.delay || 0),
+                cc.fadeIn(param.time || C.TIME).easing(param.ease || C.EASE_IN),
                 cc.callFunc(res),
             ))
         })
@@ -301,14 +303,14 @@ export class FMPanel {
     /**
      * 以fade形式离开;初始值为当前值,终点值为0
      * @param node 
-     * @param params 
+     * @param param 
      */
-    static out_fade(node: cc.Node, params: ActionParams = {}) {
+    static out_fade(node: cc.Node, param: ParamAction = {}) {
         return new Promise(res => {
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
-                cc.fadeOut(params.time || C.TIME).easing(params.ease || C.EASE_OUT),
+                cc.delayTime(param.delay || 0),
+                cc.fadeOut(param.time || C.TIME).easing(param.ease || C.EASE_OUT),
                 cc.callFunc(res),
             ))
         })
@@ -319,9 +321,9 @@ export class FMPanel {
      * @param node 
      * @param direction 方向
      * @param distance 距离,默认为null,会计算Math.max(cc.winSize.width, cc.winSize.height)
-     * @param params 
+     * @param param 
      */
-    static in_move(node: cc.Node, direction: TypeDirection, distance: number = null, params: ActionParams = {}) {
+    static in_move(node: cc.Node, direction: TypeDirection, distance: number = null, param: ParamAction = {}) {
         return new Promise(res => {
             G.check_widget(node)
             distance = distance || Math.max(cc.winSize.width, cc.winSize.height)
@@ -330,8 +332,8 @@ export class FMPanel {
             node.position = start_position
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
-                cc.moveTo(params.time || C.TIME, end_postion).easing(params.ease || C.EASE_IN),
+                cc.delayTime(param.delay || 0),
+                cc.moveTo(param.time || C.TIME, end_postion).easing(param.ease || C.EASE_IN),
                 cc.callFunc(res),
             ))
         })
@@ -344,14 +346,14 @@ export class FMPanel {
      * @param time 
      * @param ease 
      */
-    static out_move(node: cc.Node, direction: TypeDirection, distance: number = null, params: ActionParams = {}) {
+    static out_move(node: cc.Node, direction: TypeDirection, distance: number = null, param: ParamAction = {}) {
         return new Promise(res => {
             distance = distance || Math.max(cc.winSize.width, cc.winSize.height)
             let end_postion = node.position.add(C.DIRECTION[direction].mul(distance))
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
-                cc.moveTo(params.time || C.TIME, end_postion).easing(params.ease || C.EASE_OUT),
+                cc.delayTime(param.delay || 0),
+                cc.moveTo(param.time || C.TIME, end_postion).easing(param.ease || C.EASE_OUT),
                 cc.callFunc(res),
             ))
         })
@@ -362,9 +364,9 @@ export class FMPanel {
      * @param node 
      * @param direction 
      * @param distance 
-     * @param params 
+     * @param param 
      */
-    static in_fade_move(node: cc.Node, direction: TypeDirection, distance: number = null, params: ActionParams = {}) {
+    static in_fade_move(node: cc.Node, direction: TypeDirection, distance: number = null, param: ParamAction = {}) {
         return new Promise(res => {
             G.check_widget(node)
             distance = distance || C.FADE_MOVE_DISTANCE
@@ -374,10 +376,10 @@ export class FMPanel {
             node.opacity = C.FADE_0
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
+                cc.delayTime(param.delay || 0),
                 cc.spawn(
-                    cc.fadeIn(params.time || C.TIME).easing(params.ease || C.EASE_IN),
-                    cc.moveTo(params.time || C.TIME, end_position).easing(params.ease || C.EASE_IN),
+                    cc.fadeIn(param.time || C.TIME).easing(param.ease || C.EASE_IN),
+                    cc.moveTo(param.time || C.TIME, end_position).easing(param.ease || C.EASE_IN),
                 ),
                 cc.callFunc(res)
             ))
@@ -389,18 +391,18 @@ export class FMPanel {
      * @param node 
      * @param direction 
      * @param distance 
-     * @param params 
+     * @param param 
      */
-    static out_fade_move(node: cc.Node, direction: TypeDirection, distance: number = null, params: ActionParams = {}) {
+    static out_fade_move(node: cc.Node, direction: TypeDirection, distance: number = null, param: ParamAction = {}) {
         return new Promise(res => {
             distance = distance || C.FADE_MOVE_DISTANCE
             let end_position = node.position.add(C.DIRECTION[direction].mul(distance))
             node.active = true
             node.runAction(cc.sequence(
-                cc.delayTime(params.delay || 0),
+                cc.delayTime(param.delay || 0),
                 cc.spawn(
-                    cc.moveTo(params.time || C.TIME, end_position).easing(params.ease || C.EASE_IN),
-                    cc.fadeOut(params.time || C.TIME).easing(params.ease || C.EASE_IN),
+                    cc.moveTo(param.time || C.TIME, end_position).easing(param.ease || C.EASE_IN),
+                    cc.fadeOut(param.time || C.TIME).easing(param.ease || C.EASE_IN),
                 ),
                 cc.callFunc(res)
             ))

@@ -7,7 +7,7 @@ const C = {
 }
 
 /** 界面打开参数接口 */
-interface OpenParams {
+interface ParamOpen {
     item: string | cc.Node
     f_yes?: () => void
     f_no?: () => void
@@ -21,21 +21,19 @@ interface OpenParams {
 @FMPanelConfig("PanelMessage", "cover")
 export class PanelMessage extends FMPanelExtends {
 
-    static OPEN_PARAMS: OpenParams;
-
-    async on_open(params: OpenParams) {
-        if (typeof params.item === "string") {
-            this.label_message.string = params.item
-        } else if (params.item instanceof cc.Node) {
+    async on_open(param: ParamOpen) {
+        if (typeof param.item === "string") {
+            this.label_message.string = param.item
+        } else if (param.item instanceof cc.Node) {
             this.label_message.string = ""
-            let n = cc.instantiate(params.item)
+            let n = cc.instantiate(param.item)
             n.parent = this.label_message.node
             n.active = true
         } else {
 
         }
-        this.f_yes = params.f_yes
-        this.f_no = params.f_no
+        this.f_yes = param.f_yes
+        this.f_no = param.f_no
         this.btn_no.active = !!this.f_no
         await FMPanel.in_scale(this.node)
     }

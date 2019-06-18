@@ -20,6 +20,6 @@ export class PanelWait extends FMPanelExtends {
     }
 
     @property(cc.Node)
-    wait_icon: cc.Node = null
+    private wait_icon: cc.Node = null
 
 }
