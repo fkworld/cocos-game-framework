@@ -1,7 +1,10 @@
-/**
- * [TColor] 颜色数据
- */
-export const color: { [key: string]: cc.Color } = {
+/** 类型:颜色 */
+export type TypeColor = {
+    [key in keyof typeof color]: cc.Color;
+}
+
+/** color-颜色数据 */
+export const color = {
 
     // 默认颜色
     "none": cc.Color.WHITE,
