@@ -5,7 +5,13 @@
         "build/": true,
         "temp/": true,
         "library/": true,
-        "**/*.anim": true
+        "**/*.anim": true,
+        "**/*.prefab": true,
+        "**/*.json": true,
+        "**/*.png": true,
+        "**/*.ttf": true,
+        "**/*.mp3": true,
+        "**/*.fire": true,
     },
     "files.exclude": {
         "**/.git": true,
