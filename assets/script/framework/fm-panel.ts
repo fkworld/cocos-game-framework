@@ -29,12 +29,10 @@ const C = {
 type TypeDirection = keyof typeof C.DIRECTION;
 /** 打开方式类型;single-不允许再次打开;cover-再次打开时覆盖; */
 type TypeOpen = "single" | "cover";
-/** panel的传入类型 */
-type TypePanel = typeof FMPanelExtends;
 /** panel的open参数类型 */
-type TypePanelOpen<T extends TypePanel> = Parameters<T["prototype"]["on_open"]>[0] extends undefined ? object : Parameters<T["prototype"]["on_open"]>[0];
+type TypePanelOpen<T extends typeof FMPanelExtends> = Parameters<T["prototype"]["on_open"]>[0] extends undefined ? object : Parameters<T["prototype"]["on_open"]>[0];
 /** panel的close参数类型 */
-type TypePanelClose<T extends TypePanel> = Parameters<T["prototype"]["on_close"]>[0] extends undefined ? object : Parameters<T["prototype"]["on_close"]>[0];
+type TypePanelClose<T extends typeof FMPanelExtends> = Parameters<T["prototype"]["on_close"]>[0] extends undefined ? object : Parameters<T["prototype"]["on_close"]>[0];
 /** 动作的基础参数 */
 interface ParamAction {
     time?: number;      // 时间
@@ -107,11 +105,31 @@ export class FMPanel {
     //////////
 
     /**
+     * 预载入界面,先读取界面的prefab
+     * @param panel 
+     */
+    static async load(panel: typeof FMPanelExtends): Promise<void> {
+        let value = FMPanel.ins.get_panel_instance(panel)
+        value.prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${panel.CONFIG.path}`, cc.Prefab)
+    }
+
+    /**
+     * 获取panel的实例脚本
+     * @param panel 
+     */
+    static get_panel(panel: typeof FMPanelExtends): FMPanelExtends {
+        let value = FMPanel.ins.get_panel_instance(panel)
+        if (value.state === "open" && value.node) {
+            return value.node.getComponent(panel)
+        }
+    }
+
+    /**
      * 打开panel,写入cmd并执行cmd
      * @param panel 传入panel的类型
      * @param param
      */
-    static async open<T extends TypePanel>(panel: T, param: TypePanelOpen<T>) {
+    static async open<T extends typeof FMPanelExtends>(panel: T, param: TypePanelOpen<T>) {
         let value = FMPanel.ins.get_panel_instance(panel)
         // 如果状态为open,则根据panel-config-type执行不同逻辑
         if (value.state === "open") {
@@ -159,7 +177,7 @@ export class FMPanel {
      * @param panel 传入panel的类型
      * @param param
      */
-    static async close<T extends TypePanel>(panel: T, param: TypePanelClose<T>) {
+    static async close<T extends typeof FMPanelExtends>(panel: T, param: TypePanelClose<T>) {
         let value = FMPanel.ins.get_panel_instance(panel)
         // 如果状态已经为close,则跳过本次删除
         if (value.state === "close") {
