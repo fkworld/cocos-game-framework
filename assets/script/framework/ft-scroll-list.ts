@@ -54,9 +54,9 @@ export class FTScrollList extends cc.Component {
     @property({ tooltip: "是否在check时修改" })
     private check_and_change_flag = true
 
-    @property({ tooltip: "check-all", type: cc.Boolean })
-    private get check() { return false }
-    private set check(v: boolean) {
+    @property({ tooltip: "编辑器操作-check" })
+    private get do_editor() { return false }
+    private set do_editor(v: boolean) {
         FMVersion.is_editor && this.check_all()
     }
 

@@ -153,6 +153,8 @@
       "__id__": 2
     },
     "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
@@ -169,8 +171,6 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_id": ""
   },
   {
@@ -435,7 +435,7 @@
     "_N$string": "Message",
     "_fontSize": 50,
     "_lineHeight": 60,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_N$file": {
       "__uuid__": "c43b6402-fdf6-451d-a84c-bd0bcfcc7164"
     },
@@ -458,8 +458,7 @@
     },
     "_enabled": true,
     "key": "panel_message_title",
-    "param": [],
-    "preview": false,
+    "params": [],
     "play_onload": true,
     "_id": ""
   },
@@ -674,9 +673,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 8,
-      "g": 151,
-      "b": 156,
+      "r": 0,
+      "g": 35,
+      "b": 41,
       "a": 255
     },
     "_contentSize": {
@@ -816,8 +815,7 @@
     },
     "_enabled": true,
     "key": "panel_message_yes",
-    "param": [],
-    "preview": false,
+    "params": [],
     "play_onload": true,
     "_id": ""
   },
@@ -840,6 +838,8 @@
       "__id__": 16
     },
     "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
@@ -856,8 +856,6 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_id": ""
   },
   {
@@ -939,7 +937,7 @@
     },
     "component": "",
     "_componentId": "17d56+coxlK/pGy5n89zPbA",
-    "handler": "event_ok",
+    "handler": "event_yes",
     "customEventData": ""
   },
   {
@@ -950,8 +948,7 @@
       "__id__": 16
     },
     "_enabled": true,
-    "key": "none",
-    "preview": false,
+    "key": "cyan_10",
     "_id": ""
   },
   {
@@ -996,9 +993,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 8,
-      "g": 151,
-      "b": 156,
+      "r": 0,
+      "g": 35,
+      "b": 41,
       "a": 255
     },
     "_contentSize": {
@@ -1138,8 +1135,7 @@
     },
     "_enabled": true,
     "key": "panel_message_no",
-    "param": [],
-    "preview": false,
+    "params": [],
     "play_onload": true,
     "_id": ""
   },
@@ -1162,6 +1158,8 @@
       "__id__": 26
     },
     "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
@@ -1178,8 +1176,6 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_id": ""
   },
   {
@@ -1261,7 +1257,7 @@
     },
     "component": "",
     "_componentId": "17d56+coxlK/pGy5n89zPbA",
-    "handler": "event_cancel",
+    "handler": "event_no",
     "customEventData": ""
   },
   {
@@ -1272,8 +1268,7 @@
       "__id__": 26
     },
     "_enabled": true,
-    "key": "none",
-    "preview": false,
+    "key": "cyan_10",
     "_id": ""
   },
   {
@@ -1339,6 +1334,8 @@
       "__id__": 7
     },
     "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
@@ -1355,8 +1352,6 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_id": ""
   },
   {
@@ -1368,7 +1363,6 @@
     },
     "_enabled": true,
     "key": "cyan_9",
-    "preview": false,
     "_id": ""
   },
   {

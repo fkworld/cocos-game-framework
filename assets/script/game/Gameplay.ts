@@ -1,5 +1,8 @@
 const { ccclass, menu } = cc._decorator;
 
+/** 游戏状态 */
+type TypeGameState = "start" | "pause" | "end";
+
 /**
  * [framework] 游戏主控逻辑
  */
@@ -17,36 +20,26 @@ export class Gameplay extends cc.Component {
 
     }
 
-    /**
-     * 游戏初始化
-     * - 数据初始化
-     * - 包括各子系统的初始化
-     */
+    /** 游戏状态;初始化状态为end */
+    private game_state: TypeGameState = "end"
+
+    /** 游戏初始化;包括各个游戏内子系统的初始化 */
     game_init() {
 
     }
 
-    /**
-     * 游戏开始运行
-     */
+    /** 游戏开始运行 */
     game_start() {
-
+        this.game_state = "start"
     }
 
-    /** 游戏是否处于暂停状态 */
-    is_game_pause: boolean = false
-
-    /**
-     * 游戏暂停
-     */
+    /** 游戏暂停 */
     game_pause() {
-        this.is_game_pause = true
+        this.game_state = "pause"
     }
 
-    /**
-     * 游戏继续
-     */
+    /** 游戏继续 */
     game_resume() {
-        this.is_game_pause = false
+        this.game_state = "start"
     }
 }

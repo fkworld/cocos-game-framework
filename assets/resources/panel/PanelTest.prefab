@@ -147,6 +147,8 @@
       "__id__": 2
     },
     "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
@@ -163,8 +165,6 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_id": ""
   },
   {
@@ -279,7 +279,7 @@
     "sync": false
   },
   {
-    "__type__": "4b392oAB/lE7bjrmQpk3dMa",
+    "__type__": "a8561wiPZ9CnIJeysyPCN9f",
     "_name": "",
     "_objFlags": 0,
     "node": {

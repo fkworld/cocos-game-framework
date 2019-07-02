@@ -1,4 +1,4 @@
-import { FMPanel, FMPanelExtends, FMPanelConfig } from "../framework/fm-panel";
+import { FMPanel, FMPanelExtends, fm_panel_config } from "../framework/fm-panel";
 
 const { ccclass, property, menu } = cc._decorator;
 const C = {
@@ -6,11 +6,13 @@ const C = {
     BTN_Y: -50,
 }
 
-/** 界面打开参数接口 */
-interface ParamOpen {
-    item: string | cc.Node
-    f_yes?: () => void
-    f_no?: () => void
+/** 界面打开关闭参数 */
+interface Params {
+    Open: {
+        msg: string;
+        f_yes?: () => void;
+        f_no?: () => void;
+    }
 }
 
 /**
@@ -18,45 +20,36 @@ interface ParamOpen {
  */
 @ccclass
 @menu("panel/PanelMessage")
-@FMPanelConfig("PanelMessage", "cover")
+@fm_panel_config("PanelMessage", "cover")
 export class PanelMessage extends FMPanelExtends {
 
-    async on_open(param: ParamOpen) {
-        if (typeof param.item === "string") {
-            this.label_message.string = param.item
-        } else if (param.item instanceof cc.Node) {
-            this.label_message.string = ""
-            let n = cc.instantiate(param.item)
-            n.parent = this.label_message.node
-            n.active = true
-        } else {
-
-        }
-        this.f_yes = param.f_yes
-        this.f_no = param.f_no
+    async on_open(params: Params["Open"]) {
+        this.label_message.string = params.msg
+        this.f_yes = params.f_yes
+        this.f_no = params.f_no
         this.btn_no.active = !!this.f_no
-        await FMPanel.in_scale(this.node)
+        await FMPanel.in_scale(this.node, {})
     }
 
     async on_close() {
-        await FMPanel.out_scale(this.node)
+        await FMPanel.out_scale(this.node, {})
     }
 
-    f_yes: () => void = null
-    f_no: () => void = null
+    private f_yes: () => void = null
+    private f_no: () => void = null
 
     @property(cc.Label)
-    label_message: cc.Label = null
+    private label_message: cc.Label = null
 
     @property(cc.Node)
-    btn_no: cc.Node = null
+    private btn_no: cc.Node = null
 
-    event_ok() {
+    private event_yes() {
         this.f_yes && this.f_yes()
         FMPanel.close(PanelMessage, {})
     }
 
-    event_cancel() {
+    private event_no() {
         this.f_no && this.f_no()
         FMPanel.close(PanelMessage, {})
     }

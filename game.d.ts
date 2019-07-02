@@ -81,9 +81,9 @@ declare namespace Editor {
     type AssetMetaInfo = {
         assetMtime: string,
         assetPath: string,
-        assetType: TypeAsset,
+        assetType: AssetType,
         assetUrl: string,
-        defaultType: TypeAsset
+        defaultType: AssetType
         isSubMeta: boolean,
         json: string,
         metaMtime: string,
@@ -169,7 +169,7 @@ declare namespace Editor {
          * @param url 
          * @param assetType 
          */
-        queryAssets(pattern: string, type: TypeAsset | TypeAsset[], cb: (err: Error, results: Partial<AssetInfo>[]) => void);
+        queryAssets(pattern: string, type: AssetType | AssetType[], cb: (err: Error, results: Partial<AssetInfo>[]) => void);
         import
         create
         move

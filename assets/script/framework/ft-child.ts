@@ -17,19 +17,18 @@ export class FTChild extends cc.Component {
      * 获取节点中被观察的子节点
      * @param parent_node 
      * @param child_node_nodename 
-     * @static
      */
-    static get_child_node(parent_node: cc.Node, child_node_nodename: string) {
-        return parent_node.getComponent(FTChild).get_child_node(child_node_nodename)
+    static get(parent_node: cc.Node, child_nodename: string): cc.Node {
+        return parent_node.getComponent(FTChild).get_child_node(child_nodename)
     }
 
-    @property(cc.Node)
+    @property({ tooltip: "子节点列表", type: cc.Node })
     private list_child_node: cc.Node[] = []
 
     private map_child_node: Map<string, cc.Node> = new Map()
 
     /**
-     * 获取被观察的子节点,如果找不到则返回undefined
+     * 获取被观察的子节点
      * @param name 
      */
     private get_child_node(name: string): cc.Node {
@@ -37,11 +36,11 @@ export class FTChild extends cc.Component {
         if (this.list_child_node.length != 0 && this.map_child_node.size === 0) {
             this.list_child_node.forEach(v => {
                 if (!v) {
-                    FMLog.warn(`@FTChild: get a null node, node-name=${this.node.name}`)
+                    FMLog.warn(`@FTChild: node的值为null, node-name=${this.node.name}`)
                     return
                 }
                 if (this.map_child_node.get(v.name)) {
-                    FMLog.warn(`@FTChild: get a same-name node, node-name=${this.node.name}, same-name=${v.name}`)
+                    FMLog.warn(`@FTChild: node-name重复, node-name=${this.node.name}`)
                     return;
                 }
                 this.map_child_node.set(v.name, v)
@@ -49,7 +48,7 @@ export class FTChild extends cc.Component {
         }
         let n = this.map_child_node.get(name)
         if (!n) {
-            FMLog.error(`@FTChild: get a undefined node, name=${name}`)
+            FMLog.error(`@FTChild: node不存在, node-name=${name}`)
         }
         return n
     }

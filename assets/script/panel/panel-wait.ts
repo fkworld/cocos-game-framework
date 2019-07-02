@@ -1,5 +1,5 @@
 import { FMAnima } from "../framework/fm-anima";
-import { FMPanelExtends, FMPanelConfig } from "../framework/fm-panel";
+import { FMPanelExtends, fm_panel_config } from "../framework/fm-panel";
 
 const { ccclass, property, menu } = cc._decorator
 const C = {
@@ -12,7 +12,7 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelWait")
-@FMPanelConfig("PanelWait")
+@fm_panel_config("PanelWait")
 export class PanelWait extends FMPanelExtends {
 
     async on_open() {

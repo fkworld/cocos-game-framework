@@ -1,7 +1,5 @@
 /** 类型:颜色 */
-export type TypeColor = {
-    [key in keyof typeof color]: cc.Color;
-}
+export type TypeColor = { [key in keyof typeof color]: cc.Color }
 
 /** color-颜色数据 */
 export const color = {

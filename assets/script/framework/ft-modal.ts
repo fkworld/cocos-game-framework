@@ -26,9 +26,9 @@ export class FTModal extends cc.Component {
     @property({ tooltip: "载入时的状态是否显示" })
     private state = true
 
-    @property({ tooltip: "预览", type: cc.Boolean })
-    private get preview() { return false }
-    private set preview(v: boolean) {
+    @property({ tooltip: "编辑器操作-set" })
+    private get do_editor() { return false }
+    private set do_editor(v: boolean) {
         FMVersion.is_editor && this.set()
     }
 

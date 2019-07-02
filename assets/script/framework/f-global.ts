@@ -284,6 +284,21 @@ export class G {
     }
 
     /**
+     * 载入本地资源或网络资源
+     * 1. 本地资源传入uuid
+     * 2. 网络资源传入url,必要时传入type
+     * @param params 
+     */
+    static load(params: { uuid?: string, url?: string, type?: string }): Promise<any> {
+        return new Promise(res => {
+            cc.loader.load(params, (err: Error, resource: any[]) => {
+                err && cc.warn(`load res fail, err=${err}, params=`, params)
+                err ? res(null) : res(resource)
+            })
+        })
+    }
+
+    /**
      * 模运算,针对负数进行统一化
      * - [区别] n为正数时与%运算相同,n为负数:-1%10=-1;modulo_operation(-1,10)=9
      * @param n 

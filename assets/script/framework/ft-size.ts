@@ -25,15 +25,15 @@ export class FTSize extends cc.Component {
     @property({ tooltip: "当前size" })
     private current_size: cc.Vec2 = cc.v2(1, 1)
 
-    @property({ tooltip: "保存", type: cc.Boolean })
-    private get save() { return false }
-    private set save(v: boolean) {
+    @property({ tooltip: "编辑器操作-保存" })
+    private get do_editor_save() { return false }
+    private set do_editor_save(v: boolean) {
         FMVersion.is_editor && this.save_size()
     }
 
-    @property({ tooltip: "预览", type: cc.Boolean })
-    private get preview() { return false }
-    private set preview(v: boolean) {
+    @property({ tooltip: "编辑器操作-修改" })
+    private get do_editor_change() { return false }
+    private set do_editor_change(v: boolean) {
         FMVersion.is_editor && this.update_size()
     }
 

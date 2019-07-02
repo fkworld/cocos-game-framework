@@ -1,4 +1,4 @@
-import { en } from "../data/en";
+import { en, TypeI18n } from "../data/en";
 import { zh } from "../data/zh";
 import { G } from "./f-global";
 import { L } from "./f-local";
@@ -35,7 +35,7 @@ export class FMI18n extends cc.Component {
      * @param key
      * @param params
      */
-    static get(key: keyof typeof en, ...params: string[]): string {
+    static get(key: keyof TypeI18n, ...params: string[]): string {
         let type = (FMVersion.is_editor || !L.language) ? C.EDITOR_TYPE : L.language
         if (!C.LANGUAGE[type]) {
             FMLog.warn(`$FMI18n: language-type不存在, type=${type}`)

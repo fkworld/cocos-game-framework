@@ -14,7 +14,7 @@ const C = {
 /** 声音类型 */
 type TypeSound = keyof typeof C.SOUND;
 /** 声音信息 */
-interface InfoSound {
+interface DataSoundInstance {
     url: string,            // 声音的资源字符串
     loop?: boolean,         // 是否循环播放,是否为bgm,默认为false
     volume?: number,        // 音量,默认为1
@@ -50,7 +50,7 @@ export class FMSound {
     }
 
     /** 声音的实例存储 */
-    private map_sound_ins: Map<keyof typeof C.SOUND, InfoSound> = new Map()
+    private map_sound_ins: Map<keyof typeof C.SOUND, DataSoundInstance> = new Map()
 
     /** 获取声音开关 */
     static get_sound_switch(): boolean {
