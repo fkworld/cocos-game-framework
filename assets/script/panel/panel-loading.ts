@@ -15,13 +15,11 @@ const C = {
 export class PanelLoading extends FMPanelExtends {
 
     async on_open() {
-        this.label_game_info.string = FMI18n.text(
-            "panel_loading_game_info",
+        this.label_game_info.string = FMI18n.get("panel_loading_game_info",
             FMVersion.NAME,
             FMVersion.CREATOR,
             FMVersion.VERSION_NUMBER,
-            FMVersion.VERSION_TIME,
-        )
+            FMVersion.VERSION_TIME)
         await FMPanel.in_fade_move(this.node, "down", null, { time: C.FADE_TIME })
     }
 
