@@ -204,7 +204,7 @@ export class FMPanel {
             return false
         }
         // 判断在编辑器模式下PATH是否包含name,仅在编辑器模式下;打包后会压缩代码,name会被丢弃
-        if (FMVersion.is_preview && !panel.CONFIG.path.includes(panel.name)) {
+        if (FMVersion.is_preview() && !panel.CONFIG.path.includes(panel.name)) {
             FMLog.error(`@FMPanel, panel-config-path错误, name=${panel.name}`)
         }
         return true

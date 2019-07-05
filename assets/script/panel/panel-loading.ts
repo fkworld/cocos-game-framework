@@ -18,10 +18,10 @@ export class PanelLoading extends FMPanelExtends {
 
     async on_open() {
         this.label_game_info.string = FMI18n.get("panel_loading_game_info",
-            FMVersion.NAME,
-            FMVersion.CREATOR,
-            FMVersion.VERSION_NUMBER,
-            FMVersion.VERSION_TIME)
+            FMVersion.get_name(),
+            FMVersion.get_creator(),
+            FMVersion.get_version_number(),
+            FMVersion.get_version_time())
         await FMPanelUI.in_fade_move(this.node, { direction: "down", time: C.FADE_TIME })
     }
 

@@ -25,7 +25,7 @@ export class FMColor extends cc.Component {
         let color = C.COLOR[key]
         if (!color) {
             FMLog.warn(`@FMColor: color-key不存在, key=${key}`)
-    }
+        }
         return color
     }
 
@@ -35,7 +35,7 @@ export class FMColor extends cc.Component {
     @property({ tooltip: "编辑器操作" })
     private get do_editor() { return false }
     private set do_editor(v: boolean) {
-        FMVersion.is_editor && this.update_color()
+        FMVersion.is_editor() && this.update_color()
     }
 
     private update_color() {

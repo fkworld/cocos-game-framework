@@ -57,7 +57,7 @@ export class FTScrollList extends cc.Component {
     @property({ tooltip: "编辑器操作-check" })
     private get do_editor() { return false }
     private set do_editor(v: boolean) {
-        FMVersion.is_editor && this.check_all()
+        FMVersion.is_editor() && this.check_all()
     }
 
     /**

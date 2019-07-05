@@ -29,7 +29,7 @@ export class FTModal extends cc.Component {
     @property({ tooltip: "编辑器操作-set" })
     private get do_editor() { return false }
     private set do_editor(v: boolean) {
-        FMVersion.is_editor && this.set()
+        FMVersion.is_editor() && this.set()
     }
 
     private modal_position: cc.Vec2;

@@ -36,7 +36,7 @@ export class FMI18n extends cc.Component {
      * @param params
      */
     static get(key: keyof TypeI18n, ...params: string[]): string {
-        let type = (FMVersion.is_editor || !L.language) ? C.EDITOR_TYPE : L.language
+        let type = (FMVersion.is_editor() || !L.language) ? C.EDITOR_TYPE : L.language
         if (!C.LANGUAGE[type]) {
             FMLog.warn(`$FMI18n: language-type不存在, type=${type}`)
             return ""
@@ -64,7 +64,7 @@ export class FMI18n extends cc.Component {
     @property({ tooltip: "编辑器操作" })
     private get do_editor() { return false }
     private set do_editor(v: boolean) {
-        FMVersion.is_editor && this.update_show()
+        FMVersion.is_editor() && this.update_show()
     }
 
     private type: "text" | "sp";                // 类型
@@ -95,7 +95,7 @@ export class FMI18n extends cc.Component {
 
     /** 更新sp,在editor模式下不更新 */
     private async update_c_sp() {
-        if (FMVersion.is_editor) {
+        if (FMVersion.is_editor()) {
             FMLog.warn(`@FMI18n: 在editor模式下无法更新sp组件`)
             return
         }

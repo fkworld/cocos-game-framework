@@ -27,7 +27,7 @@ export class FApp extends cc.Component {
     /** app启动逻辑 */
     private async app_start() {
         // 打印游戏信息
-        FMLog.log("@game-info:", FMVersion.NAME, FMVersion.CREATOR, FMVersion.VERSION_NUMBER, FMVersion.VERSION)
+        FMLog.log("@game-info:", FMVersion.get_name(), FMVersion.get_creator(), FMVersion.get_version_string(), FMVersion.get_version_number(), FMVersion.get_version_time())
         // 屏幕设配
         this.adjust_screen()
         // 各子系统初始化
@@ -53,7 +53,7 @@ export class FApp extends cc.Component {
     /** 初始化本地数据 */
     private init_local_data() {
         // 预处理
-        if (FMVersion.version_dev) { L.init = false }
+        if (FMVersion.is_dev()) { L.init = false }
         FMLog.log(`@FApp: ${L.init ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
         if (L.init) { return }
         // 子系统初始化
