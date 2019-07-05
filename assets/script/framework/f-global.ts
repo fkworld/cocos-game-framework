@@ -310,26 +310,4 @@ export class G {
         return n % module
     }
 
-    /**
-     * 抖动
-     * @param node 
-     */
-    static shake(node: cc.Node) {
-        return new Promise(res => {
-            let base_position = node.position
-            node.runAction(cc.sequence(
-                cc.moveTo(0.02, base_position.add(cc.v2(5, 7))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-6, 7))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-13, 3))),
-                cc.moveTo(0.02, base_position.add(cc.v2(3, -6))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-5, 5))),
-                cc.moveTo(0.02, base_position.add(cc.v2(2, -8))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-8, -10))),
-                cc.moveTo(0.02, base_position.add(cc.v2(3, 10))),
-                cc.moveTo(0.02, base_position.add(cc.v2(0, 0))),
-                cc.callFunc(res)
-            ))
-        })
-    }
-
 }
