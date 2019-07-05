@@ -36,9 +36,9 @@ export class FMPanelUI extends cc.Component {
     // 配置的默认数值
     //////////
 
-    static get TIME() { return C.TIME }
-    static get EASE_IN() { return C.EASE_IN }
-    static get EASE_OUT() { return C.EASE_OUT }
+    static get_time() { return C.TIME }
+    static get_ease_in() { return C.EASE_IN }
+    static get_ease_out() { return C.EASE_OUT }
 
     //////////
     // UI方法,使用Promise封装动画过程
