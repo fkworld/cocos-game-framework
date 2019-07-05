@@ -102,7 +102,7 @@
 			"service_desc": "稳定、低耗、76ms超低延时、全球200+数据中心覆盖；变声器、超高音质、听声辩位等丰富玩法极速接入；全平台支持：Android、iOS、Web。\n技术支持群QQ群：799099183\n",
 			"service_title": "游戏内置实时语音",
 			"service_guide_url": "https://docs.agora.io/cn/Interactive Gaming/game_c",
-			"service_sample_url": "https://github.com/AgoraIO/Voice-Call-for-Mobile-Gaming/tree/master/Basic-Voice-Call-for-Gaming/Hello-Cocos-Creator-Voice-Agora",
+			"service_sample_url": "https://github.com/AgoraIO/Voice-Call-for-Mobile-Gaming/tree/master/Basic-Voice-Call-for-Gaming/Hello-CocosCreator-Voice-Agora",
 			"service_dev_url": "https://sso.agora.io/api/oauth/cocos/login",
 			"service_type": "3",
 			"service_type_zh": "公司和个人游戏",

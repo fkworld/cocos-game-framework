@@ -1,6 +1,7 @@
 import { FMI18n } from "../framework/fm-i18n";
 import { FMPanel, FMPanelExtends, fm_panel_config } from "../framework/fm-panel";
 import { FMVersion } from "../framework/fm-version";
+import { FMPanelUI } from "../framework/f-m-panel-ui";
 
 const { ccclass, property, menu } = cc._decorator
 const C = {
@@ -21,11 +22,11 @@ export class PanelLoading extends FMPanelExtends {
             FMVersion.CREATOR,
             FMVersion.VERSION_NUMBER,
             FMVersion.VERSION_TIME)
-        await FMPanel.in_fade_move(this.node, { direction: "down", time: C.FADE_TIME })
+        await FMPanelUI.in_fade_move(this.node, { direction: "down", time: C.FADE_TIME })
     }
 
     async on_close() {
-        await FMPanel.out_fade_move(this.node, { direction: "up", time: C.FADE_TIME })
+        await FMPanelUI.out_fade_move(this.node, { direction: "up", time: C.FADE_TIME })
     }
 
     @property(cc.Label)

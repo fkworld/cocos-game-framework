@@ -1,4 +1,5 @@
 import { FMPanel, FMPanelExtends, fm_panel_config } from "../framework/fm-panel";
+import { FMPanelUI } from "../framework/f-m-panel-ui";
 
 const { ccclass, property, menu } = cc._decorator;
 const C = {
@@ -28,11 +29,11 @@ export class PanelMessage extends FMPanelExtends {
         this.f_yes = params.f_yes
         this.f_no = params.f_no
         this.btn_no.active = !!this.f_no
-        await FMPanel.in_scale(this.node, {})
+        await FMPanelUI.in_scale(this.node, {})
     }
 
     async on_close() {
-        await FMPanel.out_scale(this.node, {})
+        await FMPanelUI.out_scale(this.node, {})
     }
 
     private f_yes: () => void = null

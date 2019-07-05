@@ -1,5 +1,6 @@
 import { G } from "../framework/f-global";
 import { FMPanel, FMPanelExtends, fm_panel_config } from "../framework/fm-panel";
+import { FMPanelUI } from "../framework/f-m-panel-ui";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -23,8 +24,8 @@ export class PanelGuide extends FMPanelExtends {
         this.arrow_point.position = G.get_node_local_position(this.arrow_point, params.w_position)
         this.label_info.string = params.info
         await Promise.all([
-            FMPanel.in_fade_move(this.arrow_point, { direction: "down" }),
-            FMPanel.in_move(this.bg_info, { direction: "down" }),
+            FMPanelUI.in_fade_move(this.arrow_point, { direction: "down" }),
+            FMPanelUI.in_move(this.bg_info, { direction: "down" }),
         ])
         cc.director.pause()
     }
@@ -32,8 +33,8 @@ export class PanelGuide extends FMPanelExtends {
     async on_close() {
         cc.director.resume()
         await Promise.all([
-            FMPanel.out_fade_move(this.arrow_point, { direction: "up" }),
-            FMPanel.out_move(this.bg_info, { direction: "down" })
+            FMPanelUI.out_fade_move(this.arrow_point, { direction: "up" }),
+            FMPanelUI.out_move(this.bg_info, { direction: "down" })
         ])
     }
 

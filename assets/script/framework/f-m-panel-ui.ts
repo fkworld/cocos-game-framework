@@ -1,0 +1,262 @@
+import { G } from "./f-global";
+
+const C = {
+    TIME: 0.3,                          // 默认时间
+    EASE_IN: cc.easeCubicActionOut(),   // 默认ease
+    EASE_OUT: cc.easeCubicActionIn(),
+    DIRECTION: {                        // 方向对应的元向量
+        "left": cc.v2(-1, 0),
+        "right": cc.v2(1, 0),
+        "up": cc.v2(0, 1),
+        "down": cc.v2(0, -1),
+        "left_up": cc.v2(-1, 1),
+        "left_down": cc.v2(-1, -1),
+        "right_up": cc.v2(1, 1),
+        "right_down": cc.v2(1, -1),
+    },
+    FADE_MOVE_DISTANCE: 100,            // 在fade-move模式下的移动距离
+    FADE_SCALE_TARGET: 2,               // 在fade-scale模式下的目标scale
+}
+
+/** 方向类型 */
+type TypeDirection = keyof typeof C.DIRECTION;
+/** ui动作的基础参数 */
+interface ParamsAction {
+    time?: number;      // 时间
+    delay?: number;     // 延迟
+    ease?: any;         // ease函数
+}
+
+/**
+ * panel-ui方法
+ */
+export class FMPanelUI extends cc.Component {
+
+    //////////
+    // 配置的默认数值
+    //////////
+
+    static get TIME() { return C.TIME }
+    static get EASE_IN() { return C.EASE_IN }
+    static get EASE_OUT() { return C.EASE_OUT }
+
+    //////////
+    // UI方法,使用Promise封装动画过程
+    //////////
+
+    /** 
+     * 直接进入
+     * @param node
+     */
+    static in_nothing(node: cc.Node) {
+        node.active = true
+    }
+
+    /** 
+     * 直接离开
+     * @param node
+     */
+    static out_nothing(node: cc.Node) {
+        node.active = false
+    }
+
+    /**
+     * 以scale形式进入;初始值为0,终点值为1
+     * @param node 
+     * @param params 
+     */
+    static in_scale(node: cc.Node, params: ParamsAction) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_IN
+        return new Promise(res => {
+            node.scale = 0
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.scaleTo(params.time, 1).easing(params.ease),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 以scale形式离开;初始值为当前值,终点值为0
+     * @param node 
+     * @param params
+     */
+    static out_scale(node: cc.Node, params: ParamsAction) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_OUT
+        return new Promise(res => {
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.scaleTo(params.time, 0).easing(params.ease),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 以fade形式进入;初始值为0,终点值为1
+     * @param node 
+     * @param params 
+     */
+    static in_fade(node: cc.Node, params: ParamsAction) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_IN
+        return new Promise(res => {
+            node.opacity = 0
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.fadeIn(params.time).easing(params.ease),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 以fade形式离开;初始值为当前值,终点值为0
+     * @param node 
+     * @param params 
+     */
+    static out_fade(node: cc.Node, params: ParamsAction) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_OUT
+        return new Promise(res => {
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.fadeOut(params.time).easing(params.ease),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 以move形式进入
+     * @param node 
+     * @param params 
+     */
+    static in_move(node: cc.Node, params: ParamsAction & {
+        direction: TypeDirection,   // 方向;默认为left
+        distance?: number           // 距离;默认会计算Math.max(cc.winSize.width, cc.winSize.height)
+    }) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_IN
+        params.direction = params.direction || "left"
+        params.distance = params.distance || Math.max(cc.winSize.width, cc.winSize.height)
+        return new Promise(res => {
+            G.check_widget(node)
+            let start_position = node.position.add(C.DIRECTION[params.direction].mul(params.distance))
+            let end_postion = node.position
+            node.position = start_position
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.moveTo(params.time, end_postion).easing(params.ease),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 以move形式离开;初始值为当前位置,终点值根据direction和distance计算
+     * @param node 
+     * @param direction 
+     * @param time 
+     * @param ease 
+     */
+    static out_move(node: cc.Node, params: ParamsAction & {
+        direction: TypeDirection,   // 方向;默认为left
+        distance?: number           // 距离;默认会计算Math.max(cc.winSize.width, cc.winSize.height)
+    }) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_OUT
+        params.direction = params.direction || "left"
+        params.distance = params.distance || Math.max(cc.winSize.width, cc.winSize.height)
+        return new Promise(res => {
+            let end_postion = node.position.add(C.DIRECTION[params.direction].mul(params.distance))
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.moveTo(params.time, end_postion).easing(params.ease),
+                cc.callFunc(res),
+            ))
+        })
+    }
+
+    /**
+     * 以fade+move的形式组合进入
+     * @param node 
+     * @param params 
+     * @param params 
+     */
+    static in_fade_move(node: cc.Node, params: ParamsAction & {
+        direction: TypeDirection    // 方向;默认为left
+        distance?: number           // 距离;默认为100
+        opacity?: number            // 透明度;默认为255
+    }) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_IN
+        params.direction = params.direction || "left"
+        params.distance = params.distance || C.FADE_MOVE_DISTANCE
+        params.opacity = params.opacity || 255
+        return new Promise(res => {
+            G.check_widget(node)
+            let start_position = node.position.add(C.DIRECTION[params.direction].mul(params.distance))
+            let end_position = node.position
+            node.position = start_position
+            node.opacity = 0
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.spawn(
+                    cc.fadeTo(params.time, params.opacity).easing(params.ease),
+                    cc.moveTo(params.time, end_position).easing(params.ease),
+                ),
+                cc.callFunc(res)
+            ))
+        })
+    }
+
+    /**
+     * 以fade+move的形式组合离开
+     * @param node 
+     * @param params 
+     * @param params 
+     */
+    static out_fade_move(node: cc.Node, params: ParamsAction & {
+        direction: TypeDirection    // 方向;默认为left
+        distance?: number           // 距离;默认为100
+        opacity?: number            // 透明度;默认为0
+    }) {
+        params.delay = params.delay || 0
+        params.time = params.time || C.TIME
+        params.ease = params.ease || C.EASE_OUT
+        params.direction = params.direction || "left"
+        params.distance = params.distance || C.FADE_MOVE_DISTANCE
+        params.opacity = params.opacity || 0
+        return new Promise(res => {
+            let end_position = node.position.add(C.DIRECTION[params.direction].mul(params.distance))
+            node.active = true
+            node.runAction(cc.sequence(
+                cc.delayTime(params.delay),
+                cc.spawn(
+                    cc.moveTo(params.time, end_position).easing(params.ease),
+                    cc.fadeOut(params.time).easing(params.ease),
+                ),
+                cc.callFunc(res)
+            ))
+        })
+    }
+
+}
