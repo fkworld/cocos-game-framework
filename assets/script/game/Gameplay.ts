@@ -7,7 +7,7 @@ type TypeGameState = "start" | "pause" | "end";
  * [framework] 游戏主控逻辑
  */
 @ccclass
-@menu("framework/Gameplay")
+@menu("f/Gameplay")
 export class Gameplay extends cc.Component {
 
     static ins: Gameplay;
