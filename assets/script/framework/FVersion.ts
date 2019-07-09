@@ -18,7 +18,7 @@ type TypeVersion = "dev" | "rc";
  * - 运行环境,使用引擎自带宏变量,编辑器环境,发布环境等,具体参考https://docs.cocos.com/creator/api/zh/modules/GLOBAL-MACROS.html
  * - 允许多版本标记同时存在
  */
-export class FMVersion {
+export class FVersion {
 
     // 获取游戏信息
 

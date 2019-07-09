@@ -1,4 +1,4 @@
-import { FMPanel, FMPanelExtends, fm_panel_config } from "../framework/fm-panel";
+import { FPanelExtends, fm_panel_config } from "../framework/FPanel";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -8,6 +8,6 @@ const { ccclass, property, menu } = cc._decorator
 @ccclass
 @menu("panel/PanelGame")
 @fm_panel_config("PanelGame", "single")
-export class PanelGame extends FMPanelExtends {
+export class PanelGame extends FPanelExtends {
 
 }
