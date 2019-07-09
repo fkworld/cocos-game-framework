@@ -1,4 +1,4 @@
-import { FMLog } from "./fm-log";
+import { FLog } from "./FLog";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -10,8 +10,8 @@ const { ccclass, property, menu } = cc._decorator
  * - [注意] 观察的子节点名称需要不同
  */
 @ccclass
-@menu("framework/FTChild")
-export class FTChild extends cc.Component {
+@menu("t/TChild")
+export class TChild extends cc.Component {
 
     /**
      * 获取节点中被观察的子节点
@@ -19,7 +19,7 @@ export class FTChild extends cc.Component {
      * @param child_node_nodename 
      */
     static get(parent_node: cc.Node, child_nodename: string): cc.Node {
-        return parent_node.getComponent(FTChild).get_child_node(child_nodename)
+        return parent_node.getComponent(TChild).get_child_node(child_nodename)
     }
 
     @property({ tooltip: "子节点列表", type: cc.Node })
@@ -36,11 +36,11 @@ export class FTChild extends cc.Component {
         if (this.list_child_node.length != 0 && this.map_child_node.size === 0) {
             this.list_child_node.forEach(v => {
                 if (!v) {
-                    FMLog.warn(`@FTChild: node的值为null, node-name=${this.node.name}`)
+                    FLog.warn(`@TChild: node的值为null, node-name=${this.node.name}`)
                     return
                 }
                 if (this.map_child_node.get(v.name)) {
-                    FMLog.warn(`@FTChild: node-name重复, node-name=${this.node.name}`)
+                    FLog.warn(`@TChild: node-name重复, node-name=${this.node.name}`)
                     return;
                 }
                 this.map_child_node.set(v.name, v)
@@ -48,7 +48,7 @@ export class FTChild extends cc.Component {
         }
         let n = this.map_child_node.get(name)
         if (!n) {
-            FMLog.error(`@FTChild: node不存在, node-name=${name}`)
+            FLog.error(`@TChild: node不存在, node-name=${name}`)
         }
         return n
     }

@@ -1,11 +1,11 @@
-import { PanelGame } from "../panel/panel-game";
-import { PanelLoading } from "../panel/panel-loading";
-import { L } from "./f-local";
-import { FMI18n } from "./fm-i18n";
-import { FMLog } from "./fm-log";
-import { FMPanel } from "./fm-panel";
-import { FMSound } from "./fm-sound";
-import { FMVersion } from "./fm-version";
+import { PanelGame } from "../panel/PanelGame";
+import { PanelLoading } from "../panel/PanelLoading";
+import { FLog } from "./FLog";
+import { FPanel } from "./FPanel";
+import { FSound } from "./FSound";
+import { FText } from "./FText";
+import { FVersion } from "./FVersion";
+import { L } from "./L";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -14,8 +14,8 @@ const { ccclass, property, menu } = cc._decorator
  * - 显式调用调整屏幕适配,本地存储初始化,游戏资源的初始化,声音初始化,界面初始化
  */
 @ccclass
-@menu("framework/FApp")
-export class FApp extends cc.Component {
+@menu("f/App")
+export class App extends cc.Component {
 
     start() {
         this.app_start()
@@ -27,17 +27,17 @@ export class FApp extends cc.Component {
     /** app启动逻辑 */
     private async app_start() {
         // 打印游戏信息
-        FMLog.log("@game-info:", FMVersion.get_name(), FMVersion.get_creator(), FMVersion.get_version_string(), FMVersion.get_version_number(), FMVersion.get_version_time())
+        FLog.log("@game-info:", FVersion.get_name(), FVersion.get_creator(), FVersion.get_version_string(), FVersion.get_version_number(), FVersion.get_version_time())
         // 屏幕设配
         this.adjust_screen()
         // 各子系统初始化
         this.init_local_data()
-        FMPanel.init(this.panel_parent)
-        FMSound.init()
+        FPanel.init(this.panel_parent)
+        FSound.init()
         // 加载loading页面,加载n个载入流程,加载完毕后进入游戏
-        await FMPanel.open(PanelLoading, {})
-        await FMPanel.close(PanelLoading, {})
-        await FMPanel.open(PanelGame, {})
+        await FPanel.open(PanelLoading, {})
+        await FPanel.close(PanelLoading, {})
+        await FPanel.open(PanelGame, {})
     }
 
     /** 调整屏幕适配 */
@@ -53,12 +53,12 @@ export class FApp extends cc.Component {
     /** 初始化本地数据 */
     private init_local_data() {
         // 预处理
-        if (FMVersion.is_dev()) { L.init = false }
-        FMLog.log(`@FApp: ${L.init ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
+        if (FVersion.is_dev()) { L.init = false }
+        FLog.log(`@FApp: ${L.init ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
         if (L.init) { return }
         // 子系统初始化
-        FMSound.init_local()
-        FMI18n.init_local()
+        FSound.init_local()
+        FText.init_local()
         // 初始化完毕之后,置is_init为true
         L.init = true
     }

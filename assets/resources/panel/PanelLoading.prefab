@@ -271,7 +271,7 @@
     "_id": ""
   },
   {
-    "__type__": "4e437LdRp5MUoPqn9h6KWbp",
+    "__type__": "4ce0blKPEpJKK28sjCO0hds",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -280,7 +280,7 @@
     "_enabled": true,
     "key": "panel_loading_game_info",
     "params": [],
-    "play_onload": false,
+    "play_onload": true,
     "_id": ""
   },
   {

@@ -1,6 +1,6 @@
-import { G } from "./f-global";
-import { L } from "./f-local";
-import { FMLog } from "./fm-log";
+import { FLog } from "./FLog";
+import { G } from "./G";
+import { L } from "./L";
 
 const C = {
     PATH: "sound",      // 资源路径
@@ -27,25 +27,25 @@ interface DataSoundInstance {
  * - 保存已经载入的声音,cc.AudioClip
  * - 保存已经播放的声音id
  */
-export class FMSound {
+export class FSound {
 
     /** 初始化本地存储 */
     static init_local() {
         L.sound = C.SWITCH
     }
 
-    static ins: FMSound;
+    static ins: FSound;
 
     /** 初始化 */
     static init() {
-        G.check_ins(FMSound)
-        FMSound.ins = new FMSound()
+        G.check_ins(FSound)
+        FSound.ins = new FSound()
         // 初始化声音
-        FMSound.ins.map_sound_ins.set("bgm", { url: C.SOUND["bgm"], loop: true })
-        FMSound.ins.map_sound_ins.set("btn", { url: C.SOUND["btn"] })
+        FSound.ins.map_sound_ins.set("bgm", { url: C.SOUND["bgm"], loop: true })
+        FSound.ins.map_sound_ins.set("btn", { url: C.SOUND["btn"] })
         // check
-        if (FMSound.ins.map_sound_ins.size != Object.keys(C.SOUND).length) {
-            FMLog.warn("@FMSound: sound初始化个数异常")
+        if (FSound.ins.map_sound_ins.size != Object.keys(C.SOUND).length) {
+            FLog.warn("@FSound: sound初始化个数异常")
         }
     }
 
@@ -70,13 +70,13 @@ export class FMSound {
     /** 播放某一个声音:play/resume */
     static async play(sound: keyof typeof C.SOUND) {
         if (!L.sound) { return }
-        let info = FMSound.ins.map_sound_ins.get(sound)
+        let info = FSound.ins.map_sound_ins.get(sound)
         // 载入audio clip资源
         if (!info.clip) {
             info.clip = await G.load_res(`${C.PATH}/${info.url}`, cc.AudioClip)
         }
         if (!info.clip) {
-            FMLog.error(`@FMSound: audio clip no exsit, url=${info.url}`)
+            FLog.error(`@FSound: audio clip no exsit, url=${info.url}`)
             return
         }
         if (info.loop) {
@@ -99,7 +99,7 @@ export class FMSound {
 
     /** 停止某一个声音:stop/pause */
     static stop(sound: keyof typeof C.SOUND) {
-        let info = FMSound.ins.map_sound_ins.get(sound)
+        let info = FSound.ins.map_sound_ins.get(sound)
         if (info.loop) {
             // bgm类型,pause
             cc.audioEngine.pause(info.id)
@@ -112,11 +112,11 @@ export class FMSound {
     // 常用声音
 
     static play_bgm() {
-        FMSound.play("bgm")
+        FSound.play("bgm")
     }
 
     static play_btn() {
-        FMSound.play("btn")
+        FSound.play("btn")
     }
 
 }

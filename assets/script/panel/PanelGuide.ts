@@ -1,6 +1,6 @@
-import { G } from "../framework/f-global";
-import { FMPanel, FMPanelExtends, fm_panel_config } from "../framework/fm-panel";
-import { FMPanelUI } from "../framework/f-m-panel-ui";
+import { FAnima } from "../framework/FAnima";
+import { fm_panel_config, FPanel, FPanelExtends } from "../framework/FPanel";
+import { G } from "../framework/G";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -18,14 +18,14 @@ interface Params {
 @ccclass
 @menu("panel/PanelGuide")
 @fm_panel_config("PanelGuide", "cover")
-export class PanelGuide extends FMPanelExtends {
+export class PanelGuide extends FPanelExtends {
 
     async on_open(params: Params["Open"]) {
         this.arrow_point.position = G.get_node_local_position(this.arrow_point, params.w_position)
         this.label_info.string = params.info
         await Promise.all([
-            FMPanelUI.in_fade_move(this.arrow_point, { direction: "down" }),
-            FMPanelUI.in_move(this.bg_info, { direction: "down" }),
+            FAnima.in_fade_move(this.arrow_point, { direction: "down" }),
+            FAnima.in_move(this.bg_info, { direction: "down" }),
         ])
         cc.director.pause()
     }
@@ -33,8 +33,8 @@ export class PanelGuide extends FMPanelExtends {
     async on_close() {
         cc.director.resume()
         await Promise.all([
-            FMPanelUI.out_fade_move(this.arrow_point, { direction: "up" }),
-            FMPanelUI.out_move(this.bg_info, { direction: "down" })
+            FAnima.out_fade_move(this.arrow_point, { direction: "up" }),
+            FAnima.out_move(this.bg_info, { direction: "down" })
         ])
     }
 
@@ -49,6 +49,6 @@ export class PanelGuide extends FMPanelExtends {
 
     /** click event close */
     private event_close() {
-        FMPanel.close(PanelGuide, {})
+        FPanel.close(PanelGuide, {})
     }
 }

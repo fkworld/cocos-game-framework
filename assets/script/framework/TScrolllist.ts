@@ -1,6 +1,6 @@
-import { FMLog } from "./fm-log";
-import { FMVersion } from "./fm-version";
-import { G } from "./f-global";
+import { FLog } from "./FLog";
+import { FVersion } from "./FVersion";
+import { G } from "./G";
 
 const { ccclass, property, requireComponent, menu } = cc._decorator;
 const C = {
@@ -27,10 +27,10 @@ enum TypeCreate { single_frame, next_frame }
  */
 @ccclass
 @requireComponent(cc.ScrollView)
-@menu("framework/FTScrollList")
-export class FTScrollList extends cc.Component {
+@menu("t/TScrollList")
+export class TScrollList extends cc.Component {
 
-    static get(node: cc.Node) { return node.getComponent(FTScrollList) }
+    static get(node: cc.Node) { return node.getComponent(TScrollList) }
 
     onLoad() {
         this.sv = this.node.getComponent(cc.ScrollView)
@@ -57,7 +57,7 @@ export class FTScrollList extends cc.Component {
     @property({ tooltip: "编辑器操作-check" })
     private get do_editor() { return false }
     private set do_editor(v: boolean) {
-        FMVersion.is_editor() && this.check_all()
+        FVersion.is_editor() && this.check_all()
     }
 
     /**
@@ -96,7 +96,7 @@ export class FTScrollList extends cc.Component {
 
     /** 检查所有设置是否正确 */
     private check_all() {
-        FMLog.log(`@${this.node.name}: check-scroll-view-setting`)
+        FLog.log(`@${this.node.name}: check-scroll-view-setting`)
         this.check_scroll_view_direction()
         this.check_scroll_view_size()
         this.check_mask_position()
@@ -113,7 +113,7 @@ export class FTScrollList extends cc.Component {
             this.sv.horizontal = this.type_sv === TypeSv.hor
             this.sv.vertical = !this.sv.horizontal
         }
-        FMLog.log("scroll-view-direction", f)
+        FLog.log("scroll-view-direction", f)
     }
 
     /* 检查scroll-view节点与mask节点的大小是否统一 */
@@ -123,7 +123,7 @@ export class FTScrollList extends cc.Component {
             this.content.parent.width = this.node.width
             this.content.parent.height = this.node.height
         }
-        FMLog.log("scroll-view-size", f)
+        FLog.log("scroll-view-size", f)
     }
 
     /* 检查mask节点的位置是否在原点 */
@@ -132,7 +132,7 @@ export class FTScrollList extends cc.Component {
         if (this.check_and_change_flag) {
             this.content.parent.position = cc.Vec2.ZERO
         }
-        FMLog.log("mask-position", f)
+        FLog.log("mask-position", f)
     }
 
     /* 检查item的anchor中间,position为原点 */
@@ -142,7 +142,7 @@ export class FTScrollList extends cc.Component {
             this.item.setAnchorPoint(cc.v2(0.5, 0.5))
             this.item.position = cc.Vec2.ZERO
         }
-        FMLog.log("item-anchor", f)
+        FLog.log("item-anchor", f)
     }
 
     /* 检查content节点的anchor设置是否正确 */
@@ -152,7 +152,7 @@ export class FTScrollList extends cc.Component {
         if (this.check_and_change_flag) {
             this.content.setAnchorPoint(target_anchor)
         }
-        FMLog.log("content-anchor", f)
+        FLog.log("content-anchor", f)
     }
 
     /* 检查content节点的位置是否正确 */
@@ -162,7 +162,7 @@ export class FTScrollList extends cc.Component {
         if (this.check_and_change_flag) {
             this.content.position = target_position
         }
-        FMLog.log("content-position", f)
+        FLog.log("content-position", f)
     }
 
     /* 如果有layout,检查是否有layout,检查layout的设置是否正确 */
@@ -172,6 +172,6 @@ export class FTScrollList extends cc.Component {
         if (this.check_and_change_flag && !f) {
             layout = this.content.addComponent(cc.Layout)
         }
-        FMLog.log("content-layout", f)
+        FLog.log("content-layout", f)
     }
 }

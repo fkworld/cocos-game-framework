@@ -1,5 +1,5 @@
-import { G } from "./f-global";
-import { FMLog } from "./fm-log";
+import { FLog } from "./FLog";
+import { G } from "./G";
 
 const { ccclass, property, requireComponent } = cc._decorator;
 const C = {
@@ -150,7 +150,7 @@ export class FFTErase extends cc.Component {
 
     /** 检查是否开启近路功能 */
     check_save() {
-        if (!this.is_save) { FMLog.error(`@FFTErase: 记录功能未开启，无法实现完成回调功能，已自动开启，请检查node=${this.node}`) }
+        if (!this.is_save) { FLog.error(`@FFTErase: 记录功能未开启，无法实现完成回调功能，已自动开启，请检查node=${this.node}`) }
         this.is_save = true
     }
 

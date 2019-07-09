@@ -1,4 +1,4 @@
-import { FMLog } from "./fm-log";
+import { FLog } from "./FLog";
 
 /**
  * [M] 网络连接
@@ -8,7 +8,7 @@ import { FMLog } from "./fm-log";
  * - [注意] GET方法不允许包含body,只允许包含query
  * - [注意] body的类型建议前后端使用interface进行约束
  */
-export class FMHttp {
+export class FHttp {
 
     /**
      * fetch+get+json
@@ -24,7 +24,7 @@ export class FMHttp {
             let json = await response.json()
             return json
         } catch (error) {
-            FMLog.error(error)
+            FLog.error(error)
             return null
         }
     }
@@ -45,7 +45,7 @@ export class FMHttp {
             let json = await response.json()
             return json
         } catch (error) {
-            FMLog.error(error)
+            FLog.error(error)
             return null
         }
     }
@@ -73,7 +73,7 @@ export class FMHttp {
                 }
                 xhr.send()
             } catch (error) {
-                FMLog.error(error)
+                FLog.error(error)
                 res(null)
             }
         })
@@ -103,7 +103,7 @@ export class FMHttp {
                 }
                 xhr.send(JSON.stringify(body))
             } catch (error) {
-                FMLog.error(error)
+                FLog.error(error)
                 res(null)
             }
         })
