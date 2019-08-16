@@ -1,5 +1,5 @@
 import { FAnima } from "../framework/FAnima";
-import { fm_panel_config, FPanelExtends } from "../framework/FPanel";
+import { FPanel } from "../framework/FPanel";
 import { FText } from "../framework/FText";
 import { FVersion } from "../framework/FVersion";
 
@@ -13,15 +13,17 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelLoading")
-@fm_panel_config("PanelLoading", "single")
-export class PanelLoading extends FPanelExtends {
+@FPanel.config_panel("PanelLoading")
+export class PanelLoading extends FPanel.FPanelTemplate {
 
     async on_open() {
-        this.label_game_info.string = FText.get("panel_loading_game_info",
+        this.label_game_info.string = FText.get(
+            "panel_loading_game_info",
             FVersion.get_name(),
             FVersion.get_creator(),
             FVersion.get_version_number(),
-            FVersion.get_version_time())
+            FVersion.get_version_time(),
+        )
         await FAnima.in_fade_move(this.node, { direction: "down", time: C.FADE_TIME })
     }
 
