@@ -48,13 +48,13 @@ export class FSound {
 
     /** 获取声音开关 */
     static get_sound_switch(): boolean {
-        return FLocal.get_sound()
+        return FLocal.get("sound") === `${true}`
     }
 
     /** 设置声音开关(直接反向) */
     static set_sound_switch() {
-        FLocal.set_sound(!FLocal.get_sound())
-        if (FLocal.get_sound()) {
+        FLocal.set("sound", `${!this.get_sound_switch()}`)
+        if (this.get_sound_switch()) {
             cc.audioEngine.pauseAll()
         } else {
             cc.audioEngine.resumeAll()
@@ -63,7 +63,7 @@ export class FSound {
 
     /** 播放某一个声音:play/resume */
     static async play(sound: keyof typeof C.SOUND) {
-        if (!FLocal.get_sound()) { return }
+        if (!this.get_sound_switch()) { return }
         let info = FSound.ins.map_sound_ins.get(sound)
         // 载入audio clip资源
         if (!info.clip) {
