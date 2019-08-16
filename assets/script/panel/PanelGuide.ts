@@ -1,5 +1,5 @@
 import { FAnima } from "../framework/FAnima";
-import { fm_panel_config, FPanel, FPanelExtends } from "../framework/FPanel";
+import { FPanel } from "../framework/FPanel";
 import { G } from "../framework/G";
 
 const { ccclass, property, menu } = cc._decorator;
@@ -17,8 +17,8 @@ interface Params {
  */
 @ccclass
 @menu("panel/PanelGuide")
-@fm_panel_config("PanelGuide", "cover")
-export class PanelGuide extends FPanelExtends {
+@FPanel.config_panel("PanelGuide")
+export class PanelGuide extends FPanel.FPanelTemplate {
 
     async on_open(params: Params["Open"]) {
         this.arrow_point.position = G.get_node_local_position(this.arrow_point, params.w_position)

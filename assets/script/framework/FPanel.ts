@@ -1,213 +1,139 @@
 import { FLog } from "./FLog";
-import { FVersion } from "./FVersion";
 import { G } from "./G";
 
 const C = {
-    BASE_PATH: "panel",
+    PATH: "panel",
 }
 
-/** 打开方式类型;single-不允许再次打开;cover-再次打开时覆盖; */
-type TypeOpen = "single" | "cover";
 /** panel的open参数类型 */
-type ParamsPanelOpen<T extends typeof FPanelExtends> = Parameters<T["prototype"]["on_open"]>[0] extends undefined ? {} : Parameters<T["prototype"]["on_open"]>[0];
+type ParamsPanelOpen<T extends typeof FPanel.FPanelTemplate> = Parameters<T["prototype"]["on_open"]>[0] extends undefined ? {} : Parameters<T["prototype"]["on_open"]>[0];
 /** panel的close参数类型 */
-type ParamsPanelClose<T extends typeof FPanelExtends> = Parameters<T["prototype"]["on_close"]>[0] extends undefined ? {} : Parameters<T["prototype"]["on_close"]>[0];
+type ParamsPanelClose<T extends typeof FPanel.FPanelTemplate> = Parameters<T["prototype"]["on_close"]>[0] extends undefined ? {} : Parameters<T["prototype"]["on_close"]>[0];
 /** panel-config,panel配置 */
 interface DataPanelConfig {
-    path: string;       // 资源路径;同时也作为唯一key使用
-    type: TypeOpen;     // 打开方式
+    path: string;               // 资源路径;同时也作为唯一key使用
+    is_multiple: boolean;       // 是否允许打开多个
 }
-/** panel-instance,panel实例 */
+/** panel的实例数据 */
 interface DataPanelInstance {
-    // 静态部分
     prefab?: cc.Prefab;         // prefab
-    is_check?: boolean;         // 是否通过check
-    // 数据部分
-    state?: "open" | "close";   // 当前的数据状态
-    params_open?: object;       // 打开参数
-    params_close?: object;      // 关闭参数
-    z_index?: number;           // open时设定的node-z-index
-    // 实例部分
-    node?: cc.Node;             // 实例节点
-}
-
-/** 装饰器函数,panel配置参数;装饰器的设置会覆盖内部设置 */
-export const fm_panel_config = (path: string, type?: TypeOpen) => {
-    return (constructor: typeof FPanelExtends) => {
-        // 特别注意,由于js中原型继承的bug,这里的config必须创建新的object而不是修改
-        constructor.CONFIG = {
-            path: path || "",
-            type: type || "single",
-        }
-        // 注意,冻结之后在严格模式下会报错,在非严格模式下会跳过;cocos脚本运行方式为严格模式
-        Object.freeze(constructor.CONFIG)
-    }
-}
-
-/** 每个子panel的抽象类;需要继承 */
-export abstract class FPanelExtends extends cc.Component {
-    /** panel的配置参数 */
-    static CONFIG: DataPanelConfig;
-    /** panel-open-process */
-    async on_open(param?: object) { };
-    /** panel-close-process */
-    async on_close(param?: object) { };
+    state?: "open" | "close";   // 当前状态(仅对单页面生效)
+    node?: cc.Node;             // 当前节点(仅对单页面生效)
 }
 
 /**
- * [M] 游戏窗口管理
- * - 封装窗口打开的open/close接口,API为open/close
- * - 封装窗口中UI打开的in/out接口,API为in/out+type
- * - [注意] 未来可能需要调整并增加node.stopAllActions()
- * - [注意] 目前仅支持同种窗口单个单个显示
+ * [framework] 游戏窗口管理
  * - [注意] 需要在AppMain中实例化,需要传入parent-node
  */
-export class FPanel {
+export namespace FPanel {
 
-    private static ins: FPanel;
-
-    static init(parent_node: cc.Node) {
-        G.check_ins(FPanel)
-        FPanel.ins = new FPanel()
-        FPanel.ins.parent = parent_node
-        FPanel.ins.now_z_index = 0
-    }
-
-    //////////
-    // 向外暴露两个静态的open和close方法供调用
-    //////////
-
-    /**
-     * 预载入界面,先读取界面的prefab
-     * @param panel 
-     */
-    static async load(panel: typeof FPanelExtends): Promise<void> {
-        let value = FPanel.ins.get_panel_instance(panel)
-        value.prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${panel.CONFIG.path}`, cc.Prefab)
-    }
-
-    /**
-     * 获取panel的实例脚本
-     * @param panel 
-     */
-    static get_panel(panel: typeof FPanelExtends): FPanelExtends {
-        let value = FPanel.ins.get_panel_instance(panel)
-        if (value.state === "open" && value.node) {
-            return value.node.getComponent(panel)
-        }
-    }
-
-    /**
-     * 打开panel,写入cmd并执行cmd
-     * @param panel 传入panel的类型
-     * @param param
-     */
-    static async open<T extends typeof FPanelExtends>(panel: T, param: ParamsPanelOpen<T>) {
-        let value = FPanel.ins.get_panel_instance(panel)
-        // 如果状态为open,则根据panel-config-type执行不同逻辑
-        if (value.state === "open") {
-            FLog.warn(`@mpanel: panel-state=open, 拦截处理, name=${panel.name}`)
-            switch (panel.CONFIG.type) {
-                // single:直接return
-                default: case "single": return;
-                // cover:如果节点已经创建,则删除节点后新建;如果节点未创建,则跳过本次创建
-                case "cover":
-                    if (value.node) {
-                        value.node.destroy()
-                        break
-                    } else {
-                        return
-                    }
+    /** panel配置函数,仅用于panel类的装饰器 */
+    export function config_panel(path: string, is_multiple = false) {
+        return (constructor: typeof FPanelTemplate) => {
+            // 特别注意,由于js中原型继承的bug,这里的config必须创建新的object而不是修改
+            constructor.CONFIG = {
+                path: path,
+                is_multiple: is_multiple
             }
-        }
-        // 修改数据部分
-        value.state = "open"
-        value.params_open = param
-        value.z_index = FPanel.ins.now_z_index += 1
-        // 创建实例部分
-        value.prefab = value.prefab || await G.load_res(`${C.BASE_PATH}/${panel.CONFIG.path}`, cc.Prefab)
-        if (!value.prefab) {
-            FLog.error(`@mpanel: panel-prefab不存在, name=${panel.name}, path=${panel.CONFIG.path}`)
-            return
-        }
-        if (value.state != "open") {
-            // 如果载入完prefab后state不为open,则跳过创建
-            FLog.warn(`@mpanel: panel-state已经为close, 表示还未打开即关闭, name=${panel.name}`)
-            return
-        }
-        value.node = cc.instantiate(value.prefab)
-        value.node.parent = FPanel.ins.parent
-        value.node.position = cc.Vec2.ZERO
-        value.node.width = cc.winSize.width
-        value.node.height = cc.winSize.height
-        value.node.zIndex = value.z_index
-        value.node.active = true
-        value.node.getComponent(panel) && await value.node.getComponent(panel).on_open(value.params_open)
-    }
-
-    /**
-     * 关闭panel
-     * @param panel 传入panel的类型
-     * @param param
-     */
-    static async close<T extends typeof FPanelExtends>(panel: T, param: ParamsPanelClose<T>) {
-        let value = FPanel.ins.get_panel_instance(panel)
-        // 如果状态已经为close,则跳过本次删除
-        if (value.state === "close") {
-            FLog.warn(`@mpanel: panel-state=close, 跳过本次关闭`)
-            return
-        }
-        // 更改数据部分
-        value.state = "close"
-        value.params_close = param
-        // 更改实例部分
-        if (value.node) {
-            value.node.getComponent(panel) && await value.node.getComponent(panel).on_close(value.params_close)
-            value.node.destroy()
-            value.node = null
+            // 冻结之后在严格模式下会报错,在非严格模式下会跳过;cocos脚本运行方式为严格模式
+            Object.freeze(constructor.CONFIG)
         }
     }
 
-    //////////
-    // 具体实现
-    //////////
+    export abstract class FPanelTemplate extends cc.Component {
+        static CONFIG: DataPanelConfig;
+        async on_open(params: object) { };
+        async on_close(params: object) { };
+    }
 
-    /** 挂载父节点 */
-    private parent: cc.Node;
-    /** 当前的渲染层级 */
-    private now_z_index: number;
-    /** panel-实例的map结构存储;包括prefab,node,cmd */
-    private map_ins: Map<string, DataPanelInstance> = new Map()
+    let parent: cc.Node = null                                  // 父节点
+    let now_z_index: number = 0                                 // 当前的zindex
+    let map_panel: Map<string, DataPanelInstance> = new Map()   // 页面数据
+
+    /** 初始化 */
+    export function init_parent(node: cc.Node) {
+        parent = node
+    }
 
     /**
-     * 获取panel的instance,如果不存在,则初始化
-     * @param panel 
+     * 获取页面数据
+     * @param panel
      */
-    private get_panel_instance(panel: typeof FPanelExtends): DataPanelInstance {
+    export function get_panel(panel: typeof FPanelTemplate): DataPanelInstance {
         let key = panel.CONFIG.path
-        let value = this.map_ins.get(key)
+        let value = map_panel.get(key)
         if (!value) {
             value = {}
-            this.map_ins.set(key, value)
-        }
-        if (!value.is_check) {
-            value.is_check = this.check_panel(panel)
+            map_panel.set(key, value)
         }
         return value
     }
 
-    /** 校验panel */
-    private check_panel(panel: typeof FPanelExtends): boolean {
-        // 判断是否配置了panel-config
-        if (!panel.CONFIG) {
-            FLog.error(`@FPanel, panel-config不存在, name=${panel.name}`)
-            return false
+    /** 载入界面的prefab */
+    export async function load(panel: typeof FPanelTemplate) {
+        let info = get_panel(panel)
+        if (!info.prefab) {
+            info.prefab = await G.load_res(`${C.PATH}/${panel.CONFIG.path}`, cc.Prefab)
         }
-        // 判断在编辑器模式下PATH是否包含name,仅在编辑器模式下;打包后会压缩代码,name会被丢弃
-        if (FVersion.is_preview() && !panel.CONFIG.path.includes(panel.name)) {
-            FLog.error(`@FPanel, panel-config-path错误, name=${panel.name}`)
+    }
+
+    /**
+     * 打开页面
+     * @param panel
+     * @param params
+     */
+    export async function open<T extends typeof FPanelTemplate>(panel: T, params: ParamsPanelOpen<T>) {
+        let info = get_panel(panel)
+        // 校验
+        if (!panel.CONFIG.is_multiple && info.state === "open") {
+            FLog.warn(`@FPanel: 逻辑错误,页面重复打开, panel=${panel.CONFIG.path}`)
+            return
         }
-        return true
+        // 修改数据
+        info.state = "open"
+        let z_index = now_z_index += 1
+        // 载入+创建节点
+        await load(panel)
+        if (info.state != "open") { return } // 如果载入完成后,panel状态已经不为open,则跳过创建
+        let node = cc.instantiate(info.prefab)
+        node.parent = parent
+        node.position = cc.Vec2.ZERO
+        node.width = cc.winSize.width
+        node.height = cc.winSize.height
+        node.zIndex = z_index
+        node.active = true
+        // 保存
+        info.node = panel.CONFIG.is_multiple ? null : node;
+        // 动画
+        await node.getComponent(panel).on_open(params)
+    }
+
+    /**
+     * 关闭页面
+     * @param panel
+     * @param params
+     */
+    export async function close<T extends typeof FPanelTemplate>(panel: T, params: ParamsPanelClose<T>) {
+        let info = get_panel(panel)
+        // 校验
+        if (info.state === "close") { return }
+        if (!info.node) { return }
+        // 修改数据
+        info.state = "close"
+        // 动画
+        await info.node.getComponent(panel).on_close(params)
+        // 删除节点
+        info.node.destroy()
+        info.node = null
+    }
+
+    /**
+     * 关闭自身(无法传入参数)
+     * @param self 一般在脚本中传入this即可
+     */
+    export async function close_self(self: FPanelTemplate) {
+        await self.on_close({})
+        self.node.destroy()
     }
 
 }

@@ -1,4 +1,4 @@
-import { FPanelExtends, fm_panel_config } from "../framework/FPanel";
+import { FPanel } from "../framework/FPanel";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -7,7 +7,7 @@ const { ccclass, property, menu } = cc._decorator
  */
 @ccclass
 @menu("panel/PanelTest")
-@fm_panel_config("PanelTest")
-export class PanelTest extends FPanelExtends {
+@FPanel.config_panel("PanelTest")
+export class PanelTest extends FPanel.FPanelTemplate {
 
 }

@@ -1,4 +1,4 @@
-import { FPanel, FPanelExtends, fm_panel_config } from "../framework/FPanel";
+import { FPanel } from "../framework/FPanel";
 
 const { ccclass, property, menu } = cc._decorator
 const C = {
@@ -19,8 +19,8 @@ interface Params {
  */
 @ccclass
 @menu("panel/PanelBase")
-@fm_panel_config("PanelBase", "single")
-export class PanelBase extends FPanelExtends {
+@FPanel.config_panel("PanelBase")
+export class PanelBase extends FPanel.FPanelTemplate {
 
     async on_open(params: Params["Open"]) {
 

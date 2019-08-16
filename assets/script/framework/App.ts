@@ -31,7 +31,7 @@ export class App extends cc.Component {
         this.adjust_screen()
         // 各子系统初始化
         FLocal.init_local_data()
-        FPanel.init(this.panel_parent)
+        FPanel.init_parent(this.panel_parent)
         FSound.play_bgm()
         // 加载loading页面,加载n个载入流程,加载完毕后进入游戏
         await FPanel.open(PanelLoading, {})

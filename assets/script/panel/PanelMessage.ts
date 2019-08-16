@@ -1,5 +1,5 @@
 import { FAnima } from "../framework/FAnima";
-import { fm_panel_config, FPanel, FPanelExtends } from "../framework/FPanel";
+import { FPanel } from "../framework/FPanel";
 
 const { ccclass, property, menu } = cc._decorator;
 const C = {
@@ -21,8 +21,8 @@ interface Params {
  */
 @ccclass
 @menu("panel/PanelMessage")
-@fm_panel_config("PanelMessage", "cover")
-export class PanelMessage extends FPanelExtends {
+@FPanel.config_panel("PanelMessage", true)
+export class PanelMessage extends FPanel.FPanelTemplate {
 
     async on_open(params: Params["Open"]) {
         this.label_message.string = params.msg
@@ -47,11 +47,11 @@ export class PanelMessage extends FPanelExtends {
 
     private event_yes() {
         this.f_yes && this.f_yes()
-        FPanel.close(PanelMessage, {})
+        FPanel.close_self(this)
     }
 
     private event_no() {
         this.f_no && this.f_no()
-        FPanel.close(PanelMessage, {})
+        FPanel.close_self(this)
     }
 }
