@@ -26,16 +26,8 @@ export namespace FLocal {
         } else {
             FLog.log("@FLocal: 未获取用户本地数据,正在初始化...")
             clear_all()
-            init_all()
             set("init", `${true}`) // 初始化完毕之后,置init为true
         }
-    }
-
-    /** 初始化所有本地数据 */
-    export function init_all() {
-        Reflect.ownKeys(local).forEach(v => {
-            set(<any>v, local[v])
-        })
     }
 
     /** 谨慎使用:清理所有本地数据 */
