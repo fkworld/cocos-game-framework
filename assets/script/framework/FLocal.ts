@@ -1,5 +1,6 @@
-import { FVersion } from "./FVersion";
 import { FLog } from "./FLog";
+import { FVersion } from "./FVersion";
+import { local } from "../data/local";
 
 /**
  * [framework] 本地数据存储(统一管理)
@@ -15,33 +16,26 @@ export namespace FLocal {
     /** 缓存;加快存储的效率,均存储为string格式 */
     let cache: Map<string, string> = new Map()
 
-    /** 设置一个key的值,缓存+本地存储 */
-    function set_item(key: string, value: string) {
-        cache.set(key, value)
-        Promise.resolve().then(() => { cc.sys.localStorage.setItem(key, value) })
-    }
-
-    /** 获取一个key的值,优先从缓存中获取 */
-    function get_item(key: string): string | null {
-        if (cache.get(key) === undefined || cache.get(key) === null) {
-            cache.set(key, cc.sys.localStorage.getItem(key))
-        }
-        return cache.get(key)
-    }
-
     export function init_local_data() {
         // 预处理
         if (FVersion.is_dev()) {
-            set_init(false)
+            set("init", `${false}`)
         }
-        FLog.log(`@FLocal: ${get_init() ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
-        if (get_init()) { return }
-        // 初始化本地存储
-        clear_all()
-        set_sound(true)
-        set_language("chinese")
-        // 初始化完毕之后,置is_init为true
-        set_init(true)
+        if (get("init") === `${true}`) {
+            FLog.log("@FLocal: 已获取用户本地数据")
+        } else {
+            FLog.log("@FLocal: 未获取用户本地数据,正在初始化...")
+            clear_all()
+            init_all()
+            set("init", `${true}`) // 初始化完毕之后,置init为true
+        }
+    }
+
+    /** 初始化所有本地数据 */
+    export function init_all() {
+        Reflect.ownKeys(local).forEach(v => {
+            set(<any>v, local[v])
+        })
     }
 
     /** 谨慎使用:清理所有本地数据 */
@@ -49,16 +43,19 @@ export namespace FLocal {
         cc.sys.localStorage.clear()
     }
 
-    /** 是否初始化,默认为false */
-    export function get_init(): boolean { return get_item("GameInit") === `${true}` }
-    export function set_init(v: boolean) { set_item("GameInit", `${v}`) }
+    /** 获取:优先从缓存中获取 */
+    export function get(key: keyof typeof local): string {
+        let value = cache.get(key)
+        if (value === undefined || value === null) {
+            value = cc.sys.localStorage.getItem(key) || `${local[key]}`
+        }
+        cache.set(key, value)
+        return value
+    }
 
-    /** 声音开关,默认为false */
-    export function get_sound(): boolean { return get_item("GameSound") === `${true}` }
-    export function set_sound(v: boolean) { set_item("GameSound", `${v}`) }
-
-    /** 语言,默认为null */
-    export function get_language(): string { return get_item("GameLanguage") }
-    export function set_language(v: string) { return set_item("GameLanguage", `${v}`) }
+    export function set(key: keyof typeof local, value: string) {
+        cache.set(key, value)
+        Promise.resolve().then(() => { cc.sys.localStorage.setItem(key, value) })
+    }
 
 }

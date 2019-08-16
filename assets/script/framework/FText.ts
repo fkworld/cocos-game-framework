@@ -1,9 +1,9 @@
 import { en, TypeI18n } from "../data/en";
 import { zh } from "../data/zh";
+import { FLocal } from "./FLocal";
 import { FLog } from "./FLog";
 import { FVersion } from "./FVersion";
 import { G } from "./G";
-import { FLocal } from "./FLocal";
 
 
 const { ccclass } = cc._decorator
@@ -29,7 +29,7 @@ export class FText {
      * @param params
      */
     static get(key: keyof TypeI18n, ...params: string[]): string {
-        let type = FLocal.get_language()
+        let type = FLocal.get("language")
         if (FVersion.is_editor()) {
             type = C.EDITOR_TYPE
         }
