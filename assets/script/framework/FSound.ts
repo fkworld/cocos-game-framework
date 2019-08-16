@@ -1,10 +1,9 @@
 import { FLog } from "./FLog";
 import { G } from "./G";
-import { L } from "./L";
+import { FLocal } from "./FLocal";
 
 const C = {
     PATH: "sound",      // 资源路径
-    SWITCH: true,       // 默认声音开关
     SOUND: {            // 声音极其对应的url数据
         "bgm": "test",
         "btn": "test",
@@ -29,11 +28,6 @@ interface DataSoundInstance {
  */
 export class FSound {
 
-    /** 初始化本地存储 */
-    static init_local() {
-        L.sound = C.SWITCH
-    }
-
     static ins: FSound;
 
     /** 初始化 */
@@ -54,13 +48,13 @@ export class FSound {
 
     /** 获取声音开关 */
     static get_sound_switch(): boolean {
-        return L.sound
+        return FLocal.get_sound()
     }
 
     /** 设置声音开关(直接反向) */
     static set_sound_switch() {
-        L.sound = !L.sound
-        if (L.sound) {
+        FLocal.set_sound(!FLocal.get_sound())
+        if (FLocal.get_sound()) {
             cc.audioEngine.pauseAll()
         } else {
             cc.audioEngine.resumeAll()
@@ -69,7 +63,7 @@ export class FSound {
 
     /** 播放某一个声音:play/resume */
     static async play(sound: keyof typeof C.SOUND) {
-        if (!L.sound) { return }
+        if (!FLocal.get_sound()) { return }
         let info = FSound.ins.map_sound_ins.get(sound)
         // 载入audio clip资源
         if (!info.clip) {

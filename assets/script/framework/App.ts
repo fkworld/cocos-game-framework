@@ -1,11 +1,10 @@
 import { PanelGame } from "../panel/PanelGame";
 import { PanelLoading } from "../panel/PanelLoading";
+import { FLocal } from "./FLocal";
 import { FLog } from "./FLog";
 import { FPanel } from "./FPanel";
 import { FSound } from "./FSound";
-import { FText } from "./FText";
 import { FVersion } from "./FVersion";
-import { L } from "./L";
 
 const { ccclass, property, menu } = cc._decorator
 
@@ -31,7 +30,7 @@ export class App extends cc.Component {
         // 屏幕设配
         this.adjust_screen()
         // 各子系统初始化
-        this.init_local_data()
+        FLocal.init_local_data()
         FPanel.init(this.panel_parent)
         FSound.init()
         // 加载loading页面,加载n个载入流程,加载完毕后进入游戏
@@ -48,18 +47,5 @@ export class App extends cc.Component {
         let f = screen_size >= design_size
         cc.Canvas.instance.fitHeight = f
         cc.Canvas.instance.fitWidth = !f
-    }
-
-    /** 初始化本地数据 */
-    private init_local_data() {
-        // 预处理
-        if (FVersion.is_dev()) { L.init = false }
-        FLog.log(`@FApp: ${L.init ? "已获取用户本地数据" : "未获取用户本地数据,正在初始化..."}`)
-        if (L.init) { return }
-        // 子系统初始化
-        FSound.init_local()
-        FText.init_local()
-        // 初始化完毕之后,置is_init为true
-        L.init = true
     }
 }

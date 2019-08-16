@@ -3,16 +3,16 @@ import { zh } from "../data/zh";
 import { FLog } from "./FLog";
 import { FVersion } from "./FVersion";
 import { G } from "./G";
-import { L } from "./L";
+import { FLocal } from "./FLocal";
 
 
-const { ccclass, property, requireComponent, menu } = cc._decorator
+const { ccclass } = cc._decorator
 const C = {
     LANGUAGE: {
-        "english": en,  // 英文
         "chinese": zh,  // 中文
+        "english": en,  // 英文
     },
-    EDITOR_TYPE: "english" as const,    // 编辑器语言
+    EDITOR_TYPE: "chinese" as const,    // 编辑器语言
 }
 
 /**
@@ -23,20 +23,18 @@ const C = {
 @ccclass
 export class FText {
 
-    /** 初始化本地存储 */
-    static init_local() {
-        L.language = C.EDITOR_TYPE
-    }
-
     /**
      * 获取key对应的value并组合成为字符串
      * @param key
      * @param params
      */
     static get(key: keyof TypeI18n, ...params: string[]): string {
-        let type = (FVersion.is_editor() || !L.language) ? C.EDITOR_TYPE : L.language
+        let type = FLocal.get_language()
+        if (FVersion.is_editor()) {
+            type = C.EDITOR_TYPE
+        }
         if (!C.LANGUAGE[type]) {
-            FLog.warn(`$FText: language-type不存在, type=${type}`)
+            FLog.warn(`@FText: language-type不存在, type=${type}`)
             return ""
         }
         let value = C.LANGUAGE[type][key] || ""
