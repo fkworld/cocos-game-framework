@@ -18,20 +18,17 @@
     "_children": [
       {
         "__id__": 2
-      },
-      {
-        "__id__": 5
       }
     ],
     "_active": true,
     "_level": 1,
     "_components": [
       {
-        "__id__": 9
+        "__id__": 5
       }
     ],
     "_prefab": {
-      "__id__": 10
+      "__id__": 6
     },
     "_opacity": 255,
     "_color": {
@@ -79,7 +76,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "game-icon",
+    "_name": "skyfox-logo",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -105,8 +102,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 68
+      "width": 1064,
+      "height": 414
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -121,8 +118,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 0.5,
+      "y": 0.5,
       "z": 1
     },
     "_rotationX": 0,
@@ -150,10 +147,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
+      "__uuid__": "2f1872f5-3a97-4804-9997-f8ecf0bd20e2"
     },
     "_type": 0,
-    "_sizeMode": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -175,123 +172,7 @@
     "asset": {
       "__uuid__": "e1355806-95c9-402c-8c50-e7996077b06b"
     },
-    "fileId": "d4BMO2cbxDd60U/dIgcmD4",
-    "sync": false
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "game-info",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 1
-    },
-    "_children": [],
-    "_active": true,
-    "_level": 2,
-    "_components": [
-      {
-        "__id__": 6
-      },
-      {
-        "__id__": 7
-      }
-    ],
-    "_prefab": {
-      "__id__": 8
-    },
-    "_opacity": 255,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 600,
-      "height": 200
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_position": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": -400,
-      "z": 0
-    },
-    "_scale": {
-      "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
-      "z": 1
-    },
-    "_rotationX": 0,
-    "_rotationY": 0,
-    "_quat": {
-      "__type__": "cc.Quat",
-      "x": 0,
-      "y": 0,
-      "z": 0,
-      "w": 1
-    },
-    "_skewX": 0,
-    "_skewY": 0,
-    "groupIndex": 0,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.Label",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 5
-    },
-    "_enabled": true,
-    "_useOriginalSize": false,
-    "_string": "{0}\nCreated by {1}\nV {2} @{3}",
-    "_N$string": "{0}\nCreated by {1}\nV {2} @{3}",
-    "_fontSize": 40,
-    "_lineHeight": 50,
-    "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "c43b6402-fdf6-451d-a84c-bd0bcfcc7164"
-    },
-    "_isSystemFontUsed": false,
-    "_spacingX": 0,
-    "_batchAsBitmap": false,
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
-    "_N$overflow": 2,
-    "_N$cacheMode": 0,
-    "_id": ""
-  },
-  {
-    "__type__": "4ce0blKPEpJKK28sjCO0hds",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 5
-    },
-    "_enabled": true,
-    "key": "panel_loading_game_info",
-    "params": [],
-    "play_onload": true,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.PrefabInfo",
-    "root": {
-      "__id__": 1
-    },
-    "asset": {
-      "__uuid__": "e1355806-95c9-402c-8c50-e7996077b06b"
-    },
-    "fileId": "6cRyMbm3RPK7mw5Q9QJRWW",
+    "fileId": "19O7hllaxOMr8vLe/uTi7G",
     "sync": false
   },
   {
@@ -302,9 +183,6 @@
       "__id__": 1
     },
     "_enabled": true,
-    "label_game_info": {
-      "__id__": 6
-    },
     "_id": ""
   },
   {

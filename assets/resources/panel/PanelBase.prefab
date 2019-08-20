@@ -147,6 +147,8 @@
       "__id__": 2
     },
     "_enabled": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "03b56ad9-1449-4f0a-a769-5c547cabff20"
     },
@@ -163,8 +165,6 @@
     "_isTrimmedMode": true,
     "_state": 0,
     "_atlas": null,
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
     "_id": ""
   },
   {
@@ -249,8 +249,8 @@
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_string": "This is a base panel",
-    "_N$string": "This is a base panel",
+    "_string": "This is a base panel.",
+    "_N$string": "This is a base panel.",
     "_fontSize": 30,
     "_lineHeight": 40,
     "_enableWrapText": false,

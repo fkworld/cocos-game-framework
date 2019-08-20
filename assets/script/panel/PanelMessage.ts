@@ -1,15 +1,10 @@
-import { FAnima } from "../framework/FAnima";
 import { FPanel } from "../framework/FPanel";
 
 const { ccclass, property, menu } = cc._decorator;
-const C = {
-    BORDER: 100,
-    BTN_Y: -50,
-}
 
 /** 界面打开关闭参数 */
 interface Params {
-    Open: {
+    open: {
         msg: string;
         f_yes?: () => void;
         f_no?: () => void;
@@ -24,20 +19,24 @@ interface Params {
 @FPanel.config_panel("PanelMessage", true)
 export class PanelMessage extends FPanel.FPanelTemplate {
 
-    async on_open(params: Params["Open"]) {
+    async on_open(params: Params["open"]) {
         this.label_message.string = params.msg
         this.f_yes = params.f_yes
         this.f_no = params.f_no
         this.btn_no.active = !!this.f_no
-        await FAnima.in_scale(this.node, {})
+        FPanel.set_ui_state_data(this.node, { scale: 1 }, { scale: 0 })
+        await FPanel.in_ui(this.node, { ease: "backOut" })
     }
 
     async on_close() {
-        await FAnima.out_scale(this.node, {})
+        await FPanel.out_ui(this.node, { ease: "backIn" })
     }
 
     private f_yes: () => void = null
     private f_no: () => void = null
+
+    @property(cc.Node)
+    private page: cc.Node = null
 
     @property(cc.Label)
     private label_message: cc.Label = null
