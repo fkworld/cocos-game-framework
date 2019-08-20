@@ -1,5 +1,5 @@
-import { en, TypeI18n } from "../data/en";
-import { zh } from "../data/zh";
+import { en } from "../data/text-en";
+import { zh } from "../data/text-zh";
 import { FLocal } from "./FLocal";
 import { FLog } from "./FLog";
 import { FVersion } from "./FVersion";
@@ -12,8 +12,10 @@ const C = {
         "chinese": zh,  // 中文
         "english": en,  // 英文
     },
-    EDITOR_TYPE: "chinese" as const,    // 编辑器语言
+    EDITOR_TYPE: "chinese" as "chinese",    // 编辑器语言
 }
+
+type DataTextKey = keyof typeof C.LANGUAGE["chinese"]
 
 /**
  * [M] 国际化-多语言
@@ -28,7 +30,7 @@ export class FText {
      * @param key
      * @param params
      */
-    static get(key: keyof TypeI18n, ...params: string[]): string {
+    static get(key: DataTextKey, ...params: string[]): string {
         let type = FLocal.get("language")
         if (FVersion.is_editor()) {
             type = C.EDITOR_TYPE

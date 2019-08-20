@@ -1,6 +1,3 @@
-/** 基础i18n文件对应的type */
-export type TypeI18n = { [key in keyof typeof en]: string }
-
 /** i18n-英文 */
 export const en = {
 
