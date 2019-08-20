@@ -76,7 +76,7 @@ export class TScrollList extends cc.Component {
                 })
                 break;
             case TypeCreate.next_frame:
-                G.run_by_interval_frame((i) => {
+                G.do_with_frame(i => {
                     f_init(this.create_item_node(), data_list[i], i)
                 }, this, data_list.length, C.INTERVAL_FRAME)
                 break;

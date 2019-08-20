@@ -30,7 +30,7 @@ export class FFTErase extends cc.Component {
 
     /**
      * 获取节点的对应组件
-     * @param node 
+     * @param node
      * @static
      */
     static get(node: cc.Node): FFTErase { return node.getComponent(FFTErase) }
@@ -94,7 +94,7 @@ export class FFTErase extends cc.Component {
         }
         /** touch end & cancel 逻辑 */
         const f_end_cancel = (e: cc.Touch) => {
-            // 
+            //
         }
         this.touch_area.on(cc.Node.EventType.TOUCH_START, (e: cc.Touch) => { f_start(e) })
         this.touch_area.on(cc.Node.EventType.TOUCH_MOVE, (e: cc.Touch) => { f_move(e) })
@@ -104,8 +104,8 @@ export class FFTErase extends cc.Component {
 
     /**
      * 绘制一个圆形的擦除区域
-     * @param p 
-     * @param r 
+     * @param p
+     * @param r
      */
     draw_circle(p: cc.Vec2, r: number = C.R) {
         // 绘制（绘制路径但是不填充，在update中统一填充）
@@ -122,7 +122,7 @@ export class FFTErase extends cc.Component {
                     // 点已被改写，则跳过
                     if (this.array_save[`${x}-${y}`] != undefined) { continue }
                     // 点在圆外，则跳过
-                    if (G.get_p_p_distance(p, cc.v2(x, y)) > r) { continue }
+                    if (G.get_2p_distance(p, cc.v2(x, y)) > r) { continue }
                     // 改写点
                     this.array_save[`${x}-${y}`] = 1
                     // 将点记录到rect中
@@ -134,13 +134,13 @@ export class FFTErase extends cc.Component {
 
     /**
      * 绘制两点之间的多个圆
-     * @param p0 
-     * @param p1 
-     * @param r 
+     * @param p0
+     * @param p1
+     * @param r
      */
     draw_many_circle(p0: cc.Vec2, p1: cc.Vec2, r: number = C.R, space: number = C.SPACE) {
         // 计算间隔数
-        let count = Math.min(C.MAX_COUNT, G.get_p_p_distance(p0, p1) / (r * space))
+        let count = Math.min(C.MAX_COUNT, G.get_2p_distance(p0, p1) / (r * space))
         // 根据间隔数绘制圆
         for (let i = 0; i < count; i += 1) {
             let p = p0.lerp(p1, (i + 1) / count)
@@ -168,10 +168,10 @@ export class FFTErase extends cc.Component {
     /**
      * 设置区域擦除完毕后的执行方法；传入center、width、height来描述区域
      * @param p_center
-     * @param width 
-     * @param height 
-     * @param f 
-     * @param ratio 
+     * @param width
+     * @param height
+     * @param f
+     * @param ratio
      */
     set_finish_f_by_center(p_center: cc.Vec2, width: number, height: number, f: Function, ratio: number = C.RATIO) {
         this.check_save()
@@ -247,7 +247,7 @@ class ControllerFinish {
 
     /**
      * 保存区域内点的变化
-     * @param p 
+     * @param p
      */
     save(p: cc.Vec2) {
         if (this.rect.contains(p)) { this.finish_count += 1 }

@@ -43,7 +43,7 @@ export class FText {
         if (!value) {
             FLog.warn(`@FText: key不存在, key=${key}`)
         }
-        return G.fake_template_string(value, ...params)
+        return G.get_template_string(value, ...params)
     }
 
 }
