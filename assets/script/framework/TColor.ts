@@ -24,6 +24,6 @@ export class TColor extends cc.Component {
     }
 
     private update_color() {
-        this.node.color = FColor.get(<any>this.key)
+        this.node.color = FColor.get_color(<any>this.key)
     }
 }

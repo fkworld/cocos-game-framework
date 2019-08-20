@@ -4,66 +4,64 @@ import { G } from "./G";
  * [M] 动画管理
  * - 封装一些简单的常用的动画
  */
-export class FAnima {
+export namespace FAnima {
 
     /**
-     * 时钟动画：每次转动一定的角度
+     * 时钟动画:每次转动一定的角度
      * @param node
-     * @param angle
-     * @param interval
+     * @param angle 角度值
+     * @param interval 时间间隔,单位s
      */
-    static clock(node: cc.Node, angle: number, interval: number, count: number) {
-        node.runAction(cc.sequence(
-            cc.callFunc(() => { node.rotation += angle }),
-            cc.delayTime(interval),
-        ).repeat(count))
+    export function clock(node: cc.Node, angle: number, interval: number) {
+        cc.tween(node)
+            .delay(interval)
+            .call(() => { node.rotation += angle })
+            .repeatForever()
+            .start()
     }
 
     /**
-     * 倒计时动画
+     * 使用依次显示string的方式来标识倒计时
      * @param label
-     * @param n
+     * @param str_list
      */
-    static count_down(label: cc.Label, n: number) {
-        return new Promise(res => {
-            label.string = `${n}`
-            label.node.scale = 0
-            label.node.active = true
-            label.node.runAction(cc.sequence(
-                cc.delayTime(0.6),
-                cc.scaleTo(0.2, 0).easing(cc.easeBackIn()),
-                cc.callFunc(() => {
-                    n -= 1
-                    label.string = `${n}`
-                    if (n < 0) {
-                        label.node.stopAllActions()
-                        res()
-                    }
-                }),
-                cc.scaleTo(0.2, 1).easing(cc.easeBounceOut()),
-            ).repeatForever())
+    export async function count_down_with_string_list(label: cc.Label, str_list: string[]): Promise<void> {
+        await new Promise(res => {
+            cc.tween(label.node)
+                .sequence(
+                    cc.tween().call(() => { label.string = str_list.shift() }),
+                    cc.tween().delay(1)
+                )
+                .repeat(str_list.length)
+                .call(() => { label.string = "" })
+                .call(res)
+                .start()
         })
+
     }
 
     /**
-     * 抖动
+     * 抖动,预计持续时间 0.02*15=0.3s
      * @param node
+     * @param range 抖动范围,默认为10
      */
-    static shake(node: cc.Node) {
-        return new Promise(res => {
-            let base_position = node.position
-            node.runAction(cc.sequence(
-                cc.moveTo(0.02, base_position.add(cc.v2(5, 7))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-6, 7))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-13, 3))),
-                cc.moveTo(0.02, base_position.add(cc.v2(3, -6))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-5, 5))),
-                cc.moveTo(0.02, base_position.add(cc.v2(2, -8))),
-                cc.moveTo(0.02, base_position.add(cc.v2(-8, -10))),
-                cc.moveTo(0.02, base_position.add(cc.v2(3, 10))),
-                cc.moveTo(0.02, base_position.add(cc.v2(0, 0))),
-                cc.callFunc(res)
-            ))
+    export async function shake(node: cc.Node, range: number = 10) {
+        let base_position = node.position
+        await new Promise(res => {
+            cc.tween(node)
+                .sequence(
+                    cc.tween().call(() => {
+                        let x = G.get_random_float(-range, range)
+                        let y = G.get_random_float(-range, range)
+                        node.position = base_position.add(cc.v2(x, y))
+                    }),
+                    cc.tween().delay(0.02)
+                )
+                .repeat(15)
+                .set({ position: base_position })
+                .call(res)
+                .start()
+
         })
     }
 
