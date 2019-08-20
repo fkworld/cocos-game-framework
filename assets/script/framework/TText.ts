@@ -55,7 +55,7 @@ export class TText extends cc.Component {
 
     /** 更新text组件 */
     private update_c_text() {
-        this.c_text.string = FText.get(<any>this.key, ...this.params)
+        this.c_text.string = FText.get_text(<any>this.key, ...this.params)
     }
 
     /** 更新sp,在editor模式下不更新 */
@@ -64,6 +64,6 @@ export class TText extends cc.Component {
             FLog.warn(`@FText: 在editor模式下无法更新sp组件`)
             return
         }
-        this.c_sp.spriteFrame = await G.load_res(FText.get(<any>this.key, ...this.params), cc.SpriteFrame)
+        this.c_sp.spriteFrame = await G.load_res(FText.get_text(<any>this.key, ...this.params), cc.SpriteFrame)
     }
 }

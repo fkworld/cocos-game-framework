@@ -8,13 +8,13 @@ import { FLog } from "./FLog";
  * - [注意] GET方法不允许包含body,只允许包含query
  * - [注意] body的类型建议前后端使用interface进行约束
  */
-export class FHttp {
+export namespace FHttp {
 
     /**
      * fetch+get+json
-     * @param url 
+     * @param url
      */
-    static async fetch_get_json(url: string): Promise<object> {
+    export async function fetch_get_json(url: string): Promise<object> {
         try {
             let response = await fetch(url, {
                 method: "GET",
@@ -31,10 +31,10 @@ export class FHttp {
 
     /**
      * fetch+post+json
-     * @param url 
+     * @param url
      * @param body
      */
-    static async fetch_post_json(url: string, body: object): Promise<object> {
+    export async function fetch_post_json(url: string, body: object): Promise<object> {
         try {
             let response = await fetch(url, {
                 method: "POST",
@@ -52,10 +52,10 @@ export class FHttp {
 
     /**
      * XMLHttpRequest+get+json
-     * @param url 
+     * @param url
      */
-    static xhr_get_json(url: string): Promise<object> {
-        return new Promise(res => {
+    export async function xhr_get_json(url: string): Promise<object> {
+        return await new Promise(res => {
             try {
                 let xhr = new XMLHttpRequest()
                 xhr.responseType = "json"
@@ -81,11 +81,11 @@ export class FHttp {
 
     /**
      * XMLHttpRequest+post+json
-     * @param url 
-     * @param body 
+     * @param url
+     * @param body
      */
-    static async xhr_post_json(url: string, body: object): Promise<object> {
-        return new Promise(res => {
+    export async function xhr_post_json(url: string, body: object): Promise<object> {
+        return await new Promise(res => {
             try {
                 let xhr = new XMLHttpRequest()
                 xhr.responseType = "json"

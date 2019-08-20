@@ -1,25 +1,25 @@
-import { color, TypeColor } from "../data/color";
+import { color } from "../data/color";
 import { FLog } from "./FLog";
 
-const C = {
-    COLOR: color,           // 数据
-}
+/** 所有颜色的key */
+type DataColorKey = keyof typeof color
 
 /**
+ * [framework] 颜色数据管理
  * - [参考资料] Ant-design推荐的颜色设计:https://ant.design/docs/spec/colors-cn
  */
-export class FColor {
+export namespace FColor {
 
     /**
-     * 根据key获取颜色
-     * @param key 
+     * 获取颜色
+     * @param color_key
      */
-    static get(key: keyof TypeColor): cc.Color {
-        let color = C.COLOR[key]
-        if (!color) {
-            FLog.warn(`@FColor: color-key不存在, key=${key}`)
+    export function get_color(color_key: DataColorKey): cc.Color {
+        let result = color[color_key]
+        if (!result) {
+            FLog.warn(`@FColor: color-key不存在, key=${color_key}`)
         }
-        return color
+        return result
     }
 
 }

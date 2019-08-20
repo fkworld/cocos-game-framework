@@ -18,14 +18,14 @@ const { ccclass, property, menu } = cc._decorator
 export class App extends cc.Component {
 
     start() {
-        this.app_start()
+        this.start_app()
     }
 
     @property({ tooltip: "panel所挂载的父节点", type: cc.Node })
     private panel_parent: cc.Node = null
 
     /** app启动逻辑 */
-    private async app_start() {
+    private async start_app() {
         // 打印游戏信息
         FLog.log("@game-info:", FVersion.get_name(), FVersion.get_creator(), FVersion.get_version_string(), FVersion.get_version_number(), FVersion.get_version_time())
         // 屏幕设配

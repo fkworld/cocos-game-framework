@@ -12,7 +12,7 @@ const { ccclass, property, menu } = cc._decorator
 export class PanelWait extends FPanel.FPanelTemplate {
 
     async on_open() {
-        FAnima.clock(this.wait_icon, 45, 0.1, cc.macro.REPEAT_FOREVER)
+        FAnima.clock(this.wait_icon, 45, 0.1)
     }
 
     @property(cc.Node)

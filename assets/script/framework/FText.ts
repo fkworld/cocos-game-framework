@@ -5,8 +5,6 @@ import { FLog } from "./FLog";
 import { FVersion } from "./FVersion";
 import { G } from "./G";
 
-
-const { ccclass } = cc._decorator
 const C = {
     LANGUAGE: {
         "chinese": zh,  // 中文
@@ -15,35 +13,34 @@ const C = {
     EDITOR_TYPE: "chinese" as "chinese",    // 编辑器语言
 }
 
+/** 语言的所有key */
 type DataTextKey = keyof typeof C.LANGUAGE["chinese"]
 
 /**
- * [M] 国际化-多语言
- * - 修改对应配置文件中的内容，key-value格式
- * - [用法] 使用静态接口get()
+ * [framework] 语言本地化数据管理
  */
-@ccclass
-export class FText {
+export namespace FText {
 
     /**
-     * 获取key对应的value并组合成为字符串
+     * 获取语言本地化数据,如果获取失败,则返回key
      * @param key
      * @param params
      */
-    static get(key: DataTextKey, ...params: string[]): string {
+    export function get_text(key: DataTextKey, ...params: string[]): string {
         let type = FLocal.get("language")
         if (FVersion.is_editor()) {
             type = C.EDITOR_TYPE
         }
         if (!C.LANGUAGE[type]) {
             FLog.warn(`@FText: language-type不存在, type=${type}`)
-            return ""
+            return key
         }
-        let value = C.LANGUAGE[type][key] || ""
-        if (!value) {
+        if (!C.LANGUAGE[type][key]) {
             FLog.warn(`@FText: key不存在, key=${key}`)
+            return key
+        } else {
+            return G.get_template_string(C.LANGUAGE[type][key], ...params)
         }
-        return G.get_template_string(value, ...params)
     }
 
 }
