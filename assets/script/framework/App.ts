@@ -1,5 +1,6 @@
 import { PanelGame } from "../panel/PanelGame";
 import { PanelLoading } from "../panel/PanelLoading";
+import { PanelWait } from "../panel/PanelWait";
 import { FLocal } from "./FLocal";
 import { FLog } from "./FLog";
 import { FPanel } from "./FPanel";
@@ -34,6 +35,7 @@ export class App extends cc.Component {
         FPanel.init_parent(this.panel_parent)
         FSound.play_bgm()
         // 加载loading页面,加载n个载入流程,加载完毕后进入游戏
+        FPanel.load(PanelWait)
         await FPanel.open(PanelLoading, {})
         await FPanel.close(PanelLoading, {})
         await FPanel.open(PanelGame, {})

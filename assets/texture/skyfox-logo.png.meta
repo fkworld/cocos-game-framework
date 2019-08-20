@@ -1,0 +1,31 @@
+{
+  "ver": "2.2.0",
+  "uuid": "49532fc4-7e21-4632-931a-a0e30bc45853",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "subMetas": {
+    "skyfox-logo": {
+      "ver": "1.0.4",
+      "uuid": "2f1872f5-3a97-4804-9997-f8ecf0bd20e2",
+      "rawTextureUuid": "49532fc4-7e21-4632-931a-a0e30bc45853",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 1064,
+      "height": 414,
+      "rawWidth": 1064,
+      "rawHeight": 414,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

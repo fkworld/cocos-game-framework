@@ -1,12 +1,10 @@
-import { FAnima } from "../framework/FAnima";
 import { FPanel } from "../framework/FPanel";
 import { G } from "../framework/G";
 
 const { ccclass, property, menu } = cc._decorator;
 
-/** 界面打开关闭参数 */
 interface Params {
-    Open: {
+    open: {
         w_position: cc.Vec2;    // 世界坐标
         info: string;           // 描述信息
     }
@@ -20,26 +18,10 @@ interface Params {
 @FPanel.config_panel("PanelGuide")
 export class PanelGuide extends FPanel.FPanelTemplate {
 
-    async on_open(params: Params["Open"]) {
+    async on_open(params: Params["open"]) {
         this.arrow_point.position = G.get_node_local_position(this.arrow_point, params.w_position)
         this.label_info.string = params.info
-        await Promise.all([
-            FAnima.in_fade_move(this.arrow_point, { direction: "down" }),
-            FAnima.in_move(this.bg_info, { direction: "down" }),
-        ])
-        cc.director.pause()
     }
-
-    async on_close() {
-        cc.director.resume()
-        await Promise.all([
-            FAnima.out_fade_move(this.arrow_point, { direction: "up" }),
-            FAnima.out_move(this.bg_info, { direction: "down" })
-        ])
-    }
-
-    @property(cc.Node)
-    private bg_info: cc.Node = null
 
     @property(cc.Label)
     private label_info: cc.Label = null
@@ -47,7 +29,6 @@ export class PanelGuide extends FPanel.FPanelTemplate {
     @property(cc.Node)
     private arrow_point: cc.Node = null
 
-    /** click event close */
     private event_close() {
         FPanel.close(PanelGuide, {})
     }
