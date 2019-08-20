@@ -90,7 +90,7 @@ declare namespace Editor {
         metaPath: string,
     }
 
-    /** 
+    /**
      * 实例
      * - [注意] 仅可以在编辑器中使用
      * - [注意] url需要以 db://assets/ 开头
@@ -117,57 +117,57 @@ declare namespace Editor {
         exploreLib(url: string): void;
         /**
          * Get native file path by url
-         * @param url 
-         * @param cb 
+         * @param url
+         * @param cb
          * @example Editor.assetdb.queryPathByUrl("")
          */
         queryPathByUrl(url: string, cb: (err: Error, result: string) => void);
         /**
          * Get uuid by url
-         * @param url 
-         * @param cb 
+         * @param url
+         * @param cb
          * @example Editor.assetdb.queryUuidByUrl("db://assets/texture/singleColor.png/singleColor", (err, result) => {})
          */
         queryUuidByUrl(url: string, cb: (err: Error, result: string) => void);
         /**
          * Get native file path by uuid
-         * @param uuid 
-         * @param cb 
+         * @param uuid
+         * @param cb
          * @example Editor.assetdb.queryUuidByUrl("03b56ad9-1449-4f0a-a769-5c547cabff20", (err, result) => {})
          */
         queryPathByUuid(uuid: string, cb: (err: Error, result: string) => void);
         /**
          * Get asset url by uuid
-         * @param uuid 
-         * @param cb 
+         * @param uuid
+         * @param cb
          * @example Editor.assetdb.queryUrlByUuid("03b56ad9-1449-4f0a-a769-5c547cabff20", (err, result) => {})
          */
         queryUrlByUuid(uuid: string, cb: (err: Error, result: string) => void);
         /**
          * Get asset info by uuid
-         * @param uuid 
-         * @param cb 
+         * @param uuid
+         * @param cb
          * @example Editor.assetdb.queryInfoByUuid("03b56ad9-1449-4f0a-a769-5c547cabff20", (err, result) => {})
          */
         queryInfoByUuid(uuid: string, cb: (err: Error, result: Partial<AssetInfo>) => void);
         /**
          * Get meta info by uuid
-         * @param uuid 
-         * @param cb 
+         * @param uuid
+         * @param cb
          */
         queryMetaInfoByUuid(uuid: string, cb: (err: Error, result: Partial<AssetMetaInfo>) => void);
         /**
          * Query all assets from asset-db
-         * @param cb 
+         * @param cb
          */
         deepQuery(cb: (err: Error, results: Partial<AssetInfo>[]) => void);
         /**
          * Query assets by url pattern and asset-type
          * @param pattern 参考url-patterns(我也不知道具体应该称之为什么);?-匹配任何单字符;*-匹配0或者任意数量的字符;**-匹配0或者更多的目录
-         * @param type 
-         * @param cb 
-         * @param url 
-         * @param assetType 
+         * @param type
+         * @param cb
+         * @param url
+         * @param assetType
          */
         queryAssets(pattern: string, type: AssetType | AssetType[], cb: (err: Error, results: Partial<AssetInfo>[]) => void);
         import
