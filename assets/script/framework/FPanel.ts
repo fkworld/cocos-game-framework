@@ -3,6 +3,9 @@ import { G } from "./G";
 
 const C = {
     PATH: "panel",
+    TIME: 0.3,
+    EASE_IN: "linear" as cc.tweenEasing,
+    EASE_OUT: "linear" as cc.tweenEasing,
 }
 
 /** panel的open参数类型 */
@@ -19,6 +22,17 @@ interface DataPanelInstance {
     prefab?: cc.Prefab;         // prefab
     state?: "open" | "close";   // 当前状态(仅对单页面生效)
     node?: cc.Node;             // 当前节点(仅对单页面生效)
+}
+/** ui节点的状态数据 */
+interface DataUIState {
+    in_state: Partial<cc.Node>, // in-state的状态数据,表示在界面
+    out_state: Partial<cc.Node>,// out-state的状态数据,表示不在界面
+}
+/** ui节点的状态转移过程动画参数 */
+interface ParamsUIAnima {
+    time?: number;          // 时间
+    delay?: number;         // 延迟
+    ease?: cc.tweenEasing;  // ease函数
 }
 
 /**
@@ -136,4 +150,43 @@ export namespace FPanel {
         self.node.destroy()
     }
 
+    /** 设置ui节点的状态数据 */
+    export function set_ui_state_data(node: cc.Node, in_state: Partial<cc.Node>, out_state: Partial<cc.Node>) {
+        node["ui-data"] = { in_state: in_state, out_state: out_state } as DataUIState
+    }
+
+    /** 获取ui节点的状态数据 */
+    export function get_ui_state_data(node: cc.Node): DataUIState {
+        if (node["ui-data"]) {
+            return node["ui-data"]
+        } else {
+            FLog.error("@FPanel-ui-data: 此ui节点并未绑定ui-state-data")
+            return { in_state: {}, out_state: {} }
+        }
+    }
+
+    /** ui节点变为in状态 */
+    export async function in_ui(node: cc.Node, params: ParamsUIAnima) {
+        await new Promise(res => {
+            let ui_data = get_ui_state_data(node)
+            cc.tween(node)
+                .set(ui_data.out_state)
+                .delay(params.delay || 0)
+                .to(params.time || C.TIME, ui_data.in_state, { easing: params.ease || C.EASE_IN })
+                .call(res)
+                .start()
+        })
+    }
+
+    /** ui节点变为out状态 */
+    export async function out_ui(node: cc.Node, params: ParamsUIAnima) {
+        await new Promise(res => {
+            let ui_data = get_ui_state_data(node)
+            cc.tween(node)
+                .delay(params.delay || 0)
+                .to(params.time || C.TIME, ui_data.out_state, { easing: params.ease || C.EASE_OUT })
+                .call(res)
+                .start()
+        })
+    }
 }
