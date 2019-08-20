@@ -1,7 +1,7 @@
 declare namespace cc {
 
     /** cc.tween方法 */
-    function tween(target: cc.Node): NewTween;
+    function tween(target?: cc.Node): NewTween;
 
     /** ease字符串,参考:https://docs.cocos.com/creator/api/zh/editor/share/easing.html */
     type tweenEasing = "linear" | "fade" |
@@ -40,8 +40,8 @@ declare namespace cc {
         hide(): NewTween;
         show(): NewTween;
         removeSelf(): NewTween;
-        sequence(actions: [Action | NewTween]): NewTween;
-        parallel(actions: [Action | NewTween]): NewTween;
+        sequence(...actions: (Action | NewTween)[]): NewTween;
+        parallel(...actions: (Action | NewTween)[]): NewTween;
         repeat(repeatTimes: number, action?: Action | NewTween): NewTween;
         repeatForever(action?: Action | NewTween): NewTween;
         reverseTime(action?: Action | NewTween): NewTween;
