@@ -20,37 +20,25 @@
 * 思路参考，某些处理并非是最优解，但是提供了一个还算不错的思路可以参考。
 
 ## 文件说明
-- [**`f-app`**] 游戏启动唯一主入口
-- [**`f-global`**] 通用方法
-- [**`f-local`**] 本地存储
-- [**`fm/f-manager`**] 管理组
-    - [**`fm-panel`**] 界面管理，界面 UI 动画管理
-    - [**`fm-sound`**] 声音管理
-    - [**`fm-i18n`**] 多语言管理
-    - [**`fm-anima`**] 动画管理
-    - [**`fm-log`**] log 信息管理
-    - [**`fm-version`**] 版本管理，运行环境管理
-    - [**`fm-http`**] 网络
-- [**`ft/f-tools`**] 工具组，一般需要挂载到节点上
-    - [**`ft-add-prefab`**] 在当前节点下添加一个 prefab
-    - [**`ft-child`**] 添加 n 个子节点
-    - [**`ft-null`**] 空脚本
-    - [**`ft-size`**] 节点比例化修改大小
-    - [**`ft-z-index`**] 编辑器中修改节点 zIndex
-    - [**`ft-erase`**] 橡皮擦效果
-    - [**`ft-color`**] 颜色控制工具
-    - [**`ft-follow`**] 节点跟随工具
-    - [**`ft-scroll-list`**] 滑动列表工具
-    - [**`ft-modal`**] 子对话框组件
-- [**`panel/MVC-VC`**] 界面组，脚本命名方式为 panel-*，需要挂载在界面的同名 prefab 下
-    - [**`panel-loading`**] 开场时的载入页面
-    - [**`panel-base`**] 标准页面（建议新建 panel 时直接复制 PanelBase.prefab 和 PanelBase.ts 并重命名）
-    - [**`panel-wait`**] 一个通用的等待页面
-    - [**`panel-guide`**] 一个个人使用的新手引导页面
-    - [**`panel-message`**] 一个通用的消息页面
-- [**`system/MVC-M`**] 子系统组，脚本命名方式为 s-*，游戏子系统管理
-- [**`controller/MVC-VC`**] 控制器组，脚本命名方式为 c-*，游戏中重要组件的控制器
-- [**`data`**] 数据文件,一般是 i18n 的语言脚本，color 的颜色脚本等
+- [**`App`**] 游戏启动唯一主入口
+- [**`G`**] 通用方法
+- [**F系列脚本**] 框架层
+    - [**`FAnima`**] 动画
+    - [**`FColor`**] 颜色数据存储；绑定数据文件 data/color.ts
+    - [**`FHttp`**] 网络交互
+    - [**`FLocal`**] 本地存储；绑定数据文件 data/local.ts
+    - [**`FLog`**] 日志
+    - [**`FPanel`**] 界面
+    - [**`FSound`**] 声音；绑定数据文件 data/suond.ts
+    - [**`FText`**] 文字数据；绑定数据文件 data/text-*.ts
+    - [**`FVersion`**] 游戏版本
+- [**T系列脚本**] 工具层，一些独立的功能脚本
+    - [**`TChild`**] 子节点组合
+    - [**`TColor`**] 绑定颜色
+    - [**`TSize`**] 修改大小
+    - [**`TText`**] 绑定文字
+    - [**`TZIndex`**] 修改节点渲染顺序
+- [**data系列脚本**] 数据文件
 
 ## 规范
 ### 代码命名规范
@@ -64,7 +52,7 @@
 * 总是使用箭头函数代替 function，包括在描述类型时。
 * 使用 export 而不是 export default
 ### 脚本规范
-* 依次分别为：import，ccclass/C，enum/interface/type，other-class，main-class 
+* 依次分别为：import，ccclass/C，enum/interface/type，other-class，main-class
 ### 遍历（针对 Array 和 Map 类型，object 类型建议通过 Object.keys 方法转化为 Array 后遍历）
 * 使用 forEach 方法遍历。
 * 使用一些特定的内置方法使得遍历逻辑更加明显。参考：https://www.yuque.com/fengyong/game-develop-road/gwv8xo 。
