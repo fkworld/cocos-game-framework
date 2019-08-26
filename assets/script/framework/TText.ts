@@ -6,64 +6,69 @@ import { G } from "./G";
 const { ccclass, property, menu } = cc._decorator;
 
 /**
- * - [支持] cc.Label,cc.RichText,cc.Sprite
- * - [用法] 将此组件挂载在对应的Label所在节点下，修改key
+ * [T] 文字工具
+ * - [支持] cc.Label,cc.RichText,cc.Sprite三种渲染组件,其中sprite通过传入资源路径的方式动态载入
+ * - [用法] 将此组件挂载到相应节点下,修改key
+ * - [注意] 有多个文字配置文件,所以会在onLoad时执行
  */
 @ccclass
 @menu("t/TText")
 export class TText extends cc.Component {
 
     onLoad() {
-        this.play_onload && this.update_show()
+        this.is_do_onload && this.update_show()
     }
 
-    @property({ tooltip: "字符串key;无法使用notify()函数" })
+    @property({ tooltip: "显示组件:cc.Label", type: cc.Label, readonly: true })
+    private show_component_label: cc.Label = null
+
+    @property({ tooltip: "显示组件:cc.RichText", type: cc.RichText, readonly: true })
+    private show_component_rich_text: cc.RichText = null
+
+    @property({ tooltip: "显示组件:cc.Sprite", type: cc.Sprite, readonly: true })
+    private show_component_sprite: cc.Sprite = null
+
+    @property({ tooltip: "编辑器操作:获取渲染组件" })
+    private get E_get_show_component() { return false }
+    private set E_get_show_component(v: boolean) { FVersion.is_editor() && this.get_show_component() }
+
+    /** 获取渲染组件 */
+    private get_show_component() {
+        this.show_component_label = this.getComponent(cc.Label) || null
+        this.show_component_rich_text = this.getComponent(cc.RichText) || null
+        this.show_component_sprite = this.getComponent(cc.Sprite) || null
+    }
+
+    @property({ tooltip: "字符串key" })
     private key: string = ""
 
     @property({ tooltip: "字符串参数", type: cc.String })
     private params: string[] = []
 
-    @property({ tooltip: "是否在onLoad()时候修改" })
-    private play_onload: boolean = true
+    @property({ tooltip: "是否在onLoad时候修改;考虑有多个文字配置文件,默认为true" })
+    private is_do_onload: boolean = true
 
     @property({ tooltip: "编辑器操作" })
-    private get do_editor() { return false }
-    private set do_editor(v: boolean) {
-        FVersion.is_editor() && this.update_show()
-    }
-
-    private type: "text" | "sp";                // 类型
-    private c_text: cc.Label | cc.RichText;     // text相关组件
-    private c_sp: cc.Sprite;                    // sp相关组件
+    private get E_update_show_component() { return false }
+    private set E_update_show_component(v: boolean) { FVersion.is_editor() && this.update_show() }
 
     /** 更新显示,cc.Label,cc.RichText,cc.Sprite */
     private async update_show() {
-        // 获取type和对应的组件
-        if (!this.type) {
-            this.c_text = this.node.getComponent(cc.Label) || this.node.getComponent(cc.RichText)
-            this.c_sp = this.node.getComponent(cc.Sprite)
-            if (this.c_text) { this.type = "text" }
-            if (this.c_sp) { this.type = "sp" }
-        }
-        // 设置显示
-        switch (this.type) {
-            case "text": this.update_c_text(); break;
-            case "sp": this.update_c_sp(); break;
-            default: break;
-        }
-    }
-
-    /** 更新text组件 */
-    private update_c_text() {
-        this.c_text.string = FText.get_text(<any>this.key, ...this.params)
-    }
-
-    /** 更新sp,在editor模式下不更新 */
-    private async update_c_sp() {
-        if (FVersion.is_editor()) {
-            FLog.warn(`@FText: 在editor模式下无法更新sp组件`)
+        if (!!this.show_component_label) {
+            this.show_component_label.string = FText.get_text(<any>this.key, ...this.params)
             return
         }
-        this.c_sp.spriteFrame = await G.load_res(FText.get_text(<any>this.key, ...this.params), cc.SpriteFrame)
+        if (!!this.show_component_rich_text) {
+            this.show_component_rich_text.string = FText.get_text(<any>this.key, ...this.params)
+            return
+        }
+        if (!!this.show_component_sprite) {
+            if (FVersion.is_editor()) {
+                FLog.warn("@TText: sprite渲染组件不允许在editor下写入")
+                return
+            }
+            this.show_component_sprite.spriteFrame = await G.load_res(FText.get_text(<any>this.key, ...this.params), cc.SpriteFrame)
+            return
+        }
     }
 }

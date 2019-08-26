@@ -18,10 +18,8 @@ export class TColor extends cc.Component {
     private key: string = C.DEFAULT_KEY
 
     @property({ tooltip: "编辑器操作" })
-    private get do_editor() { return false }
-    private set do_editor(v: boolean) {
-        FVersion.is_editor() && this.update_color()
-    }
+    private get E() { return false }
+    private set E(v: boolean) { FVersion.is_editor() && this.update_color() }
 
     private update_color() {
         this.node.color = FColor.get_color(<any>this.key)

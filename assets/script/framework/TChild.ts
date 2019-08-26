@@ -15,40 +15,46 @@ export class TChild extends cc.Component {
 
     /**
      * 获取节点中被观察的子节点
-     * @param parent_node 
-     * @param child_node_nodename 
+     * @param parent_node
+     * @param child_node_nodename
      */
-    static get(parent_node: cc.Node, child_nodename: string): cc.Node {
-        return parent_node.getComponent(TChild).get_child_node(child_nodename)
+    static get_child(parent_node: cc.Node, child_nodename: string): cc.Node {
+        return parent_node.getComponent(TChild).get_child(child_nodename)
     }
 
     @property({ tooltip: "子节点列表", type: cc.Node })
-    private list_child_node: cc.Node[] = []
+    private list_child: cc.Node[] = []
 
-    private map_child_node: Map<string, cc.Node> = new Map()
+    private map_child: Map<string, cc.Node> = new Map()
+
+    /** 将list保存为map */
+    private set_all_child() {
+        this.list_child.forEach(v => {
+            if (!v) {
+                FLog.warn(`@TChild: node的值为null, name=${v.name}`)
+                return
+            }
+            if (this.map_child.has(v.name)) {
+                FLog.warn(`@TChild: node-name重复, name=${v.name}`)
+                return
+            }
+            this.map_child.set(v.name, v)
+        })
+    }
 
     /**
      * 获取被观察的子节点
-     * @param name 
+     * @param name
      */
-    private get_child_node(name: string): cc.Node {
+    private get_child(name: string): cc.Node {
         // 第一次查询时写入map
-        if (this.list_child_node.length != 0 && this.map_child_node.size === 0) {
-            this.list_child_node.forEach(v => {
-                if (!v) {
-                    FLog.warn(`@TChild: node的值为null, node-name=${this.node.name}`)
-                    return
-                }
-                if (this.map_child_node.get(v.name)) {
-                    FLog.warn(`@TChild: node-name重复, node-name=${this.node.name}`)
-                    return;
-                }
-                this.map_child_node.set(v.name, v)
-            })
+        if (this.map_child.size === 0) {
+            this.set_all_child()
         }
-        let n = this.map_child_node.get(name)
+        // 查询
+        let n = this.map_child.get(name)
         if (!n) {
-            FLog.error(`@TChild: node不存在, node-name=${name}`)
+            FLog.error(`@TChild: node不存在, name=${name}`)
         }
         return n
     }
