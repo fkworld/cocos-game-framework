@@ -39,33 +39,38 @@
     - [**`TText`**] 绑定文字
     - [**`TZIndex`**] 修改节点渲染顺序
 - [**data系列脚本**] 数据文件
+- [**C系列脚本**] controller 的缩写，表示控制器脚本
+- [**S系列脚本**] system 的缩写，表示系统脚本
+- [**Panel系列脚本**] 每个界面下挂载的默认脚本
 
-## 规范
-### 代码命名规范
-* 文件名采用 dash 规范，类名采用 PascalCase 规范。
-* 常量采用“大写字母+下划线”命名。
-* 变量、方法采用“小写字母+下划线”命名，本项是为了与引擎自带方法区分开，如果引擎是“小写字母+下划线”写的方法，则使用 camelCase。
-### ts规范
-* ts 定义的 enum/interface/type 采用 PascalCase 规范，并且开头第一个字母进行含义说明：类型 Type*，参数接口（不论是入参还是出参） Params*，数据 Data*。
-* 优先使用 interface 和 type ，因为这两项是编译前定义的，编译后会丢掉；只在1种情况下使用 enum ，即在需要使用 cc.Enum 方法时；考虑 cocos-creator 对 namespace 的支持不好，也应当尽量避免使用，使用 class 代替。
-* 在 class 中，建议全部使用 private 封装属性和方法，只对需要外部调用的属性和方法 public。
-* 总是使用箭头函数代替 function，包括在描述类型时。
-* 使用 export 而不是 export default
-### 脚本规范
-* 依次分别为：import，ccclass/C，enum/interface/type，other-class，main-class
-### 遍历（针对 Array 和 Map 类型，object 类型建议通过 Object.keys 方法转化为 Array 后遍历）
-* 使用 forEach 方法遍历。
-* 使用一些特定的内置方法使得遍历逻辑更加明显。参考：https://www.yuque.com/fengyong/game-develop-road/gwv8xo 。
-* 大数组遍历时，使用普通 for 循环，并提前计算好 length，这样的性能是最高的。
-* 在遍历过程中如果需要 break 和 return，使用普通 for 循环。
-
-## 两层逻辑设计：M + VC，M 表示数据层 system，VC 显示/控制层 controller
-1. 数据层 system
-    * 实现游戏逻辑，处理游戏数据
-    * 以子系统的方式区分逻辑和数据，例如：新手引导系统，离线奖励系统，分数系统
-2. 显示层 panel/controller
-    * panel 为单个界面逻辑
-    * controller 为界面中重要组件逻辑
-3. 合并与拆分
-    * M 与 VC 的合并：如果某个系统只对应单一的 panel，则合并到 panel 中，如 panel-message
-    * VC 的拆分：VC 仅仅在是文件上合并，在实际逻辑中依然是拆分的
+## 规范（仅针对 typescript）
+### 命名规范（大驼峰，小驼峰，下划线，连接符）
+* 类名/模块名使用大驼峰，文件名与文件中主类（主模块）相同。
+* 常量使用下划线+大写字母
+* 变量/方法使用下划线+小写字母。（本项为了与引擎自带方法区分开，如果引擎使用下划线+小写字母命名，则本项使用小驼峰）
+* typescript 中的 enum/interface/type 使用大驼峰，并且利用前缀进行含义说明：
+    * Type* 表示类型
+    * Params* 表示参数（不论入参还是出参）
+    * Data* 表示数据。
+* 最多使用 1 个前缀表示大类别，其余用后缀表示。
+    * anima_*，表示动画函数的前缀。
+    * *_btn，表示组件类型的后缀，类似的还有 _label/_sp 等。
+    * *_list，表示数据结构的后缀。（不要使用复数命名，使用单数对应的数据结构如 array/list/set/map 等）
+* 保证命名的统一性：如介词的使用（本项目中使用 to 和 by，其中 to 后面接输出值，by 后面接输入值），前缀，后缀，系统名等。
+### 代码规范
+* 代码次序为：import/cc._decorator，C（静态数据），enum/interface/type，main-class/main-namespace
+* 使用字符串枚举而不是数字枚举。不要使用 enum/cc.Enum，或者其他数字枚举，数字枚举再描述性上非常差。
+* 使用 export 而不是 export default。
+* 使用 module（export namespace）而不是 namespace。
+* 使用 module（export namespace）而不是 class 中的 static 方法。
+* 在 class 中，对于不需要外部调用的属性和方法，使用 private 而不是 public。
+* 在 module 中，不要轻易使用 export。
+* 在函数内部使用箭头函数而不是 function。外部函数定义可以使用 function。
+* 使用 forEach 或者其他高阶方法遍历而不是 for 循环。（for 循环的性能最高，在大数组遍历时可以使用）（高阶方法参考：https://www.yuque.com/fengyong/game-develop-road/gwv8xo ）
+* 避免在遍历时添加 break 和 return 逻辑，这样做会影响循环的语义性。
+* 避免对 object 类型的遍历，如果不可避免，则通过 Object.keys 方法转化为数组后遍历。
+* 使用双引号，反引号，而不是单引号。
+### 架构规范
+* 极力避免对底层/中台进行修改，使用底层代码 + 数据配置文件的方案进行规避。（参考 FColor/FText/FSound）
+* 数据与显示分离，数据优于显示。（参考：https://www.yuque.com/fengyong/game-develop-road/toqqxe ）
+* 唯有设计上的统一性才能保证架构上的统一性，切记！
