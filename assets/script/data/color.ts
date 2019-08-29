@@ -1,6 +1,3 @@
-/** 类型:颜色 */
-export type TypeColor = { [key in keyof typeof color]: cc.Color }
-
 /** color-颜色数据 */
 export const color = {
 
@@ -20,4 +17,5 @@ export const color = {
     "volcano_8": cc.color().fromHEX("#ad2102"),
     "volcano_9": cc.color().fromHEX("#871400"),
     "volcano_10": cc.color().fromHEX("#610b00"),
+
 }

@@ -98,7 +98,7 @@ export namespace G {
      * @param node
      * @param w_position
      */
-    export function get_node_position_with_world_position(node: cc.Node, w_position: cc.Vec2) {
+    export function get_node_position_by_world_position(node: cc.Node, w_position: cc.Vec2) {
         return node.parent.convertToNodeSpaceAR(w_position)
     }
 

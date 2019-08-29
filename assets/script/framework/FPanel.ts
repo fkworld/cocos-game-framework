@@ -62,7 +62,7 @@ export namespace FPanel {
 
     let parent: cc.Node = null                                  // 父节点
     let now_z_index: number = 0                                 // 当前的zindex
-    let map_panel: Map<string, DataPanelInstance> = new Map()   // 页面数据
+    let panel_map: Map<string, DataPanelInstance> = new Map()   // 页面数据
 
     /** 初始化 */
     export function init_parent(node: cc.Node) {
@@ -75,10 +75,10 @@ export namespace FPanel {
      */
     export function get_panel(panel: typeof FPanelTemplate): DataPanelInstance {
         let key = panel.CONFIG.path
-        let value = map_panel.get(key)
+        let value = panel_map.get(key)
         if (!value) {
             value = {}
-            map_panel.set(key, value)
+            panel_map.set(key, value)
         }
         return value
     }

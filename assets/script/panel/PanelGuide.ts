@@ -19,7 +19,7 @@ interface Params {
 export class PanelGuide extends FPanel.FPanelTemplate {
 
     async on_open(params: Params["open"]) {
-        this.arrow_point.position = G.get_node_position_with_world_position(this.arrow_point, params.w_position)
+        this.arrow_point.position = G.get_node_position_by_world_position(this.arrow_point, params.w_position)
         this.label_info.string = params.info
     }
 

@@ -1,8 +1,9 @@
 import { G } from "./G";
 
 /**
- * [M] 动画管理
+ * [framework] 动画管理
  * - 封装一些简单的常用的动画
+ * - 所有的动画函数省略anima前缀
  */
 export namespace FAnima {
 
@@ -21,47 +22,40 @@ export namespace FAnima {
     }
 
     /**
-     * 使用依次显示string的方式来标识倒计时
+     * 倒计时动画
      * @param label
-     * @param str_list
+     * @param n 倒计时时间,实际在倒计时为0后还会停留1s
+     * @param last
      */
-    export async function count_down_with_string_list(label: cc.Label, str_list: string[]): Promise<void> {
+    export async function countdown(label: cc.Label, n: number, last: string = "Go!") {
         await new Promise(res => {
             cc.tween(label.node)
-                .sequence(
-                    cc.tween().call(() => { label.string = str_list.shift() }),
-                    cc.tween().delay(1)
-                )
-                .repeat(str_list.length)
+                .repeat(n + 1, cc.tween().call(() => {
+                    label.string = n === 0 ? last : `${n}`
+                    n -= 1
+                }).delay(1))
                 .call(() => { label.string = "" })
                 .call(res)
                 .start()
         })
-
     }
 
     /**
-     * 抖动,预计持续时间 0.02*15=0.3s
+     * 抖动动画,预计持续时间 0.02*15=0.3s
      * @param node
      * @param range 抖动范围,默认为10
      */
     export async function shake(node: cc.Node, range: number = 10) {
-        let base_position = node.position
         await new Promise(res => {
+            let base_position = node.position
             cc.tween(node)
-                .sequence(
-                    cc.tween().call(() => {
-                        let x = G.get_random_float(-range, range)
-                        let y = G.get_random_float(-range, range)
-                        node.position = base_position.add(cc.v2(x, y))
-                    }),
-                    cc.tween().delay(0.02)
-                )
-                .repeat(15)
+                .repeat(15, cc.tween().call(() => {
+                    node.x = base_position.x + G.get_random_float(-range, range)
+                    node.y = base_position.y + G.get_random_float(-range, range)
+                }).delay(0.02))
                 .set({ position: base_position })
                 .call(res)
                 .start()
-
         })
     }
 
