@@ -14,7 +14,7 @@ import { local } from "../data/local";
 export namespace FLocal {
 
     /** 缓存;加快存储的效率,均存储为string格式 */
-    let cache: Map<string, string> = new Map()
+    let cache_map: Map<string, string> = new Map()
 
     export function init_local_data() {
         // 预处理
@@ -37,16 +37,16 @@ export namespace FLocal {
 
     /** 获取:优先从缓存中获取 */
     export function get(key: keyof typeof local): string {
-        let value = cache.get(key)
-        if (value === undefined || value === null) {
+        let value = cache_map.get(key)
+        if (value === undefined) {
             value = cc.sys.localStorage.getItem(key) || `${local[key]}`
+            cache_map.set(key, value)
         }
-        cache.set(key, value)
         return value
     }
 
     export function set(key: keyof typeof local, value: string) {
-        cache.set(key, value)
+        cache_map.set(key, value)
         Promise.resolve().then(() => { cc.sys.localStorage.setItem(key, value) })
     }
 

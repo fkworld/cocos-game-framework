@@ -23,22 +23,22 @@ export class TChild extends cc.Component {
     }
 
     @property({ tooltip: "子节点列表", type: cc.Node })
-    private list_child: cc.Node[] = []
+    private child_list: cc.Node[] = []
 
-    private map_child: Map<string, cc.Node> = new Map()
+    private child_map: Map<string, cc.Node> = new Map()
 
     /** 将list保存为map */
     private set_all_child() {
-        this.list_child.forEach(v => {
+        this.child_list.forEach(v => {
             if (!v) {
                 FLog.warn(`@TChild: node的值为null, name=${v.name}`)
                 return
             }
-            if (this.map_child.has(v.name)) {
+            if (this.child_map.has(v.name)) {
                 FLog.warn(`@TChild: node-name重复, name=${v.name}`)
                 return
             }
-            this.map_child.set(v.name, v)
+            this.child_map.set(v.name, v)
         })
     }
 
@@ -48,11 +48,11 @@ export class TChild extends cc.Component {
      */
     private get_child(name: string): cc.Node {
         // 第一次查询时写入map
-        if (this.map_child.size === 0) {
+        if (this.child_map.size === 0) {
             this.set_all_child()
         }
         // 查询
-        let n = this.map_child.get(name)
+        let n = this.child_map.get(name)
         if (!n) {
             FLog.error(`@TChild: node不存在, name=${name}`)
         }

@@ -27,8 +27,13 @@ export class App extends cc.Component {
     /** app启动逻辑 */
     private async start_app() {
         // 打印游戏信息
-        FLog.log("@game-info:", FVersion.get_name(), FVersion.get_creator(), FVersion.get_version_string(), FVersion.get_version_number(), FVersion.get_version_time())
-        // 屏幕设配
+        FLog.log("@game-info:",
+            FVersion.get_name(),
+            FVersion.get_creator(),
+            FVersion.get_version_string(),
+            FVersion.get_version_number(),
+            FVersion.get_version_time())
+        // 屏幕适配
         this.adjust_screen()
         // 各子系统初始化
         FLocal.init_local_data()
@@ -41,9 +46,11 @@ export class App extends cc.Component {
         await FPanel.open(PanelGame, {})
     }
 
-    /** 调整屏幕适配 */
+    /**
+     * 调整屏幕适配
+     * - 注意cc.winSize只有在适配后(修改fitHeight/fitWidth后)才能获取到正确的值,因此使用cc.getFrameSize()来获取初始的屏幕大小
+     */
     private adjust_screen() {
-        // 注意cc.winSize只有在适配后(修改fitHeight/fitWidth后)才能获取到正确的值,因此使用cc.getFrameSize()来获取初始的屏幕大小
         let screen_size = cc.view.getFrameSize().width / cc.view.getFrameSize().height
         let design_size = cc.Canvas.instance.designResolution.width / cc.Canvas.instance.designResolution.height
         let f = screen_size >= design_size
