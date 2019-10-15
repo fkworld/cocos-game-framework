@@ -8,15 +8,6 @@ const C = {
     EASE_OUT: "linear" as cc.tweenEasing,
 }
 
-/** panel的open参数类型 */
-type ParamsPanelOpen<T extends typeof FPanel.FPanelTemplate> = Parameters<T["prototype"]["on_open"]>[0] extends undefined ? {} : Parameters<T["prototype"]["on_open"]>[0];
-/** panel的close参数类型 */
-type ParamsPanelClose<T extends typeof FPanel.FPanelTemplate> = Parameters<T["prototype"]["on_close"]>[0] extends undefined ? {} : Parameters<T["prototype"]["on_close"]>[0];
-/** panel-config,panel配置 */
-interface DataPanelConfig {
-    path: string;               // 资源路径;同时也作为唯一key使用
-    is_multiple: boolean;       // 是否允许打开多个
-}
 /** panel的实例数据 */
 interface DataPanelInstance {
     prefab?: cc.Prefab;         // prefab
@@ -41,23 +32,15 @@ interface ParamsUIAnima {
  */
 export namespace FPanel {
 
-    /** panel配置函数,仅用于panel类的装饰器 */
-    export function config_panel(path: string, is_multiple = false) {
-        return (constructor: typeof FPanelTemplate) => {
-            // 特别注意,由于js中原型继承的bug,这里的config必须创建新的object而不是修改
-            constructor.CONFIG = {
-                path: path,
-                is_multiple: is_multiple
-            }
-            // 冻结之后在严格模式下会报错,在非严格模式下会跳过;cocos脚本运行方式为严格模式
-            Object.freeze(constructor.CONFIG)
-        }
-    }
-
     export abstract class FPanelTemplate extends cc.Component {
-        static CONFIG: DataPanelConfig;
-        async on_open(params: object) { };
-        async on_close(params: object) { };
+        CONFIG: {
+            path: string            // 资源路径;同时也作为唯一key使用
+            is_multiple: boolean    // 是否允许打开多个
+            type_open: object       // 打开参数
+            type_close: object      // 关闭参数
+        } = null;
+        async on_open(params: typeof FPanelTemplate.prototype.CONFIG.type_open) { };
+        async on_close(params: typeof FPanelTemplate.prototype.CONFIG.type_close) { };
     }
 
     let parent: cc.Node = null                                  // 父节点
@@ -74,7 +57,7 @@ export namespace FPanel {
      * @param panel
      */
     export function get_panel(panel: typeof FPanelTemplate): DataPanelInstance {
-        let key = panel.CONFIG.path
+        let key = panel.prototype.CONFIG.path
         let value = panel_map.get(key)
         if (!value) {
             value = {}
@@ -87,7 +70,7 @@ export namespace FPanel {
     export async function load(panel: typeof FPanelTemplate) {
         let info = get_panel(panel)
         if (!info.prefab) {
-            info.prefab = await G.load_res(`${C.PATH}/${panel.CONFIG.path}`, cc.Prefab)
+            info.prefab = await G.load_res(`${C.PATH}/${panel.prototype.CONFIG.path}`, cc.Prefab)
         }
     }
 
@@ -96,11 +79,11 @@ export namespace FPanel {
      * @param panel
      * @param params
      */
-    export async function open<T extends typeof FPanelTemplate>(panel: T, params: ParamsPanelOpen<T>) {
+    export async function open<T extends typeof FPanelTemplate>(panel: T, params: T["prototype"]["CONFIG"]["type_open"]) {
         let info = get_panel(panel)
         // 校验
-        if (!panel.CONFIG.is_multiple && info.state === "open") {
-            FLog.warn(`@FPanel: 逻辑错误,页面重复打开, panel=${panel.CONFIG.path}`)
+        if (!panel.prototype.CONFIG.is_multiple && info.state === "open") {
+            FLog.warn(`@FPanel: 逻辑错误,页面重复打开, panel=${panel.prototype.CONFIG.path}`)
             return
         }
         // 修改数据
@@ -117,7 +100,7 @@ export namespace FPanel {
         node.zIndex = z_index
         node.active = true
         // 保存
-        info.node = panel.CONFIG.is_multiple ? null : node;
+        info.node = panel.prototype.CONFIG.is_multiple ? null : node;
         // 动画
         await node.getComponent(panel).on_open(params)
     }
@@ -127,7 +110,7 @@ export namespace FPanel {
      * @param panel
      * @param params
      */
-    export async function close<T extends typeof FPanelTemplate>(panel: T, params: ParamsPanelClose<T>) {
+    export async function close<T extends typeof FPanelTemplate>(panel: T, params: T["prototype"]["CONFIG"]["type_close"]) {
         let info = get_panel(panel)
         // 校验
         if (info.state === "close") { return }

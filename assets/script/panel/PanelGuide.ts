@@ -3,24 +3,30 @@ import { G } from "../framework/G";
 
 const { ccclass, property, menu } = cc._decorator;
 
-interface Params {
-    open: {
-        w_position: cc.Vec2;    // 世界坐标
-        info: string;           // 描述信息
-    }
-}
-
 /**
- * [Panel] PanelGuide + system
+ * [Panel] PanelGuide
  */
 @ccclass
 @menu("panel/PanelGuide")
-@FPanel.config_panel("PanelGuide")
-export class PanelGuide extends FPanel.FPanelTemplate {
+export class PanelGuide extends cc.Component implements FPanel.FPanelTemplate {
 
-    async on_open(params: Params["open"]) {
-        this.arrow_point.position = G.get_node_position_by_world_position(this.arrow_point, params.w_position)
-        this.label_info.string = params.info
+    CONFIG = {
+        path: "PanelGuide",
+        is_multiple: false,
+        type_open: null as {
+            msg: string,            // 描述信息
+            w_position: cc.Vec2;    // 世界坐标
+        },
+        type_close: null as {},
+    }
+
+    async on_open(params: typeof PanelGuide.prototype.CONFIG.type_open) {
+        this.arrow_point.position = G.get_node_position_by_world_position(this.arrow_point, params.w_position) as any
+        this.label_info.string = params.msg
+    }
+
+    async on_close() {
+
     }
 
     @property(cc.Label)
