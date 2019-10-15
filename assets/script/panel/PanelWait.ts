@@ -4,16 +4,24 @@ import { FPanel } from "../framework/FPanel";
 const { ccclass, property, menu } = cc._decorator
 
 /**
- * [Panel] PanelWait + system
+ * [Panel] PanelWait
  */
 @ccclass
 @menu("panel/PanelWait")
-@FPanel.config_panel("PanelWait")
-export class PanelWait extends FPanel.FPanelTemplate {
+export class PanelWait extends cc.Component implements FPanel.FPanelTemplate {
+
+    CONFIG = {
+        path: "PanelWait",
+        is_multiple: false,
+        type_open: null as {},
+        type_close: null as {},
+    }
 
     async on_open() {
         FAnima.clock(this.wait_icon, 45, 0.1)
     }
+
+    async on_close() { }
 
     @property(cc.Node)
     private wait_icon: cc.Node = null

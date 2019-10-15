@@ -1,11 +1,8 @@
-import { FAnima } from "../framework/FAnima";
 import { FPanel } from "../framework/FPanel";
-import { FText } from "../framework/FText";
-import { FVersion } from "../framework/FVersion";
 
 const { ccclass, property, menu } = cc._decorator
 const C = {
-    FADE_TIME: 1,
+
 }
 
 /**
@@ -13,8 +10,15 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelLoading")
-@FPanel.config_panel("PanelLoading")
-export class PanelLoading extends FPanel.FPanelTemplate {
+export class PanelLoading extends cc.Component implements FPanel.FPanelTemplate {
+
+    CONFIG = {
+        path: "PanelLoading",
+        is_multiple: false,
+        type_open: null as {},
+        type_close: null as {},
+    }
+
 
     async on_open() {
         FPanel.set_ui_state_data(this.node, { opacity: 255 }, { opacity: 0 })
