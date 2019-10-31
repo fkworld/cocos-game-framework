@@ -13,6 +13,7 @@ export class PanelGame extends cc.Component implements FPanel.FPanelTemplate {
         path: "PanelGame",
         type_open: null as {},
         type_close: null as {},
+        ins: null as PanelGame,
     })
 
     async on_open() { }

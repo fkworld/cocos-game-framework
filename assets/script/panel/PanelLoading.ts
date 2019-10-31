@@ -16,6 +16,7 @@ export class PanelLoading extends cc.Component implements FPanel.FPanelTemplate 
         path: "PanelLoading",
         type_open: null as {},
         type_close: null as {},
+        ins: null as PanelLoading,
     })
 
 

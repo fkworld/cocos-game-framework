@@ -9,17 +9,6 @@ const C = {
     NODE_UI_STATE_DATA_SAVE_KEY: "ui-state-data",   // ui节点保存state数据的存储key,需要存储在相应的node上,注意避免冲突
 }
 
-/** panel的上下文信息 */
-interface DataPanelContext {
-    readonly path: string       // prefab的路径
-    readonly type_open: object  // 打开参数
-    readonly type_close: object // 关闭参数
-    z_index_base?: number       // zindex的基础值,默认为0
-    prefab?: cc.Prefab;         // prefab
-    state?: "open" | "close";   // 当前状态
-    ins?: FPanel.FPanelTemplate;// 当前节点下挂载的脚本
-}
-
 /**
  * [framework] 游戏窗口管理
  * - [注意] 需要在App中实例化,需要传入parent-node
@@ -27,24 +16,40 @@ interface DataPanelContext {
  */
 export namespace FPanel {
 
+    /** panel的上下文信息 */
+    export interface DataPanelContext {
+        readonly path: string           // prefab的路径
+        readonly type_open: object      // 打开参数
+        readonly type_close: object     // 关闭参数
+        z_index_base?: number           // zindex的基础值,默认为0
+        prefab?: cc.Prefab              // prefab
+        state?: "open" | "close";       // 当前状态
+        ins: FPanelTemplate;            // 当前节点下挂载的脚本
+    }
+
     /**
      * 界面脚本的实现类
      * - 注意使用implements而不是extends,因为二者没有明显的父子关系
      */
     export abstract class FPanelTemplate extends cc.Component {
+
         /** 界面的上下文信息 */
         static context: DataPanelContext;
+
         /** 界面打开函数,处理动画和逻辑,会在onLoad之后,start之前执行 */
-        async on_open(params: typeof FPanelTemplate.context.type_open) { };
+        abstract async on_open(params: object): Promise<void>;
+
         /** 界面关闭函数,处理动画和逻辑,会在onDestroy之前执行 */
-        async on_close(params: typeof FPanelTemplate.context.type_close) { };
+        abstract async on_close(params: object): Promise<void>;
     }
+
+    type Overwrite<T, U> = { [P in Exclude<keyof T, keyof U>]: T[P] } & U;
 
     /**
      * 设置panel的上下文信息,包括一些默认值
      * @param context
      */
-    export function set_panel_context(context: DataPanelContext) {
+    export function set_panel_context<T extends DataPanelContext>(context: T): T {
         if (!context.z_index_base) { context.z_index_base = 0 }
         context.state = "close"
         return context

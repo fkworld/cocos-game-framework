@@ -14,6 +14,7 @@ export class PanelWait extends cc.Component implements FPanel.FPanelTemplate {
         path: "PanelWait",
         type_open: null as {},
         type_close: null as {},
+        ins: null as PanelWait,
     })
 
     async on_open() {

@@ -18,13 +18,13 @@ export class PanelBase extends cc.Component implements FPanel.FPanelTemplate {
         path: "PanelBase",
         type_open: null as {},
         type_close: null as {},
+        ins: null as PanelBase,
     })
 
-    async on_open(params: typeof PanelBase.context.type_open) {
-
+    async on_open(params) {
     }
 
-    async on_close(params: typeof PanelBase.context.type_close) {
+    async on_close(params) {
 
     }
 }

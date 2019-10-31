@@ -15,6 +15,7 @@ export class PanelMessage extends cc.Component implements FPanel.FPanelTemplate 
         type_open: null as {},
         type_close: null as {},
         z_index_base: 1000,
+        ins: null as PanelMessage,
     })
 
     async on_open() {

@@ -13,6 +13,7 @@ export class PanelTest extends cc.Component implements FPanel.FPanelTemplate {
         path: "PanelTest",
         type_open: null as {},
         type_close: null as {},
+        ins: null as PanelTest,
     })
 
     async on_open() { }
