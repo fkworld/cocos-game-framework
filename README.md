@@ -1,13 +1,10 @@
 # cocos游戏轻量级框架
-[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg?style=flat-square)](https://996.icu)
-* 以个人实践为主，某些处理可能并非是最佳实践。我刚入门游戏开发，还在不断学习中。
-* 个人游戏开发博客，欢迎交流。https://www.yuque.com/fengyong/game-develop-road 。
-* 重要更新
-    * 2019-6-17，使用 dash 规范重命名文件。
-    * 2019-1-30，更新项目名称为 cocos-game-framework，更新一些资源的命名方式
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+[![blog](https://img.shields.io/badge/blog-game--develop--road-yellow.svg)](https://www.yuque.com/fengyong/game-develop-road)
+![](https://img.shields.io/badge/Cocos--Creator-2.1.3-blue)
 
-## 适用范围
-* cocos-creator 版本：2.0.10。
+## 说明
+* 以个人实践为主，有些方案并非是最佳实践。我刚入门游戏开发，还在不断学习中。
 * 适用于轻量级游戏，单一场景，界面使用 prefab 进行管理。
 * 适用于新手，包含一些基础的游戏界面、逻辑、音频、本地存储、多语言管理。
 
