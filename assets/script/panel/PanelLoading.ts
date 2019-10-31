@@ -12,20 +12,23 @@ const C = {
 @menu("panel/PanelLoading")
 export class PanelLoading extends cc.Component implements FPanel.FPanelTemplate {
 
-    CONFIG = {
+    static context = FPanel.set_panel_context({
         path: "PanelLoading",
-        is_multiple: false,
         type_open: null as {},
         type_close: null as {},
-    }
+    })
 
 
     async on_open() {
-        FPanel.set_ui_state_data(this.node, { opacity: 255 }, { opacity: 0 })
-        await FPanel.in_ui(this.node, { time: 1 })
+        FPanel.bind_ui_state_data(this.node, {
+            "show": { opacity: 255 },
+            "hide": { opacity: 0 }
+        })
+        FPanel.set_ui(this.node, "hide")
+        await FPanel.anima_ui(this.node, { key: "show", time: 1 })
     }
 
     async on_close() {
-        await FPanel.out_ui(this.node, { time: 1 })
+        await FPanel.anima_ui(this.node, { key: "hide", time: 1 })
     }
 }

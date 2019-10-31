@@ -10,12 +10,11 @@ const { ccclass, property, menu } = cc._decorator
 @menu("panel/PanelWait")
 export class PanelWait extends cc.Component implements FPanel.FPanelTemplate {
 
-    CONFIG = {
+    static context = FPanel.set_panel_context({
         path: "PanelWait",
-        is_multiple: false,
         type_open: null as {},
         type_close: null as {},
-    }
+    })
 
     async on_open() {
         FAnima.clock(this.wait_icon, 45, 0.1)

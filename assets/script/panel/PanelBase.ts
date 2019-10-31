@@ -14,18 +14,17 @@ const C = {
 @menu("panel/PanelBase")
 export class PanelBase extends cc.Component implements FPanel.FPanelTemplate {
 
-    CONFIG = {
+    static context = FPanel.set_panel_context({
         path: "PanelBase",
-        is_multiple: false,
         type_open: null as {},
         type_close: null as {},
+    })
+
+    async on_open(params: typeof PanelBase.context.type_open) {
+
     }
 
-    async on_open(params: typeof PanelBase.prototype.CONFIG.type_open) {
-
-    }
-
-    async on_close(params: typeof PanelBase.prototype.CONFIG.type_close) {
+    async on_close(params: typeof PanelBase.context.type_close) {
 
     }
 }

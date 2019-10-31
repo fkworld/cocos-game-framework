@@ -6,71 +6,68 @@ const C = {
     TIME: 0.3,
     EASE_IN: "linear" as cc.tweenEasing,
     EASE_OUT: "linear" as cc.tweenEasing,
+    NODE_UI_STATE_DATA_SAVE_KEY: "ui-state-data",   // ui节点保存state数据的存储key,需要存储在相应的node上,注意避免冲突
 }
 
-/** panel的实例数据 */
-interface DataPanelInstance {
+/** panel的上下文信息 */
+interface DataPanelContext {
+    readonly path: string       // prefab的路径
+    readonly type_open: object  // 打开参数
+    readonly type_close: object // 关闭参数
+    z_index_base?: number       // zindex的基础值,默认为0
     prefab?: cc.Prefab;         // prefab
-    state?: "open" | "close";   // 当前状态(仅对单页面生效)
-    node?: cc.Node;             // 当前节点(仅对单页面生效)
-}
-/** ui节点的状态数据 */
-interface DataUIState {
-    in_state: Partial<cc.Node>, // in-state的状态数据,表示在界面
-    out_state: Partial<cc.Node>,// out-state的状态数据,表示不在界面
-}
-/** ui节点的状态转移过程动画参数 */
-interface ParamsUIAnima {
-    time?: number;          // 时间
-    delay?: number;         // 延迟
-    ease?: cc.tweenEasing;  // ease函数
+    state?: "open" | "close";   // 当前状态
+    ins?: FPanel.FPanelTemplate;// 当前节点下挂载的脚本
 }
 
 /**
  * [framework] 游戏窗口管理
- * - [注意] 需要在AppMain中实例化,需要传入parent-node
+ * - [注意] 需要在App中实例化,需要传入parent-node
+ * - [设计要求] 在设计上要求单个界面只允许存在一个实例;如果有需要打开多个的界面,可以转化为界面下打开多个组件
  */
 export namespace FPanel {
 
+    /**
+     * 界面脚本的实现类
+     * - 注意使用implements而不是extends,因为二者没有明显的父子关系
+     */
     export abstract class FPanelTemplate extends cc.Component {
-        CONFIG: {
-            path: string            // 资源路径;同时也作为唯一key使用
-            is_multiple: boolean    // 是否允许打开多个
-            type_open: object       // 打开参数
-            type_close: object      // 关闭参数
-        } = null;
-        async on_open(params: typeof FPanelTemplate.prototype.CONFIG.type_open) { };
-        async on_close(params: typeof FPanelTemplate.prototype.CONFIG.type_close) { };
+        /** 界面的上下文信息 */
+        static context: DataPanelContext;
+        /** 界面打开函数,处理动画和逻辑,会在onLoad之后,start之前执行 */
+        async on_open(params: typeof FPanelTemplate.context.type_open) { };
+        /** 界面关闭函数,处理动画和逻辑,会在onDestroy之前执行 */
+        async on_close(params: typeof FPanelTemplate.context.type_close) { };
     }
 
-    let parent: cc.Node = null                                  // 父节点
-    let now_z_index: number = 0                                 // 当前的zindex
-    let panel_map: Map<string, DataPanelInstance> = new Map()   // 页面数据
+    /**
+     * 设置panel的上下文信息,包括一些默认值
+     * @param context
+     */
+    export function set_panel_context(context: DataPanelContext) {
+        if (!context.z_index_base) { context.z_index_base = 0 }
+        context.state = "close"
+        return context
+    }
 
-    /** 初始化 */
+    let parent: cc.Node = null      // 父节点
+    let now_z_index: number = 0     // 当前的zindex
+
+    /**
+     * 初始化系统,传入parent-node
+     * @param node
+     */
     export function init_parent(node: cc.Node) {
         parent = node
     }
 
     /**
-     * 获取页面数据
+     * 载入界面的prefab
      * @param panel
      */
-    export function get_panel(panel: typeof FPanelTemplate): DataPanelInstance {
-        let key = panel.prototype.CONFIG.path
-        let value = panel_map.get(key)
-        if (!value) {
-            value = {}
-            panel_map.set(key, value)
-        }
-        return value
-    }
-
-    /** 载入界面的prefab */
     export async function load(panel: typeof FPanelTemplate) {
-        let info = get_panel(panel)
-        if (!info.prefab) {
-            info.prefab = await G.load_res(`${C.PATH}/${panel.prototype.CONFIG.path}`, cc.Prefab)
+        if (!panel.context.prefab) {
+            panel.context.prefab = await G.load_res(`${C.PATH}/${panel.context.path}`, cc.Prefab)
         }
     }
 
@@ -79,30 +76,26 @@ export namespace FPanel {
      * @param panel
      * @param params
      */
-    export async function open<T extends typeof FPanelTemplate>(panel: T, params: T["prototype"]["CONFIG"]["type_open"]) {
-        let info = get_panel(panel)
+    export async function open<T extends typeof FPanelTemplate>(panel: T, params: T["context"]["type_open"]) {
         // 校验
-        if (!panel.prototype.CONFIG.is_multiple && info.state === "open") {
-            FLog.warn(`@FPanel: 逻辑错误,页面重复打开, panel=${panel.prototype.CONFIG.path}`)
-            return
-        }
-        // 修改数据
-        info.state = "open"
+        if (panel.context.state === "open") { return }
+        panel.context.state = "open"
         let z_index = now_z_index += 1
-        // 载入+创建节点
+        // 载入
         await load(panel)
-        if (info.state != "open") { return } // 如果载入完成后,panel状态已经不为open,则跳过创建
-        let node = cc.instantiate(info.prefab)
+        // 二次校验,如果载入完成后,panel状态已经不为open,则跳过创建
+        if (panel.context.state != "open") { return }
+        let node = cc.instantiate(panel.context.prefab)
         node.parent = parent
         node.position = cc.Vec2.ZERO
         node.width = cc.winSize.width
         node.height = cc.winSize.height
-        node.zIndex = z_index
+        node.zIndex = z_index + panel.context.z_index_base
         node.active = true
         // 保存
-        info.node = panel.prototype.CONFIG.is_multiple ? null : node;
+        panel.context.ins = node.getComponent(panel)
         // 动画
-        await node.getComponent(panel).on_open(params)
+        await panel.context.ins.on_open(params)
     }
 
     /**
@@ -110,66 +103,71 @@ export namespace FPanel {
      * @param panel
      * @param params
      */
-    export async function close<T extends typeof FPanelTemplate>(panel: T, params: T["prototype"]["CONFIG"]["type_close"]) {
-        let info = get_panel(panel)
+    export async function close<T extends typeof FPanelTemplate>(panel: T, params: T["context"]["type_close"]) {
         // 校验
-        if (info.state === "close") { return }
-        if (!info.node) { return }
-        // 修改数据
-        info.state = "close"
-        // 动画
-        await info.node.getComponent(panel).on_close(params)
-        // 删除节点
-        info.node.destroy()
-        info.node = null
+        if (panel.context.state === "close") { return }
+        if (!panel.context.ins) { return }
+        panel.context.state = "close"
+        // 删除实例
+        await panel.context.ins.on_close(params)
+        panel.context.ins.node.destroy()
+        panel.context.ins = null
     }
 
     /**
-     * 关闭自身(无法传入参数)
-     * @param self 一般在脚本中传入this即可
+     * 绑定节点的ui-state
+     * @param node
+     * @param state
      */
-    export async function close_self(self: FPanelTemplate) {
-        await self.on_close({})
-        self.node.destroy()
+    export function bind_ui_state_data(node: cc.Node, state: { [K: string]: Partial<cc.Node> }) {
+        node[C.NODE_UI_STATE_DATA_SAVE_KEY] = state
     }
 
-    /** 设置ui节点的状态数据 */
-    export function set_ui_state_data(node: cc.Node, in_state: Partial<cc.Node>, out_state: Partial<cc.Node>) {
-        node["ui-data"] = { in_state: in_state, out_state: out_state } as DataUIState
+    /**
+     * 绑定ui-btn的点击事件
+     * @param btn
+     * @param event
+     */
+    export function bind_ui_btn_event(btn: cc.Button, event: Function) {
+        btn.node.on("click", event)
     }
 
-    /** 获取ui节点的状态数据 */
-    export function get_ui_state_data(node: cc.Node): DataUIState {
-        if (node["ui-data"]) {
-            return node["ui-data"]
-        } else {
-            FLog.error("@FPanel-ui-data: 此ui节点并未绑定ui-state-data")
-            return { in_state: {}, out_state: {} }
+    /**
+     * 直接设置节点的ui-state
+     * @param node
+     * @param key
+     */
+    export function set_ui(node: cc.Node, key: string) {
+        try {
+            cc.tween(node).set(node[C.NODE_UI_STATE_DATA_SAVE_KEY][key]).start()
+        } catch (error) {
+            FLog.warn(`anima-ui-error,node=${node},key=${key}`)
         }
     }
 
-    /** ui节点变为in状态 */
-    export async function in_ui(node: cc.Node, params: ParamsUIAnima) {
-        await new Promise(res => {
-            let ui_data = get_ui_state_data(node)
-            cc.tween(node)
-                .set(ui_data.out_state)
-                .delay(params.delay || 0)
-                .to(params.time || C.TIME, ui_data.in_state, { easing: params.ease || C.EASE_IN })
-                .call(res)
-                .start()
-        })
+    /**
+     * 通过动画改变节点的ui-state
+     * @param node
+     * @param params
+     */
+    export async function anima_ui(node: cc.Node, params: {
+        key: string,            // ui-state-key
+        time?: number;          // 时间
+        delay?: number;         // 延迟
+        ease?: cc.tweenEasing;  // ease函数
+    }) {
+        try {
+            await new Promise(res => {
+                cc.tween(node)
+                    .delay(params.delay || 0)
+                    .to(params.time || C.TIME, node[C.NODE_UI_STATE_DATA_SAVE_KEY][params.key], { easing: params.ease || C.EASE_IN })
+                    .call(res)
+                    .start()
+            })
+        } catch (error) {
+            FLog.warn(`anima-ui-error,node=${node},params=${params}`)
+        }
+
     }
 
-    /** ui节点变为out状态 */
-    export async function out_ui(node: cc.Node, params: ParamsUIAnima) {
-        await new Promise(res => {
-            let ui_data = get_ui_state_data(node)
-            cc.tween(node)
-                .delay(params.delay || 0)
-                .to(params.time || C.TIME, ui_data.out_state, { easing: params.ease || C.EASE_OUT })
-                .call(res)
-                .start()
-        })
-    }
 }
