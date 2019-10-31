@@ -9,14 +9,14 @@ const { ccclass, property, menu } = cc._decorator
 @menu("panel/PanelGame")
 export class PanelGame extends cc.Component implements FPanel.FPanelTemplate {
 
-    CONFIG = {
+    static context = FPanel.set_panel_context({
         path: "PanelGame",
-        is_multiple: false,
         type_open: null as {},
         type_close: null as {},
-    }
+    })
 
     async on_open() { }
+
     async on_close() { }
 
 }
