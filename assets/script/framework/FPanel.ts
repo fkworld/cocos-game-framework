@@ -1,13 +1,4 @@
-import { FLog } from "./FLog";
 import { G } from "./G";
-
-const C = {
-    PATH: "panel",
-    TIME: 0.3,
-    EASE_IN: "linear" as cc.tweenEasing,
-    EASE_OUT: "linear" as cc.tweenEasing,
-    NODE_UI_STATE_DATA_SAVE_KEY: "ui-state-data",   // ui节点保存state数据的存储key,需要存储在相应的node上,注意避免冲突
-}
 
 /**
  * [framework] 游戏窗口管理
@@ -43,8 +34,6 @@ export namespace FPanel {
         abstract async on_close(params: object): Promise<void>;
     }
 
-    type Overwrite<T, U> = { [P in Exclude<keyof T, keyof U>]: T[P] } & U;
-
     /**
      * 设置panel的上下文信息,包括一些默认值
      * @param context
@@ -55,8 +44,14 @@ export namespace FPanel {
         return context
     }
 
-    let parent: cc.Node = null      // 父节点
-    let now_z_index: number = 0     // 当前的zindex
+    /** prefab的基础的父节点 */
+    const PATH = "Panel"
+
+    /** 父节点 */
+    let parent: cc.Node = null
+
+    /** 当前的zindex */
+    let now_z_index: number = 0
 
     /**
      * 初始化系统,传入parent-node
@@ -72,7 +67,7 @@ export namespace FPanel {
      */
     export async function load(panel: typeof FPanelTemplate) {
         if (!panel.context.prefab) {
-            panel.context.prefab = await G.load_res(`${C.PATH}/${panel.context.path}`, cc.Prefab)
+            panel.context.prefab = await G.load_res(`${PATH}/${panel.context.path}`, cc.Prefab)
         }
     }
 
@@ -120,59 +115,11 @@ export namespace FPanel {
     }
 
     /**
-     * 绑定节点的ui-state
-     * @param node
-     * @param state
-     */
-    export function bind_ui_state_data(node: cc.Node, state: { [K: string]: Partial<cc.Node> }) {
-        node[C.NODE_UI_STATE_DATA_SAVE_KEY] = state
-    }
-
-    /**
      * 绑定ui-btn的点击事件
      * @param btn
      * @param event
      */
-    export function bind_ui_btn_event(btn: cc.Button, event: Function) {
+    export function bind_btn_event(btn: cc.Button, event: Function) {
         btn.node.on("click", event)
     }
-
-    /**
-     * 直接设置节点的ui-state
-     * @param node
-     * @param key
-     */
-    export function set_ui(node: cc.Node, key: string) {
-        try {
-            cc.tween(node).set(node[C.NODE_UI_STATE_DATA_SAVE_KEY][key]).start()
-        } catch (error) {
-            FLog.warn(`anima-ui-error,node=${node},key=${key}`)
-        }
-    }
-
-    /**
-     * 通过动画改变节点的ui-state
-     * @param node
-     * @param params
-     */
-    export async function anima_ui(node: cc.Node, params: {
-        key: string,            // ui-state-key
-        time?: number;          // 时间
-        delay?: number;         // 延迟
-        ease?: cc.tweenEasing;  // ease函数
-    }) {
-        try {
-            await new Promise(res => {
-                cc.tween(node)
-                    .delay(params.delay || 0)
-                    .to(params.time || C.TIME, node[C.NODE_UI_STATE_DATA_SAVE_KEY][params.key], { easing: params.ease || C.EASE_IN })
-                    .call(res)
-                    .start()
-            })
-        } catch (error) {
-            FLog.warn(`anima-ui-error,node=${node},params=${params}`)
-        }
-
-    }
-
 }
