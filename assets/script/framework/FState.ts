@@ -78,5 +78,9 @@ export namespace FState {
         public has_state(state: TKey): boolean {
             return this.state_now.has(state)
         }
+
+        public change_state(...state_list: TKey[]) {
+            this.state_now = new Set(state_list)
+        }
     }
 }
