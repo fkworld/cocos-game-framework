@@ -1,5 +1,5 @@
-/** i18n-中文  */
-export const zh = {
+/** 文字的数据，中文  */
+export const DataTextZh = {
 
     "panel_loading_game_info": "游戏名称:{0}\n开发者:{1}\n版本号:{2}-{3}",
 
