@@ -1,45 +1,45 @@
-import { en } from "../data/text-en";
-import { zh } from "../data/text-zh";
+import { DataText } from "../data/DataText";
 import { FLocal } from "./FLocal";
-import { FLog } from "./FLog";
-import { FVersion } from "./FVersion";
 import { G } from "./G";
 
 const C = {
-    LANGUAGE: {
-        "chinese": zh,  // 中文
-        "english": en,  // 英文
-    },
-    EDITOR_TYPE: "chinese" as "chinese",    // 编辑器语言
+    EDITOR_TYPE: "chinese" as TypeLanguage  // 默认语言
 }
 
-/** 语言的所有key */
-type DataTextKey = keyof typeof C.LANGUAGE["chinese"]
+/** 语言类型 */
+type TypeLanguage = keyof typeof DataText
+
+/** 文字的key */
+type TypeTextKey = keyof typeof DataText["chinese"]
 
 /**
  * [framework] 语言本地化数据管理
  */
 export namespace FText {
 
+    /** 获取当前的语言key */
+    export function get_language(): TypeLanguage {
+        return FLocal.get("language") as TypeLanguage
+    }
+
+    /** 修改语言 */
+    export function change_language(new_language: TypeLanguage) {
+        FLocal.set("language", new_language)
+    }
+
     /**
      * 获取语言本地化数据,如果获取失败,则返回key
      * @param key
      * @param params
      */
-    export function get_text(key: DataTextKey, ...params: string[]): string {
-        let type = FLocal.get("language")
-        if (FVersion.is_editor()) {
-            type = C.EDITOR_TYPE
-        }
-        if (!C.LANGUAGE[type]) {
-            FLog.warn(`@FText: language-type不存在, type=${type}`)
-            return key
-        }
-        if (!C.LANGUAGE[type][key]) {
-            FLog.warn(`@FText: key不存在, key=${key}`)
-            return key
+    export function get_text(key: TypeTextKey, ...params: string[]): string {
+        let language = CC_EDITOR ? C.EDITOR_TYPE : FLocal.get("language")
+        let text = DataText[language][key]
+        if (text) {
+            return G.get_template_string(text, ...params)
         } else {
-            return G.get_template_string(C.LANGUAGE[type][key], ...params)
+            cc.warn(`@FText: key不存在, key=${key}`)
+            return key
         }
     }
 
