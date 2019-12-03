@@ -1,5 +1,8 @@
-/** color-颜色数据 */
-export const color = {
+/** 所有颜色的key */
+export type DataColorKey = keyof typeof DataColor
+
+/** 所有颜色的数据 */
+export const DataColor = {
 
     // 默认颜色
     "none": cc.Color.WHITE,
