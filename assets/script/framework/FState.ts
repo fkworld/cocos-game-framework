@@ -67,7 +67,7 @@ export namespace FState {
     }
 
     /** 状态集合，构造时传入当前状态集合 */
-    export class StateSet<TKey> {
+    export class StateSet<TKey extends string> {
 
         constructor(...state_list: TKey[]) {
             this.state_now = new Set(state_list)
