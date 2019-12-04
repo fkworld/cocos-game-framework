@@ -2,7 +2,7 @@ import { DataVersion, DataVersionInfo } from "../data/DataVersion"
 import { FState } from "./FState"
 
 /** 版本类型 */
-type TypeVersion = keyof typeof DataVersion
+type TypeVersionKey = keyof typeof DataVersion
 
 /**
  * [framework] 版本管理
@@ -10,7 +10,9 @@ type TypeVersion = keyof typeof DataVersion
 export namespace FVersion {
 
     /** 组合版本 */
-    const version = new FState.StateSet<TypeVersion>(...<TypeVersion[]>Object.keys(DataVersion).filter(v => DataVersion[v] === 1))
+    const version = new FState.StateSet<TypeVersionKey>(
+        ...<TypeVersionKey[]>Object.keys(DataVersion).filter(v => DataVersion[v] === 1)
+    )
 
     /** 获取当前版本标记 */
     export function get_version() {
