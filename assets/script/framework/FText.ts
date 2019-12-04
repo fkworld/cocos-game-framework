@@ -1,6 +1,6 @@
 import { DataText } from "../data/DataText";
 import { FLocal } from "./FLocal";
-import { G } from "./G";
+import { FTool } from "./FTool";
 
 const C = {
     EDITOR_TYPE: "chinese" as TypeLanguage  // 默认语言
@@ -36,7 +36,7 @@ export namespace FText {
         let language = CC_EDITOR ? C.EDITOR_TYPE : FLocal.get("language")
         let text = DataText[language][key]
         if (text) {
-            return G.get_template_string(text, ...params)
+            return FTool.get_template_string(text, ...params)
         } else {
             cc.warn(`@FText: key不存在, key=${key}`)
             return key

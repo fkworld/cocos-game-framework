@@ -1,7 +1,5 @@
-import { FLog } from "./FLog";
 import { FText } from "./FText";
-import { FVersion } from "./FVersion";
-import { G } from "./G";
+import { FTool } from "./FTool";
 
 const { ccclass, property, menu } = cc._decorator;
 
@@ -30,7 +28,7 @@ export class TText extends cc.Component {
 
     @property({ tooltip: "编辑器操作:获取渲染组件" })
     private get E_get_show_component() { return false }
-    private set E_get_show_component(v: boolean) { FVersion.is_editor() && this.get_show_component() }
+    private set E_get_show_component(v: boolean) { CC_EDITOR && this.get_show_component() }
 
     /** 获取渲染组件 */
     private get_show_component() {
@@ -50,7 +48,7 @@ export class TText extends cc.Component {
 
     @property({ tooltip: "编辑器操作" })
     private get E_update_show_component() { return false }
-    private set E_update_show_component(v: boolean) { FVersion.is_editor() && this.update_show() }
+    private set E_update_show_component(v: boolean) { CC_EDITOR && this.update_show() }
 
     /** 更新显示,cc.Label,cc.RichText,cc.Sprite */
     private async update_show() {
@@ -63,11 +61,11 @@ export class TText extends cc.Component {
             return
         }
         if (!!this.show_component_sprite) {
-            if (FVersion.is_editor()) {
-                FLog.warn("@TText: sprite渲染组件不允许在editor下写入")
+            if (CC_EDITOR) {
+                cc.warn("@TText: sprite渲染组件不允许在editor下写入")
                 return
             }
-            this.show_component_sprite.spriteFrame = await G.load_res(FText.get_text(<any>this.key, ...this.params), cc.SpriteFrame)
+            this.show_component_sprite.spriteFrame = await FTool.load_res(FText.get_text(<any>this.key, ...this.params), cc.SpriteFrame)
             return
         }
     }

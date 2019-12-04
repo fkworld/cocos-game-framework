@@ -1,7 +1,7 @@
 import { DataSound, DataSoundKey, DataSoundValue } from "../data/DataSound";
 import { FLocal } from "./FLocal";
 import { FState } from "./FState";
-import { G } from "./G";
+import { FTool } from "./FTool";
 
 const C = {
     PATH: "sound",          // 声音的存储路径
@@ -54,7 +54,7 @@ export namespace FSound {
             data.url = sound_source_data[0]
             data.volume = sound_source_data[1] || C.DEFAULT_VOLUMN
             data.loop = sound_source_data[2] || C.DEFAULT_LOOP
-            data.clip = await G.load_res(`${C.PATH}/${sound_source_data[0]}`, cc.AudioClip)
+            data.clip = await FTool.load_res(`${C.PATH}/${sound_source_data[0]}`, cc.AudioClip)
         }
         // 获取失败,置state为error
         if (!data.clip) {

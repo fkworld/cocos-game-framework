@@ -1,4 +1,4 @@
-import { G } from "./G";
+import { FTool } from "./FTool";
 
 /**
  * [framework] 游戏窗口管理
@@ -67,7 +67,7 @@ export namespace FPanel {
      */
     export async function load(panel: typeof FPanelTemplate) {
         if (!panel.context.prefab) {
-            panel.context.prefab = await G.load_res(`${PATH}/${panel.context.path}`, cc.Prefab)
+            panel.context.prefab = await FTool.load_res(`${PATH}/${panel.context.path}`, cc.Prefab)
         }
     }
 

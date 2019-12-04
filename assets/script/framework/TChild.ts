@@ -1,5 +1,3 @@
-import { FLog } from "./FLog";
-
 const { ccclass, property, menu } = cc._decorator
 
 /**
@@ -31,11 +29,11 @@ export class TChild extends cc.Component {
     private set_all_child() {
         this.child_list.forEach(v => {
             if (!v) {
-                FLog.warn(`@TChild: node的值为null, name=${v.name}`)
+                cc.warn(`@TChild: node的值为null, name=${v.name}`)
                 return
             }
             if (this.child_map.has(v.name)) {
-                FLog.warn(`@TChild: node-name重复, name=${v.name}`)
+                cc.warn(`@TChild: node-name重复, name=${v.name}`)
                 return
             }
             this.child_map.set(v.name, v)
@@ -54,7 +52,7 @@ export class TChild extends cc.Component {
         // 查询
         let n = this.child_map.get(name)
         if (!n) {
-            FLog.error(`@TChild: node不存在, name=${name}`)
+            cc.error(`@TChild: node不存在, name=${name}`)
         }
         return n
     }
