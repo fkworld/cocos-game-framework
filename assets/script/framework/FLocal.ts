@@ -1,6 +1,8 @@
-import { FLog } from "./FLog";
+import { DataLocal } from "../data/DataLocal";
 import { FVersion } from "./FVersion";
-import { local } from "../data/local";
+
+/** 本地数据key */
+type TypeLocalKey = keyof typeof DataLocal
 
 /**
  * [framework] 本地数据存储(统一管理)
@@ -18,36 +20,33 @@ export namespace FLocal {
 
     export function init_local_data() {
         // 预处理
-        if (FVersion.is_dev()) {
-            set("init", `${false}`)
-        }
+        FVersion.get_version().has_state("dev") && set("init", `${false}`)
+        // 正式处理
         if (get("init") === `${true}`) {
-            FLog.log("@FLocal: 已获取用户本地数据")
+            cc.log("@FLocal: 已获取用户本地数据")
         } else {
-            FLog.log("@FLocal: 未获取用户本地数据,正在初始化...")
-            clear_all()
-            set("init", `${true}`) // 初始化完毕之后,置init为true
+            cc.log("@FLocal: 未获取用户本地数据,正在初始化...")
+            cc.sys.localStorage.clear()
+            set("init", `${true}`)
         }
-    }
-
-    /** 谨慎使用:清理所有本地数据 */
-    export function clear_all() {
-        cc.sys.localStorage.clear()
     }
 
     /** 获取:优先从缓存中获取 */
-    export function get(key: keyof typeof local): string {
+    export function get(key: TypeLocalKey): string {
         let value = cache_map.get(key)
         if (value === undefined) {
-            value = cc.sys.localStorage.getItem(key) || `${local[key]}`
+            value = cc.sys.localStorage.getItem(key) || `${DataLocal[key]}`
             cache_map.set(key, value)
         }
         return value
     }
 
-    export function set(key: keyof typeof local, value: string) {
+    /** 设置 */
+    export function set(key: TypeLocalKey, value: string) {
         cache_map.set(key, value)
-        Promise.resolve().then(() => { cc.sys.localStorage.setItem(key, value) })
+        Promise.resolve().then(() => {
+            cc.sys.localStorage.setItem(key, value)
+        })
     }
 
 }
