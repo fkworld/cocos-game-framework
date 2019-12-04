@@ -20,5 +20,6 @@
         "library/": true,
         "local/": true,
         "temp/": true
-    }
+    },
+    "editor.formatOnSave": true
 }
