@@ -1,7 +1,6 @@
-const { ccclass, menu } = cc._decorator;
+import { FState } from "../framework/FState";
 
-/** 游戏状态 */
-type TypeGameState = "init" | "start" | "pause" | "end";
+const { ccclass, menu } = cc._decorator;
 
 /**
  * [framework] 游戏主控逻辑
@@ -21,30 +20,40 @@ export class Gameplay extends cc.Component {
     }
 
     /** 游戏状态 */
-    private state: TypeGameState = "init"
+    private state = new FState.StateJumpTable<"init" | "start" | "pause" | "end">(
+        "init",                         // 初始状态为 init
+        {
+            "init": ["start"],          // 游戏初始化
+            "start": ["end", "pause"],  // 游戏开始
+            "pause": ["start"],         // 游戏暂停
+            "end": ["start"]            // 游戏结束
+        }
+    )
 
-    /** 游戏状态判定 */
-    is_state(...state_list: TypeGameState[]) {
-        return state_list.includes(this.state)
-    }
+    /** 获取当前的游戏状态 */
+    get_state() { return this.state }
 
     /** 游戏初始化;包括各个游戏内子系统的初始化 */
     game_init() {
-        this.state = "init"
+
     }
 
     /** 游戏开始运行 */
     game_start() {
-        this.state = "start"
+        if (!this.state.try_change_state("start")) { return }
     }
 
     /** 游戏暂停 */
     game_pause() {
-        this.state = "pause"
+        if (!this.state.try_change_state("pause")) { return }
     }
 
     /** 游戏继续 */
     game_resume() {
-        this.state = "start"
+        if (!this.state.try_change_state("start")) { return }
+    }
+
+    game_end() {
+        if (!this.state.try_change_state("end")) { return }
     }
 }
