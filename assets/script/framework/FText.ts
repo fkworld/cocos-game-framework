@@ -3,11 +3,11 @@ import { FLocal } from "./FLocal";
 import { FTool } from "./FTool";
 
 const C = {
-    EDITOR_TYPE: "chinese" as TypeLanguage  // 默认语言
+    EDITOR_TYPE: "chinese" as TypeLanguageKey   // 默认语言
 }
 
 /** 语言类型 */
-type TypeLanguage = keyof typeof DataText
+type TypeLanguageKey = keyof typeof DataText
 
 /** 文字的key */
 type TypeTextKey = keyof typeof DataText["chinese"]
@@ -18,12 +18,12 @@ type TypeTextKey = keyof typeof DataText["chinese"]
 export namespace FText {
 
     /** 获取当前的语言key */
-    export function get_language(): TypeLanguage {
-        return FLocal.get("language") as TypeLanguage
+    export function get_language(): TypeLanguageKey {
+        return FLocal.get("language") as TypeLanguageKey
     }
 
     /** 修改语言 */
-    export function change_language(new_language: TypeLanguage) {
+    export function change_language(new_language: TypeLanguageKey) {
         FLocal.set("language", new_language)
     }
 

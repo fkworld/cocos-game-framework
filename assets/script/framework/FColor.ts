@@ -1,4 +1,7 @@
-import { DataColor, DataColorKey } from "../data/DataColor"
+import { DataColor } from "../data/DataColor"
+
+/** 所有颜色的key */
+type TypeColorKey = keyof typeof DataColor
 
 /**
  * [framework] 颜色数据管理
@@ -11,7 +14,7 @@ export namespace FColor {
      * 获取颜色
      * @param color_key
      */
-    export function get_color(color_key: DataColorKey): cc.Color {
+    export function get_color(color_key: TypeColorKey): cc.Color {
         let result = DataColor[color_key]
         if (!result) {
             cc.warn(`@FColor: color-key不存在, key=${color_key}`)

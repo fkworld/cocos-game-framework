@@ -1,4 +1,4 @@
-import { DataSound, DataSoundKey, DataSoundValue } from "../data/DataSound";
+import { DataSound } from "../data/DataSound";
 import { FLocal } from "./FLocal";
 import { FState } from "./FState";
 import { FTool } from "./FTool";
@@ -8,6 +8,12 @@ const C = {
     DEFAULT_LOOP: false,    // 默认不循环
     DEFAULT_VOLUMN: 1,      // 默认音量为1
 }
+
+/** 所有声音的key */
+type TypeSoundKey = keyof typeof DataSound
+
+/** 所有声音的value类型，分别为：文件路径，音量大小（0-1），是否循环播放 */
+type TypeSoundValue = [string, number?, boolean?]
 
 /** 声音的实例信息 */
 interface DataSoundIns {
@@ -43,13 +49,13 @@ export namespace FSound {
     }
 
     /** 获取声音数据 */
-    async function get_sound(key: DataSoundKey): Promise<DataSoundIns> {
+    async function get_sound(key: TypeSoundKey): Promise<DataSoundIns> {
         let data = sound_all.get(key)
         // 如果已经有缓存,则直接返回
         if (data) { return data }
         // 如果没有缓存,则从数据文件中获取
         data = { state: new FState.StateSet("success") }
-        let sound_source_data = DataSound[key] as DataSoundValue
+        let sound_source_data = DataSound[key] as TypeSoundValue
         if (sound_source_data) {
             data.url = sound_source_data[0]
             data.volume = sound_source_data[1] || C.DEFAULT_VOLUMN
@@ -65,7 +71,7 @@ export namespace FSound {
     }
 
     /** 播放一个声音 */
-    export async function play(key: DataSoundKey) {
+    export async function play(key: TypeSoundKey) {
         if (!get_sound_switch()) { return }
         let data = await get_sound(key)
         if (data.state.has_state("error")) { return }
@@ -79,7 +85,7 @@ export namespace FSound {
     }
 
     /** 停止某一个声音 */
-    export async function stop(key: DataSoundKey) {
+    export async function stop(key: TypeSoundKey) {
         let data = await get_sound(key)
         if (data.state.has_state("error")) { return }
         cc.audioEngine.stop(data.id)
