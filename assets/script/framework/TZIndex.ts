@@ -1,5 +1,3 @@
-import { FVersion } from "./FVersion";
-
 const { ccclass, property, menu } = cc._decorator
 
 /**
@@ -18,9 +16,7 @@ export class TZIndex extends cc.Component {
 
     @property({ tooltip: "编辑器操作" })
     private get E() { return false }
-    private set E(v: boolean) {
-        FVersion.is_editor() && this.update_z_index()
-    }
+    private set E(v: boolean) { CC_EDITOR && this.update_z_index() }
 
     private update_z_index() {
         this.node.zIndex = this.z_index

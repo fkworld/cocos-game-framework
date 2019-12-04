@@ -1,5 +1,3 @@
-import { FLog } from "./FLog";
-
 /**
  * [framework] 网络连接
  * - [用法] 这里只是给出了一个样例,实际使用中http请求需要更加定制化
@@ -24,7 +22,7 @@ export namespace FHttp {
             let json = await response.json()
             return json
         } catch (error) {
-            FLog.error(error)
+            cc.error(error)
             return null
         }
     }
@@ -45,7 +43,7 @@ export namespace FHttp {
             let json = await response.json()
             return json
         } catch (error) {
-            FLog.error(error)
+            cc.error(error)
             return null
         }
     }
@@ -73,7 +71,7 @@ export namespace FHttp {
                 }
                 xhr.send()
             } catch (error) {
-                FLog.error(error)
+                cc.error(error)
                 res(null)
             }
         })
@@ -103,7 +101,7 @@ export namespace FHttp {
                 }
                 xhr.send(JSON.stringify(body))
             } catch (error) {
-                FLog.error(error)
+                cc.error(error)
                 res(null)
             }
         })

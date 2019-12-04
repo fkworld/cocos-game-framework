@@ -3,7 +3,7 @@
  * - 封装一些通用方法
  * @todo 对这些方法进行分类
  */
-export namespace G {
+export namespace FTool {
 
     /**
      * 获取一个随机整数,[min,max),满足条件的整数出现概率相等;如果minb>max,我也不知道会返回啥

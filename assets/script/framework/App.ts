@@ -1,5 +1,4 @@
 import { FLocal } from "./FLocal";
-import { FLog } from "./FLog";
 import { FPanel } from "./FPanel";
 import { FSound } from "./FSound";
 import { FVersion } from "./FVersion";
@@ -24,12 +23,7 @@ export class App extends cc.Component {
     /** app启动逻辑 */
     private async start_app() {
         // 打印游戏信息
-        FLog.log("@game-info:",
-            FVersion.get_name(),
-            FVersion.get_creator(),
-            FVersion.get_version_string(),
-            FVersion.get_version_number(),
-            FVersion.get_version_time())
+        FVersion.log_version()
         // 屏幕适配
         this.adjust_screen()
         // 各子系统初始化

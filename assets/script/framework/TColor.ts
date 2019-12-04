@@ -1,5 +1,4 @@
 import { FColor } from "./FColor";
-import { FVersion } from "./FVersion";
 
 const { ccclass, property, menu } = cc._decorator;
 const C = {
@@ -19,7 +18,7 @@ export class TColor extends cc.Component {
 
     @property({ tooltip: "编辑器操作" })
     private get E() { return false }
-    private set E(v: boolean) { FVersion.is_editor() && this.update_color() }
+    private set E(v: boolean) { CC_EDITOR && this.update_color() }
 
     private update_color() {
         this.node.color = FColor.get_color(<any>this.key)
