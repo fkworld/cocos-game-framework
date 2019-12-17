@@ -1,4 +1,5 @@
 import { FTool } from "./FTool";
+import { FState } from "./FState";
 
 /**
  * [framework] 游戏窗口管理
@@ -7,41 +8,54 @@ import { FTool } from "./FTool";
  */
 export namespace FPanel {
 
-    /** panel的上下文信息 */
-    export interface DataPanelContext {
-        readonly path: string           // prefab的路径
-        readonly type_open: object      // 打开参数
-        readonly type_close: object     // 关闭参数
-        z_index_base?: number           // zindex的基础值,默认为0
-        prefab?: cc.Prefab              // prefab
-        state?: "open" | "close";       // 当前状态
-        ins: FPanelTemplate;            // 当前节点下挂载的脚本
-    }
-
     /**
      * 界面脚本的实现类
      * - 注意使用implements而不是extends,因为二者没有明显的父子关系
      */
-    export abstract class FPanelTemplate extends cc.Component {
+    export abstract class PanelBase extends cc.Component {
 
         /** 界面的上下文信息 */
-        static context: DataPanelContext;
+        static context: {
+            path: string           // prefab的路径
+            z_index_base: number   // zindex的基础值,默认为0
+            prefab: cc.Prefab      // prefab
+            state: FState.StateJumpTable<"open" | "close"> // 当前状态
+            ins: PanelBase;        // 当前节点下挂载的脚本
+        } = null
 
         /** 界面打开函数,处理动画和逻辑,会在onLoad之后,start之前执行 */
-        abstract async on_open(params: object): Promise<void>;
+        abstract async on_open(...params: any): Promise<void>;
 
         /** 界面关闭函数,处理动画和逻辑,会在onDestroy之前执行 */
-        abstract async on_close(params: object): Promise<void>;
+        abstract async on_close(...params: any): Promise<void>;
     }
 
+    /** 获取类 on_open 方法的参数 */
+    type GetParamsOpen<T extends typeof PanelBase> = Parameters<T["prototype"]["on_open"]>
+
+    /** 获取类 on_close 方法的参数 */
+    type GetParamsClose<T extends typeof PanelBase> = Parameters<T["prototype"]["on_close"]>
+
     /**
-     * 设置panel的上下文信息,包括一些默认值
+     * 设置PanelContext的装饰器
      * @param context
      */
-    export function set_panel_context<T extends DataPanelContext>(context: T): T {
-        if (!context.z_index_base) { context.z_index_base = 0 }
-        context.state = "close"
-        return context
+    export function SetPanelContext(context: {
+        path: string,
+        z_index_base?: number,
+    }) {
+        return (constructor: typeof PanelBase) => {
+            constructor.context = {
+                path: context.path,
+                z_index_base: context.z_index_base || 0,
+                prefab: null,
+                state: new FState.StateJumpTable<"open" | "close">("close", {
+                    "open": ["close"],
+                    "close": ["open"],
+                }),
+                ins: null,
+            }
+        }
     }
 
     /** prefab的基础的父节点 */
@@ -65,7 +79,7 @@ export namespace FPanel {
      * 载入界面的prefab
      * @param panel
      */
-    export async function load(panel: typeof FPanelTemplate) {
+    export async function load(panel: typeof PanelBase) {
         if (!panel.context.prefab) {
             panel.context.prefab = await FTool.load_res(`${PATH}/${panel.context.path}`, cc.Prefab)
         }
@@ -76,15 +90,14 @@ export namespace FPanel {
      * @param panel
      * @param params
      */
-    export async function open<T extends typeof FPanelTemplate>(panel: T, params: T["context"]["type_open"]) {
+    export async function open<T extends typeof PanelBase>(panel: T, ...params: GetParamsOpen<T>) {
         // 校验
-        if (panel.context.state === "open") { return }
-        panel.context.state = "open"
+        if (!panel.context.state.try_change_state("open")) { return }
         let z_index = now_z_index += 1
         // 载入
         await load(panel)
         // 二次校验,如果载入完成后,panel状态已经不为open,则跳过创建
-        if (panel.context.state != "open") { return }
+        if (!panel.context.state.try_change_state("open")) { return }
         let node = cc.instantiate(panel.context.prefab)
         node.parent = parent
         node.position = cc.Vec2.ZERO
@@ -95,7 +108,7 @@ export namespace FPanel {
         // 保存
         panel.context.ins = node.getComponent(panel)
         // 动画
-        await panel.context.ins.on_open(params)
+        await panel.context.ins.on_open(...params)
     }
 
     /**
@@ -103,23 +116,13 @@ export namespace FPanel {
      * @param panel
      * @param params
      */
-    export async function close<T extends typeof FPanelTemplate>(panel: T, params: T["context"]["type_close"]) {
+    export async function close<T extends typeof PanelBase>(panel: T, ...params: GetParamsClose<T>) {
         // 校验
-        if (panel.context.state === "close") { return }
-        if (!panel.context.ins) { return }
-        panel.context.state = "close"
+        if (!panel.context.state.try_change_state("close")) { return }
         // 删除实例
-        await panel.context.ins.on_close(params)
+        await panel.context.ins.on_close(...params)
         panel.context.ins.node.destroy()
         panel.context.ins = null
     }
 
-    /**
-     * 绑定ui-btn的点击事件
-     * @param btn
-     * @param event
-     */
-    export function bind_btn_event(btn: cc.Button, event: Function) {
-        btn.node.on("click", event)
-    }
 }

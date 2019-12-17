@@ -12,19 +12,16 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelExample")
-export class PanelExample extends cc.Component implements FPanel.FPanelTemplate {
+@FPanel.SetPanelContext({
+    path: "",
+})
+export class PanelExample extends FPanel.PanelBase {
 
-    static context = FPanel.set_panel_context({
-        path: "PanelExample",
-        type_open: null as {},
-        type_close: null as {},
-        ins: null as PanelExample,
-    })
+    async on_open() {
 
-    async on_open(params) {
     }
 
-    async on_close(params) {
+    async on_close() {
 
     }
 }

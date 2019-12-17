@@ -4,18 +4,18 @@
  * - 节点状态信息保存在node下。
  * - 通过传入动画参数，执行从一个状态到另一个状态的动画。
  */
-export namespace TNodeState {
+export namespace FNodeStateAnima {
 
     /** 保存在node上的key */
-    const SAVE_KEY = "node-state-data"
+    const SAVE_KEY = Symbol()
 
     /**
      * 设置节点的状态信息
      * @param node
      * @param state
      */
-    export function set_all(node: cc.Node, state: string) {
-        node[SAVE_KEY] = state
+    export function set_all(node: cc.Node, states: { [key: string]: Partial<cc.Node> }) {
+        node[SAVE_KEY] = states
     }
 
     /**
