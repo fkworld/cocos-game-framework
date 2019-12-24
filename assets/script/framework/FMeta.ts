@@ -23,13 +23,24 @@ export namespace FMeta {
     /** 单行csv */
     export interface CsvLine { [K: string]: string }
 
+    /**
+     * meta类的状态
+     * - prepare 正在载入
+     * - ok 载入成功
+     * - error 载入失败
+     */
+    type MetaState = "prepare" | "ok" | "error"
+
     /** meta的基础抽象类 */
     export class MetaBase {
         /** meta类的上下文信息 */
         static context: {
-            file_path_list: string[]    // 源文件路径表
-            file_source: Csv            // 源数据
-            state: FState.StateJumpTable<"prepare" | "ok" | "error">    // 状态，prepare表示正在载入，ok表示载入成功，error表示载入失败
+            // 源文件路径表
+            file_path_list: string[]
+            // 源数据
+            file_source: Csv
+            // 状态
+            state: FState.StateJumpTable<MetaState>
         } = null
         /** 创建meta类实例时，对传入的单行源数据进行处理 */
         on_load(source: CsvLine): void { }
@@ -40,11 +51,11 @@ export namespace FMeta {
         return (constructor: typeof MetaBase) => {
             constructor.context = {
                 file_path_list: config.file_path_list,
-                state: new FState.StateJumpTable<"prepare" | "ok" | "error">("prepare", {
+                state: new FState.StateJumpTable<MetaState>({
                     "prepare": ["ok", "error"],
                     "ok": [],
                     "error": [],
-                }),
+                }, "prepare"),
                 file_source: null,
             }
             // 非编辑器模式下，载入资源

@@ -3,6 +3,15 @@ import { FState } from "../framework/FState";
 const { ccclass, menu } = cc._decorator;
 
 /**
+ * 游戏状态
+ * - init 初始化
+ * - start 开始
+ * - pause 暂停
+ * - end 结束
+ */
+type GameState = "init" | "start" | "pause" | "end"
+
+/**
  * [framework] 游戏主控逻辑
  */
 @ccclass
@@ -20,15 +29,12 @@ export class Gameplay extends cc.Component {
     }
 
     /** 游戏状态 */
-    private state = new FState.StateJumpTable<"init" | "start" | "pause" | "end">(
-        "init",                         // 初始状态为 init
-        {
-            "init": ["start"],          // 游戏初始化
-            "start": ["end", "pause"],  // 游戏开始
-            "pause": ["start"],         // 游戏暂停
-            "end": ["start"]            // 游戏结束
-        }
-    )
+    private state = new FState.StateJumpTable<GameState>({
+        "init": ["start"],
+        "start": ["end", "pause"],
+        "pause": ["start"],
+        "end": ["start"],
+    }, "init")
 
     /** 获取当前的游戏状态 */
     get_state() { return this.state }
@@ -53,6 +59,7 @@ export class Gameplay extends cc.Component {
         if (!this.state.try_change_state("start")) { return }
     }
 
+    /** 游戏结束 */
     game_end() {
         if (!this.state.try_change_state("end")) { return }
     }

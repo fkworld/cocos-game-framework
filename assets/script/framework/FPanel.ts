@@ -9,6 +9,13 @@ import { FState } from "./FState";
 export namespace FPanel {
 
     /**
+     * 界面的状态
+     * - open 打开
+     * - close 关闭
+     */
+    type PanelState = "open" | "close"
+
+    /**
      * 界面脚本的实现类
      * - 注意使用implements而不是extends,因为二者没有明显的父子关系
      */
@@ -16,11 +23,16 @@ export namespace FPanel {
 
         /** 界面的上下文信息 */
         static context: {
-            path: string           // prefab的路径
-            z_index_base: number   // zindex的基础值,默认为0
-            prefab: cc.Prefab      // prefab
-            state: FState.StateJumpTable<"open" | "close"> // 当前状态
-            ins: PanelBase;        // 当前节点下挂载的脚本
+            // prefab的路径
+            path: string
+            // zindex的基础值,默认为0
+            z_index_base: number
+            // prefab
+            prefab: cc.Prefab
+            // 当前状态
+            state: FState.StateJumpTable<PanelState>
+            // 当前节点下挂载的脚本
+            ins: PanelBase;
         } = null
 
         /** 界面打开函数,处理动画和逻辑,会在onLoad之后,start之前执行 */
@@ -49,10 +61,10 @@ export namespace FPanel {
                 path: context.path,
                 z_index_base: context.z_index_base || 0,
                 prefab: null,
-                state: new FState.StateJumpTable<"open" | "close">("close", {
+                state: new FState.StateJumpTable<PanelState>({
                     "open": ["close"],
                     "close": ["open"],
-                }),
+                }, "close"),
                 ins: null,
             }
         }
