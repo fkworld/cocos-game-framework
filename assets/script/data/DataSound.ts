@@ -4,7 +4,7 @@
  */
 export const DataSound = {
 
-    "bgm": ["test", 1, true],
+    "bgm": ["sound/test", 1, true],
 
-    "btn": ["test"]
+    "btn": ["sound/test"]
 }

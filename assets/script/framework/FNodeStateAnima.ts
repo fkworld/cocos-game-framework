@@ -1,12 +1,11 @@
 /**
- * [T] 节点状态管理工具
- * - 用于绑定节点状态信息。
- * - 节点状态信息保存在node下。
+ * 节点状态动画模块
+ * - 用于绑定节点状态信息，保存在 node 下。
  * - 通过传入动画参数，执行从一个状态到另一个状态的动画。
  */
 export namespace FNodeStateAnima {
 
-    /** 保存在node上的key */
+    /** 保存在 node 上的 key */
     const SAVE_KEY = Symbol()
 
     /**
@@ -40,9 +39,9 @@ export namespace FNodeStateAnima {
      * @param params 动画参数
      */
     export async function anima(node: cc.Node, to: string, params: {
-        time?: number;          // 时间，默认为0.3
-        delay?: number;         // 延迟，默认为0
-        ease?: cc.tweenEasing;  // ease函数，默认为linear
+        time?: number;          // 时间，默认为 0.3
+        delay?: number;         // 延迟，默认为 0
+        ease?: cc.tweenEasing;  // ease 函数，默认为 linear
     }) {
         try {
             if (params.time === undefined) { params.time = 0.3 }

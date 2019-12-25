@@ -1,6 +1,6 @@
 import { FState } from "../framework/FState";
 
-const { ccclass, menu } = cc._decorator;
+const { ccclass } = cc._decorator;
 
 /**
  * 游戏状态
@@ -9,23 +9,18 @@ const { ccclass, menu } = cc._decorator;
  * - pause 暂停
  * - end 结束
  */
-type GameState = "init" | "start" | "pause" | "end"
+type GameState = "init" | "start" | "pause" | "end";
 
 /**
- * [framework] 游戏主控逻辑
+ * 游戏主逻辑
  */
 @ccclass
-@menu("f/Gameplay")
 export class Gameplay extends cc.Component {
 
     static ins: Gameplay;
 
     onLoad() {
         Gameplay.ins = this
-    }
-
-    start() {
-
     }
 
     /** 游戏状态 */
@@ -39,7 +34,7 @@ export class Gameplay extends cc.Component {
     /** 获取当前的游戏状态 */
     get_state() { return this.state }
 
-    /** 游戏初始化;包括各个游戏内子系统的初始化 */
+    /** 游戏初始化。包括各个游戏内子系统的初始化 */
     game_init() {
 
     }

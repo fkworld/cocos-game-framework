@@ -1,16 +1,16 @@
-import { FLocal } from "./FLocal";
-import { FPanel } from "./FPanel";
-import { FSound } from "./FSound";
-import { FVersion } from "./FVersion";
+import { FLocal } from "../framework/FLocal"
+import { FPanel } from "../framework/FPanel"
+import { FSound } from "../framework/FSound"
+import { FVersion } from "../framework/FVersion"
 
-const { ccclass, property, menu } = cc._decorator
+const { ccclass, property } = cc._decorator;
 
 /**
- * [framework] 游戏启动主入口
- * - 显式调用调整屏幕适配,本地存储初始化,游戏资源的初始化,声音初始化,界面初始化
+ * 游戏启动主入口
+ * - 需要挂在 Canvas 节点下。
+ * - 显式调用调整屏幕适配，各子系统初始化，游戏启动逻辑等。
  */
 @ccclass
-@menu("f/App")
 export class App extends cc.Component {
 
     start() {
@@ -29,12 +29,13 @@ export class App extends cc.Component {
         // 各子系统初始化
         FLocal.init_local_data()
         FPanel.init_parent(this.panel_parent)
+        // 游戏启动逻辑
         FSound.play_bgm()
     }
 
     /**
      * 调整屏幕适配
-     * - 注意cc.winSize只有在适配后(修改fitHeight/fitWidth后)才能获取到正确的值,因此使用cc.getFrameSize()来获取初始的屏幕大小
+     * - 注意 cc.winSize 只有在适配后才能获取到正确的值，因此需要使用 cc.getFrameSize() 来获取初始的屏幕大小。
      */
     private adjust_screen() {
         let screen_size = cc.view.getFrameSize().width / cc.view.getFrameSize().height

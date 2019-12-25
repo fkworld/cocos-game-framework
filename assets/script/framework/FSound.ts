@@ -4,14 +4,11 @@ import { FState } from "./FState";
 import { FTool } from "./FTool";
 
 /**
- * [M] 声音管理
- * - 保存已经载入的声音,cc.AudioClip
+ * 声音模块
+ * - 保存已经载入的声音，cc.AudioClip
  * - 保存已经播放的声音id
  */
 export namespace FSound {
-
-    /** 声音文件的存储路径 */
-    const PATH = "sound"
 
     /** 所有声音的key */
     type TypeSoundKey = keyof typeof DataSound
@@ -54,10 +51,10 @@ export namespace FSound {
 
     /** 获取声音数据 */
     async function get_sound(key: TypeSoundKey): Promise<DataSoundIns> {
-        // 如果已经有缓存,则直接返回
+        // 如果已经有缓存，则直接返回
         let data = sound_all.get(key)
         if (data) { return data }
-        // 如果没有缓存,则从数据文件中获取
+        // 如果没有缓存，则从数据文件中获取
         data = {
             state: new FState.StateJumpTable<SoundState>({
                 "prepare": ["ok", "error"],
@@ -70,7 +67,7 @@ export namespace FSound {
             data.url = sound_source_data[0]
             data.volume = sound_source_data[1] || 1
             data.loop = sound_source_data[2] || false
-            data.clip = await FTool.load_res(`${PATH}/${sound_source_data[0]}`, cc.AudioClip)
+            data.clip = await FTool.load_res(sound_source_data[0], cc.AudioClip)
             data.state.try_change_state(data.clip ? "ok" : "error")
         } else {
             data.state.try_change_state("error")
@@ -85,7 +82,7 @@ export namespace FSound {
         if (!get_sound_switch()) { return }
         let data = await get_sound(key)
         if (data.state.check_state("error")) { return }
-        // 特殊情况:bgm类型,如果已经在播放,则跳过
+        // 特殊情况：bgm 类型，如果已经在播放，则跳过
         if (data.loop
             && [cc.audioEngine.AudioState.INITIALZING, cc.audioEngine.AudioState.PLAYING]
                 .includes(cc.audioEngine.getState(data.id))) {
@@ -101,12 +98,12 @@ export namespace FSound {
         cc.audioEngine.stop(data.id)
     }
 
-    /** 常用:播放bgm */
+    /** 常用：播放 bgm */
     export function play_bgm() {
         FSound.play("bgm")
     }
 
-    /** 常用:播放按键音 */
+    /** 常用：播放按键音 */
     export function play_btn() {
         FSound.play("btn")
     }

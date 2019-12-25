@@ -1,10 +1,6 @@
 /**
- * [framework] 网络连接
- * - [用法] 这里只是给出了一个样例,实际使用中http请求需要更加定制化
- * - [注意] 考虑await无法对reject()进行处理,需要进行try-catch封装,并在catch中返回null
- * - [注意] 需要处理浏览器跨域请求;如果是cros方案,需要后端(目标url)进行配合才可以实现
- * - [注意] GET方法不允许包含body,只允许包含query
- * - [注意] body的类型建议前后端使用interface进行约束
+ * 网络连接模块
+ * - 未完整实现，这里只是一个示例。
  */
 export namespace FHttp {
 

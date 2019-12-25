@@ -2,20 +2,20 @@
 export const DataColor = {
 
     // 默认颜色
-    "none": cc.Color.WHITE,
+    "none": "#ffffff",
 
     // ant-design-cyan-6-10
-    "cyan_6": cc.color().fromHEX("#13c2c2"),
-    "cyan_7": cc.color().fromHEX("#08979c"),
-    "cyan_8": cc.color().fromHEX("#006d75"),
-    "cyan_9": cc.color().fromHEX("#00474f"),
-    "cyan_10": cc.color().fromHEX("#002329"),
+    "cyan-6": "#13c2c2",
+    "cyan-7": "#08979c",
+    "cyan-8": "#006d75",
+    "cyan-9": "#00474f",
+    "cyan-10": "#002329",
 
     // ant-design-volcano-6-10
-    "volcano_6": cc.color().fromHEX("#fa541c"),
-    "volcano_7": cc.color().fromHEX("#d4380d"),
-    "volcano_8": cc.color().fromHEX("#ad2102"),
-    "volcano_9": cc.color().fromHEX("#871400"),
-    "volcano_10": cc.color().fromHEX("#610b00"),
+    "volcano-6": "#fa541c",
+    "volcano-7": "#d4380d",
+    "volcano-8": "#ad2102",
+    "volcano-9": "#871400",
+    "volcano-10": "#610b00",
 
 }

@@ -13,7 +13,7 @@ const C = {
 @ccclass
 @menu("panel/PanelExample")
 @FPanel.SetPanelContext({
-    path: "",
+    path: "panel/PanelExample",
 })
 export class PanelExample extends FPanel.PanelBase {
 

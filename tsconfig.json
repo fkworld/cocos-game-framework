@@ -1,18 +1,14 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "CommonJS",
         "lib": [
-            "dom",
-            "es2015",
-            "es2016",
-            "es2017",
-            "es2018",
-            "es2019",
-            "esnext"
+            "DOM",
+            "ESNext",
         ],
-        "target": "es5",
+        "target": "ES5",
         "experimentalDecorators": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "downlevelIteration": true
     },
     "exclude": [
         "node_modules",

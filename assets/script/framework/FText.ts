@@ -2,22 +2,21 @@ import { DataText } from "../data/DataText";
 import { FLocal } from "./FLocal";
 import { FTool } from "./FTool";
 
-const C = {
-    EDITOR_TYPE: "chinese" as TypeLanguageKey   // 默认语言
-}
-
-/** 语言类型 */
-type TypeLanguageKey = keyof typeof DataText
-
-/** 文字的key */
-type TypeTextKey = keyof typeof DataText["chinese"]
-
 /**
- * [framework] 语言本地化数据管理
+ * 多语言模块
  */
 export namespace FText {
 
-    /** 获取当前的语言key */
+    /** 语言类型 */
+    type TypeLanguageKey = keyof typeof DataText
+
+    /** 文字的 key */
+    export type TypeTextKey = keyof typeof DataText["chinese"]
+
+    /** 编辑器语言 */
+    const EDITOR_TYPE = "chinese" as TypeLanguageKey
+
+    /** 获取当前的语言 key */
     export function get_language(): TypeLanguageKey {
         return FLocal.get("language") as TypeLanguageKey
     }
@@ -28,12 +27,12 @@ export namespace FText {
     }
 
     /**
-     * 获取语言本地化数据,如果获取失败,则返回key
+     * 获取语言本地化数据，如果获取失败，则返回 key
      * @param key
      * @param params
      */
     export function get_text(key: TypeTextKey, ...params: string[]): string {
-        let language = CC_EDITOR ? C.EDITOR_TYPE : FLocal.get("language")
+        let language = CC_EDITOR ? EDITOR_TYPE : FLocal.get("language")
         let text = DataText[language][key]
         if (text) {
             return FTool.get_template_string(text, ...params)

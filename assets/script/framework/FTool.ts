@@ -1,7 +1,5 @@
 /**
- * [framework] 全局方法类
- * - 封装一些通用方法
- * @todo 对这些方法进行分类
+ * 封装一些通用方法
  */
 export namespace FTool {
 
@@ -35,6 +33,7 @@ export namespace FTool {
 
     /** 随机字符数组,默认去掉了容易混淆的字符oO/9gq/Vv/Uu/LlI1 */
     const RANDOM_CHAR = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678"
+    const RANDOM_CHAR_LENGTH = RANDOM_CHAR.length
 
     /**
      * 随机字符串
@@ -43,7 +42,7 @@ export namespace FTool {
     export function get_random_string(length: number): string {
         let result = []
         for (let i = 0; i < length; i += 1) {
-            result.push(RANDOM_CHAR[Math.trunc(Math.random() * RANDOM_CHAR.length)])
+            result.push(RANDOM_CHAR[Math.trunc(Math.random() * RANDOM_CHAR_LENGTH)])
         }
         return result.join("")
     }
@@ -103,15 +102,6 @@ export namespace FTool {
     }
 
     /**
-     * 计算两点之间的距离
-     * @param p0
-     * @param p1
-     */
-    export function get_2p_distance(p0: cc.Vec2, p1: cc.Vec2) {
-        return p0.sub(p1).mag()
-    }
-
-    /**
      * 异步函数中等待一段时间
      * @param time 单位s
      */
@@ -126,39 +116,6 @@ export namespace FTool {
      */
     export function get_template_string(template: string, ...params: string[]): string {
         return template.replace(/\{([0-9]+?)\}/g, (match, index) => params[index] || `\{${index}\}`)
-    }
-
-    /**
-     * 手动刷新widget1次,并在刷新完毕后置于false
-     * @param node
-     */
-    export function do_widget_once(node: cc.Node) {
-        let w: cc.Widget = node.getComponent(cc.Widget)
-        if (w && w.enabled) {
-            w.updateAlignment()
-            if (w.alignMode == cc.Widget.AlignMode.ONCE || w.alignMode == cc.Widget.AlignMode.ON_WINDOW_RESIZE) {
-                w.enabled = false
-            }
-        }
-    }
-
-    /**
-     * 判断两个数是否约等于
-     * @param n0
-     * @param n1
-     * @param variance 精度,默认为1
-     */
-    export function is_number_fuzzy_equal(n0: number, n1: number, variance: number = 1): boolean {
-        return Math.abs(n0 - n1) <= variance
-    }
-
-    /**
-     * 截取数字的几位小数
-     * @param n 源数字
-     * @param count 小数位数
-     */
-    export function get_number_fixed(n: number, count: number = 1): number {
-        return Math.trunc(n * 10 ** count) / 10 ** count
     }
 
     /**
@@ -191,6 +148,23 @@ export namespace FTool {
     }
 
     /**
+     * 载入编辑器中的资源
+     * - 注意一些资源的命名方式不一样
+     * @param path
+     * @param type
+     */
+    export async function load_res_in_editot<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>> {
+        return await new Promise(res => {
+            let url = `db://assets/resources/${path}`
+            let uuid = Editor.assetdb.remote.urlToUuid(url)
+            cc.loader.load({ type: "uuid", uuid: uuid }, (err, resource: InstanceType<T>) => {
+                err && cc.warn(`载入资源组失败, path=${path}, err=${err}`)
+                err ? res(null) : res(resource)
+            })
+        })
+    }
+
+    /**
      * 载入本地资源或网络资源
      * 1. 本地资源传入uuid
      * 2. 网络资源传入url,必要时传入type
@@ -203,28 +177,6 @@ export namespace FTool {
                 err ? res(null) : res(resource)
             })
         })
-    }
-
-    /**
-    * cc.misc.lerp的反向操作,获取value在min~max的lerp值
-    * @param min
-    * @param max
-    * @param value
-    */
-    export function get_number_lerp(value: number, min: number, max: number) {
-        return (value - min) / (max - min)
-    }
-
-    /**
-     * 模运算,针对负数进行统一化
-     * - [区别] n为正数时与%运算相同,n为负数:-1%10=-1;get_number_modulo(-1,10)=9
-     * @param n
-     */
-    export function get_number_modulo(n: number, modulo: number): number {
-        if (n < 0) {
-            n += Math.max(modulo, modulo * Math.floor(-n))
-        }
-        return n % modulo
     }
 
 }

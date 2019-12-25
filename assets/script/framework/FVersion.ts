@@ -11,7 +11,7 @@ export namespace FVersion {
 
     /** 组合版本 */
     const version = new FState.StateSet<TypeVersionKey>(
-        ...<TypeVersionKey[]>Object.keys(DataVersion).filter(v => DataVersion[v] === 1)
+        ...Object.keys(DataVersion).filter(v => DataVersion[v] === 1) as TypeVersionKey[]
     )
 
     /** 获取当前版本标记 */
