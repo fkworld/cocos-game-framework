@@ -15,7 +15,7 @@ export class TChild extends cc.Component {
      */
     static get_child(parent_node: cc.Node, child_nodename: string): cc.Node {
         let r = parent_node.getComponent(TChild).child_list.find(v => v.name === child_nodename)
-        cc.error(`@TChild: node不存在, name=${name}`)
+        if(!r) cc.error(`@TChild: node不存在, name=${name}`)
         return r
     }
 
