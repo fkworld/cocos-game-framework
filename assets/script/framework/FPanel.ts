@@ -13,23 +13,18 @@ export namespace FPanel {
      * - open 打开
      * - close 关闭
      */
-    type PanelState = "prepare" | "ok" | "error" | "open" | "close"
+    type PanelState = "open" | "close"
 
     /** 界面脚本的实现基类 */
     export abstract class PanelBase extends cc.Component {
 
         /** 界面的上下文信息 */
         static context: {
-            // prefab的路径
-            path: string
-            // zindex的基础值,默认为0
-            z_index_base: number
-            // prefab
-            prefab: cc.Prefab
-            // 当前状态
-            state: FState.StateJumpTable<PanelState>
-            // 当前节点下挂载的脚本
-            ins: PanelBase;
+            path: string            // prefab的路径
+            z_index_base: number    // zindex的基础值,默认为0
+            prefab: cc.Prefab       // prefab
+            ins: PanelBase          // 实例
+            state: FState.StateJumpTable<PanelState>    // 当前状态
         } = null
 
         /** 界面打开函数,处理动画和逻辑,会在onLoad之后,start之前执行 */
@@ -52,20 +47,12 @@ export namespace FPanel {
                 path: config.path,
                 z_index_base: config.z_index_base || 0,
                 prefab: null,
+                ins: null,
                 state: new FState.StateJumpTable<PanelState>({
-                    "prepare": ["ok", "error"],
-                    "ok": ["open"],
-                    "error": [],
                     "open": ["close"],
                     "close": ["open"],
-                }, "prepare"),
-                ins: null,
+                }, "close"),
             }
-            // 非编辑器模式下，载入 prefab
-            !CC_EDITOR && FTool.load_res(constructor.context.path, cc.Prefab).then(v => {
-                constructor.context.prefab = v
-                constructor.context.state.try_change_state("ok")
-            })
         }
     }
 
@@ -85,7 +72,6 @@ export namespace FPanel {
 
     /**
      * 载入界面的 prefab
-     * - 暂时没有使用到
      * @param panel
      */
     async function load(panel: typeof PanelBase) {
@@ -103,11 +89,9 @@ export namespace FPanel {
         // 校验
         if (!panel.context.state.try_change_state("open")) { return }
         let z_index = now_z_index += 1
-        // 暂时更换了载入方式，所以这些是不需要的
         // 载入
-        // await load(panel)
-        // 二次校验,如果载入完成后,panel状态已经不为open,则跳过创建
-        // if (!panel.context.state.try_change_state("open")) { return }
+        await load(panel)
+        // 创建并保存
         let node = cc.instantiate(panel.context.prefab)
         node.parent = parent
         node.position = cc.Vec2.ZERO
@@ -115,7 +99,6 @@ export namespace FPanel {
         node.height = cc.winSize.height
         node.zIndex = z_index + panel.context.z_index_base
         node.active = true
-        // 保存
         panel.context.ins = node.getComponent(panel)
         // 动画
         await panel.context.ins.on_open(...params)
