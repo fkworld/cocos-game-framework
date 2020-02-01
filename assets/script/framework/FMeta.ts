@@ -8,7 +8,7 @@ import { FState } from "./FState"
  *      - 以 # 开头的行视为注释行，不解析
  *      - 以 @ 开头的行视为属性行，存储属性名称
  *      - 使用 ## 代替字符串中的逗号
- *      - 空白则表示此值为当前行的 id
+ *      - 读取时会以属性行为基准，超过的内容行不会保存，没有的内容行会保存为空字符串
  * 3. 一些命名
  *      - file_source：1 张数据表的源内容
  *      - metas：1 张数据表上的全部内容，使用 Meta 类封装
@@ -89,7 +89,7 @@ export namespace FMeta {
      */
     async function load_csv(file_path: string): Promise<Csv> {
         // 行数组
-        let line_list: string[] = (await FTool.load_res(file_path, cc.TextAsset)).text.split("\n")
+        let line_list: string[] = (await FTool.load_res(file_path, cc.TextAsset)).text.split(/\r?\n/)
         // 属性名称数组
         let property_name_list: string[] = []
         // 处理结果
@@ -107,12 +107,11 @@ export namespace FMeta {
                 // 内容行
                 let block_list = line.split(",")
                 let id = block_list[0]
-                let csv_line: CsvLine = new Map(block_list.map((block, index) => {
-                    // 替换 empty 为 id
-                    block = block.trim().length === 0 ? `${id} ` : block
+                let csv_line: CsvLine = new Map(property_name_list.map((property, index) => {
                     // 替换##为逗号
+                    let block = block_list[index] || ""
                     block = block.replace(REGEX.COMMA, ",")
-                    return [property_name_list[index], block]
+                    return [property, block]
                 }))
                 csv.set(id, csv_line)
             }
@@ -139,10 +138,15 @@ export namespace FMeta {
      * @param meta_class
      * @param id
      */
-    export function get_meta<T extends typeof MetaBase>(meta_class: T, id: string): InstanceType<T> {
-        let meta = new meta_class()
-        meta.on_load(meta_class.context.file_source.get(id))
-        return meta as any
+    export function get_meta<T extends typeof MetaBase>(meta_class: T, id: string | number): InstanceType<T> {
+        let meta_source = meta_class.context.file_source.get(`${id}`)
+        if (meta_source) {
+            let meta = new meta_class()
+            meta.on_load(meta_source)
+            return meta as any
+        } else {
+            return null
+        }
     }
 
     /**
