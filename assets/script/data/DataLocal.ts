@@ -6,5 +6,6 @@ export const DataLocal = {
 
     "init": false,          // 是否初始化,true表示已经初始化
     "language": "chinese",  // 语言
-    "sound": true,          // 声音开关
+    "music": true,          // 音乐开关
+    "sound": true,          // 音效开关
 }

@@ -1,8 +1,8 @@
 import { FLocal } from "../framework/FLocal"
 import { FPanel } from "../framework/FPanel"
-import { FSound } from "../framework/FSound"
 import { FVersion } from "../framework/FVersion"
 import { FMeta } from "../framework/FMeta";
+import { FAudio } from "../framework/FAudio";
 
 const { ccclass, property } = cc._decorator;
 
@@ -29,11 +29,12 @@ export class App extends cc.Component {
         FVersion.init()
         FLocal.init()
         FPanel.init(this.panel_parent)
+        FAudio.init()
         await Promise.all([
             FMeta.init_async()
         ])
         // 游戏启动逻辑
-        FSound.play_bgm()
+        FAudio.play_bgm()
     }
 
     /**
