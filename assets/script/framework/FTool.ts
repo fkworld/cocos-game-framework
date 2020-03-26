@@ -153,10 +153,21 @@ export namespace FTool {
      * @param path
      * @param type
      */
-    export async function load_res_in_editot<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>> {
+    export async function load_res_in_editor<T extends typeof cc.Asset>(path: string, type: T): Promise<InstanceType<T>> {
+        if (!CC_EDITOR) {
+            cc.warn("@FTool: 在非编辑器模式下调用了load_res_in_editor方法")
+            return null
+        }
         return await new Promise(res => {
             let url = `db://assets/resources/${path}`
             let uuid = Editor.assetdb.remote.urlToUuid(url)
+            // 针jpg和png资源完善路径
+            if (new cc.SpriteFrame() instanceof type) {
+                uuid = Editor.assetdb.remote.urlToUuid(url = url.replace(/\/[^\/]+$/g, '$&.png$&'))
+                if (!uuid) {
+                    uuid = Editor.assetdb.remote.urlToUuid(url = url.replace(/\/[^\/]+$/g, '$&.jpg$&'))
+                }
+            }
             cc.loader.load({ type: "uuid", uuid: uuid }, (err, resource: InstanceType<T>) => {
                 err && cc.warn(`载入资源组失败, path=${path}, err=${err}`)
                 err ? res(null) : res(resource)
