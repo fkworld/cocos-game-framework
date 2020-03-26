@@ -63,5 +63,9 @@ export namespace FState {
         public has_state(state: TKey): boolean {
             return this.state_now.has(state)
         }
+
+        public to_string() {
+            return [...this.state_now].toString()
+        }
     }
 }
