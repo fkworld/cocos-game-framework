@@ -2,6 +2,7 @@ import { FLocal } from "../framework/FLocal"
 import { FPanel } from "../framework/FPanel"
 import { FSound } from "../framework/FSound"
 import { FVersion } from "../framework/FVersion"
+import { FMeta } from "../framework/FMeta";
 
 const { ccclass, property } = cc._decorator;
 
@@ -28,6 +29,9 @@ export class App extends cc.Component {
         FVersion.init()
         FLocal.init()
         FPanel.init_parent(this.panel_parent)
+        await Promise.all([
+            FMeta.init_async()
+        ])
         // 游戏启动逻辑
         FSound.play_bgm()
     }
