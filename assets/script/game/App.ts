@@ -28,7 +28,7 @@ export class App extends cc.Component {
         // 各子系统初始化
         FVersion.init()
         FLocal.init()
-        FPanel.init_parent(this.panel_parent)
+        FPanel.init(this.panel_parent)
         await Promise.all([
             FMeta.init_async()
         ])
