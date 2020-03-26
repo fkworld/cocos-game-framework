@@ -22,12 +22,11 @@ export class App extends cc.Component {
 
     /** app启动逻辑 */
     private async start_app() {
-        // 打印游戏信息
-        FVersion.log_version()
         // 屏幕适配
         this.adjust_screen()
         // 各子系统初始化
-        FLocal.init_local_data()
+        FVersion.init()
+        FLocal.init()
         FPanel.init_parent(this.panel_parent)
         // 游戏启动逻辑
         FSound.play_bgm()
