@@ -1,14 +1,26 @@
 import { FColor } from "../framework/FColor";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, executeInEditMode } = cc._decorator;
 
 /**
  * 颜色工具
- * - 不在 onLoad 中执行，因为只有一个颜色配置文件，所以在编辑器中操作保证所见即所得。
  * - 如果未来有多个颜色配置文件，则需要同 FText 一样。
  */
 @ccclass
+@executeInEditMode
 export class TColor extends cc.Component {
+
+    onLoad() {
+        if (CC_EDITOR) {
+            this.update_color()
+            cc.log(`@TColor:在编辑器中修改了颜色,node=${this.node.name}`)
+        } else {
+            this.is_onload && this.update_color()
+        }
+    }
+
+    @property({ tooltip: "是否在onload中执行" })
+    private is_onload = true
 
     @property({ tooltip: "颜色字符串" })
     private key: string = "none"
