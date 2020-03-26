@@ -10,7 +10,7 @@ export namespace FTool {
      */
     export function get_random_int(min: number, max: number) {
         min = Math.ceil(min)
-        max = Math.floor(max)
+        max = Math.ceil(max)
         return Math.floor(Math.random() * (max - min) + min)
     }
 
@@ -88,17 +88,20 @@ export namespace FTool {
      * 获取节点的世界坐标
      * @param node
      */
-    export function get_node_world_position(node: cc.Node): cc.Vec2 {
-        return node.convertToWorldSpaceAR(cc.Vec2.ZERO)
+    export function get_node_wp(node: cc.Node): cc.Vec3 {
+        return node.convertToWorldSpaceAR(cc.Vec3.ZERO)
     }
 
     /**
-     * 获取节点在世界坐标下对应的本地坐标
+     * 根据世界坐标设置节点本地坐标
      * @param node
-     * @param w_position
+     * @param wp
+     * @param flag 是否设置，默认为false，则只获取不设置
      */
-    export function get_node_position_by_world_position(node: cc.Node, w_position: cc.Vec2) {
-        return node.parent.convertToNodeSpaceAR(w_position)
+    export function set_node_by_wp(node: cc.Node, wp: cc.Vec3, flag = false) {
+        let lp = node.parent.convertToNodeSpaceAR(wp)
+        if (flag) { node.position = lp }
+        return lp
     }
 
     /**
@@ -107,6 +110,29 @@ export namespace FTool {
      */
     export async function wait_time(time: number) {
         await new Promise(res => setTimeout(res, time * 1e3))
+    }
+
+    /**
+     * 等待执行
+     * @param f_do 执行函数
+     * @param f_is 判定函数
+     * @param wait_all 最高等待时间
+     * @param wait_interval 等待间隔
+     */
+    export async function wait_for_do(f_do: Function, f_is: Function, wait_all = 5, wait_interval = 0.5) {
+        let time = 0
+        for (let i = 0; i < 100; i += 1) {
+            if (!!f_is()) {
+                f_do()
+                break
+            } else {
+                time += wait_interval
+                if (time >= wait_all) {
+                    break
+                }
+                await FTool.wait_time(wait_interval)
+            }
+        }
     }
 
     /**
