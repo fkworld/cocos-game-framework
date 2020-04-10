@@ -3,6 +3,7 @@ import { FPanel } from "../framework/FPanel"
 import { FVersion } from "../framework/FVersion"
 import { FMeta } from "../framework/FMeta";
 import { FAudio } from "../framework/FAudio";
+import { PanelFrameworkTest } from "../panel/PanelFrameworkTest";
 
 const { ccclass, property } = cc._decorator;
 
@@ -35,6 +36,7 @@ export class App extends cc.Component {
         ])
         // 游戏启动逻辑
         FAudio.play_bgm()
+        FPanel.open(PanelFrameworkTest)
     }
 
     /**
