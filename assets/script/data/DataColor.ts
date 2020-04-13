@@ -5,6 +5,7 @@ export const DataColor = {
     "none": "#ffffff",
 
     "zhifubao_blue": "#027AFF",
+    "bg_ivory": "#fffbf0",
 
     // ant_design_cyan_6_10
     "cyan_6": "#13c2c2",
