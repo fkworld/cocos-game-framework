@@ -19,7 +19,8 @@
         "**/*.meta": true,
         "library/": true,
         "local/": true,
-        "temp/": true
+        "temp/": true,
+        "node_modules/": true
     },
     "editor.formatOnSave": true
 }
