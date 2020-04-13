@@ -1,0 +1,22 @@
+{
+  "name": "cocos-game-framework",
+  "version": "1.0.0",
+  "description": "[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) [![blog](https://img.shields.io/badge/blog-game--develop--road-yellow.svg)](https://www.yuque.com/fengyong/game-develop-road) ![](https://img.shields.io/badge/Cocos--Creator-2.2.1-blue) ![](https://img.shields.io/badge/框架版本-1.0.0-blue) ![](https://img.shields.io/badge/脚本语言-TypeScript-blue)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fkworld/cocos-game-framework.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fkworld/cocos-game-framework/issues"
+  },
+  "homepage": "https://github.com/fkworld/cocos-game-framework#readme",
+  "dependencies": {
+    "@types/lodash": "^4.14.149"
+  }
+}

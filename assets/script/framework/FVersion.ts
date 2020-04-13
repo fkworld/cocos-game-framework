@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { DataVersion, DataVersionInfo } from "../data/DataVersion"
 import { FState } from "./FState"
 
@@ -5,6 +6,8 @@ import { FState } from "./FState"
  * [framework] 版本管理
  */
 export namespace FVersion {
+
+    const TAG = "@FVersion:"
 
     /** 版本类型 */
     type VersionKey = keyof typeof DataVersion
@@ -14,7 +17,7 @@ export namespace FVersion {
 
     export function init() {
         version = new FState.StateSet(...Object.keys(DataVersion).filter(v => DataVersion[v] === 1) as VersionKey[])
-        cc.log("@FVersion:", version.to_string(), JSON.stringify(DataVersionInfo))
+        cc.log(TAG, version.to_string(), JSON.stringify(DataVersionInfo), `lodash=${_.VERSION}`)
     }
 
     /** 控制台的全局变量；针对类的装饰器 */
