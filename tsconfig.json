@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
-        "module": "CommonJS",
+        "target": "ESNext",
+        "module": "ESNext",
         "lib": [
             "DOM",
             "ESNext",
         ],
-        "target": "ES5",
         "experimentalDecorators": true,
         "skipLibCheck": true,
         "downlevelIteration": true,
