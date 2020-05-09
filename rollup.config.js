@@ -18,7 +18,7 @@ export default {
           "declarationDir": "./framework/dist/types/",
         },
         "include": [
-          "framework/**/*",
+          "framework/src/*",
           "creator.d.ts",
           "game.d.ts",
         ]

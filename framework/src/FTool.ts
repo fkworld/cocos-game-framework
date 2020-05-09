@@ -204,7 +204,7 @@ export namespace FTool {
             } else {
                 // 运行时载入
                 // 后缀名处理：去掉后缀名
-                path = get_filepath(path) + get_filename(path)
+                path = get_dirname(path) + get_filename(path)
                 cc.loader.loadRes(path, type, (err, resource) => {
                     err && cc.warn(TAG, `载入资源失败, path=${path}, err=${err}`)
                     err ? res(null) : res(resource)
@@ -244,22 +244,22 @@ export namespace FTool {
     }
 
     /**
-     * 获取url路径中的路径部分
+     * 获取url中的路径部分
      * @param path
      * @example
      * ```
      * let path = "resources/icon/test.png"
-     * get_filepath(path)
+     * get_dirname(path)
      * //=> resources/icon/
      * ```
      */
-    export const get_filepath = (path: string) => {
-        let r = path.match(/.+(?=\/[^\/]+$)/)
+    export const get_dirname = (path: string) => {
+        let r = path.match(/.+\/(?=[^\/]+$)/)
         return r ? r[0] : ""
     }
 
     /**
-     * 获取url路径中的文件名部分
+     * 获取url中的文件名部分
      * @param path
      * @example
      * ```
@@ -274,7 +274,7 @@ export namespace FTool {
     }
 
     /**
-     * 获取url路径中的文件后缀名部分
+     * 获取url中的文件后缀名部分
      * @param path
      * @example
      * ```

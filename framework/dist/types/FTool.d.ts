@@ -116,18 +116,18 @@ export declare namespace FTool {
         radius: number;
     }) => boolean;
     /**
-     * 获取url路径中的路径部分
+     * 获取url中的路径部分
      * @param path
      * @example
      * ```
      * let path = "resources/icon/test.png"
-     * get_filepath(path)
+     * get_dirname(path)
      * //=> resources/icon/
      * ```
      */
-    const get_filepath: (path: string) => string;
+    const get_dirname: (path: string) => string;
     /**
-     * 获取url路径中的文件名部分
+     * 获取url中的文件名部分
      * @param path
      * @example
      * ```
@@ -138,7 +138,7 @@ export declare namespace FTool {
      */
     const get_filename: (path: string) => string;
     /**
-     * 获取url路径中的文件后缀名部分
+     * 获取url中的文件后缀名部分
      * @param path
      * @example
      * ```

@@ -574,7 +574,7 @@
                             else {
                                 // 运行时载入
                                 // 后缀名处理：去掉后缀名
-                                path = FTool.get_filepath(path) + FTool.get_filename(path);
+                                path = FTool.get_dirname(path) + FTool.get_filename(path);
                                 cc.loader.loadRes(path, type, function (err, resource) {
                                     err && cc.warn(TAG, "\u8F7D\u5165\u8D44\u6E90\u5931\u8D25, path=" + path + ", err=" + err);
                                     err ? res(null) : res(resource);
@@ -619,21 +619,21 @@
             return point.sub(circle.position).len() <= circle.radius;
         };
         /**
-         * 获取url路径中的路径部分
+         * 获取url中的路径部分
          * @param path
          * @example
          * ```
          * let path = "resources/icon/test.png"
-         * get_filepath(path)
+         * get_dirname(path)
          * //=> resources/icon/
          * ```
          */
-        FTool.get_filepath = function (path) {
-            var r = path.match(/.+(?=\/[^\/]+$)/);
+        FTool.get_dirname = function (path) {
+            var r = path.match(/.+\/(?=[^\/]+$)/);
             return r ? r[0] : "";
         };
         /**
-         * 获取url路径中的文件名部分
+         * 获取url中的文件名部分
          * @param path
          * @example
          * ```
@@ -647,7 +647,7 @@
             return r ? r[0] : "";
         };
         /**
-         * 获取url路径中的文件后缀名部分
+         * 获取url中的文件后缀名部分
          * @param path
          * @example
          * ```
