@@ -1,10 +1,9 @@
-import _ from "lodash";
-import { FAudio } from "../framework/FAudio";
-import { FLocal } from "../framework/FLocal";
-import { FMeta } from "../framework/FMeta";
-import { FPanel } from "../framework/FPanel";
-import { FVersion } from "../framework/FVersion";
-import { PanelFrameworkTest } from "../panel/PanelFrameworkTest";
+import { DataAudio } from "../config/DataAudio";
+import { DataColor } from "../config/DataColor";
+import { DataLocal } from "../config/DataLocal";
+import { DataLanguage } from "../config/DataText";
+import { DataVersion, DataVersionInfo } from "../config/DataVersion";
+import { PanelExample } from "../panel/PanelExample";
 
 const { ccclass, property } = cc._decorator;
 
@@ -20,10 +19,6 @@ export class App extends cc.Component {
         this.start_app()
     }
 
-    update() {
-        this.label_progress.string = `${Math.floor(this.pb_progress.progress * 100)}%`
-    }
-
     @property({ tooltip: "panel所挂载的父节点", type: cc.Node })
     private panel_parent: cc.Node = null
 
@@ -32,20 +27,21 @@ export class App extends cc.Component {
         // 屏幕适配
         this.adjust_screen()
         // loading动画
-        this.loading_show()
+        // this.loading_show()
         // 各子系统初始化
-        FVersion.init()
-        FLocal.init()
-        FPanel.init(this.panel_parent)
-        FAudio.init()
+        fy.FVersion.init(DataVersion, DataVersionInfo)
+        fy.FLocal.init(DataLocal)
+        fy.FAudio.init(DataAudio)
+        fy.FText.init(DataLanguage)
+        fy.FColor.init(DataColor)
+        fy.FPanel.init(this.panel_parent)
         await Promise.all([
-            FMeta.init_async()
+            fy.FMeta.init_async("game-config-csv-all.json")
         ])
         // 游戏启动逻辑
-        FAudio.play_bgm()
-        FPanel.open(PanelFrameworkTest)
+        fy.FPanel.open(PanelExample)
         // 载入完毕，关闭loading页面
-        this.loading_hide()
+        // this.loading_hide()
     }
 
     /**

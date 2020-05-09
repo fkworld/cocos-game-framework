@@ -1,6 +1,3 @@
-import { FText } from "../framework/FText";
-import { FTool } from "../framework/FTool";
-
 const { ccclass, property, executeInEditMode } = cc._decorator;
 
 /**
@@ -35,7 +32,7 @@ export class TText extends cc.Component {
 
     /** 更新显示 */
     private async update_show() {
-        let result = FText.get_text(this.key as any, ...this.params)
+        let result = fy.FText.get_text(this.key as any, ...this.params)
         // cc.Label
         if (this.getComponent(cc.Label)) {
             this.getComponent(cc.Label).string = result
@@ -48,9 +45,7 @@ export class TText extends cc.Component {
         }
         // cc.Sprite
         if (this.getComponent(cc.Sprite)) {
-            this.getComponent(cc.Sprite).spriteFrame = CC_EDITOR
-                ? await FTool.load_res_in_editor(result, cc.SpriteFrame)
-                : await FTool.load_res(result, cc.SpriteFrame)
+            this.getComponent(cc.Sprite).spriteFrame = await fy.FTool.load_res(result, cc.SpriteFrame)
         }
     }
 }
