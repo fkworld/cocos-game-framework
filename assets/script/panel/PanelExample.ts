@@ -1,9 +1,4 @@
-import { FPanel } from "../framework/FPanel";
-
 const { ccclass, property, menu } = cc._decorator
-const C = {
-
-}
 
 /**
  * [Panel] PanelExample
@@ -12,10 +7,12 @@ const C = {
  */
 @ccclass
 @menu("panel/PanelExample")
-@FPanel.SetPanelContext({
-    path: "panel/PanelExample",
-})
-export class PanelExample extends FPanel.PanelBase {
+@fy.FPanel.SetPanelContext("panel/PanelExample.prefab")
+export class PanelExample extends fy.FPanel.PanelBase {
+
+    async on_create() {
+
+    }
 
     async on_open() {
 

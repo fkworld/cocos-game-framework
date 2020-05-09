@@ -81,13 +81,13 @@
     "_active": true,
     "_components": [
       {
+        "__id__": 21
+      },
+      {
         "__id__": 22
       },
       {
         "__id__": 23
-      },
-      {
-        "__id__": 24
       }
     ],
     "_prefab": null,
@@ -177,7 +177,7 @@
       "array": [
         0,
         0,
-        747.3799234659706,
+        469.3857688511658,
         0,
         0,
         0,
@@ -312,7 +312,7 @@
         "__id__": 11
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 18
@@ -322,9 +322,6 @@
       },
       {
         "__id__": 20
-      },
-      {
-        "__id__": 21
       }
     ],
     "_prefab": null,
@@ -932,18 +929,6 @@
     "_id": "faNMaYrYpElaG0cZ2emIg+"
   },
   {
-    "__type__": "d6b1eYClgJLkruTcW879ZJj",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 6
-    },
-    "_enabled": true,
-    "is_onload": true,
-    "key": "zhifubao_blue",
-    "_id": "68iREIeeVOmpdO/57yAfYR"
-  },
-  {
     "__type__": "cc.BlockInputEvents",
     "_name": "",
     "_objFlags": 0,
@@ -998,7 +983,7 @@
     "_id": "35YLgzUnJFhp3Hl6wUW7a9"
   },
   {
-    "__type__": "1239cDIlGxMnqQmAuEhtupz",
+    "__type__": "fc28dd9+n5CEIh3V+O3Soge",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -1008,15 +993,9 @@
     "panel_parent": {
       "__id__": 5
     },
-    "panel_loading": {
-      "__id__": 6
-    },
-    "pb_progress": {
-      "__id__": 17
-    },
-    "label_progress": {
-      "__id__": 15
-    },
-    "_id": "76lMZpUhBL07R5eEVFCQ9h"
+    "panel_loading": null,
+    "pb_progress": null,
+    "label_progress": null,
+    "_id": "531SR7cAJKVqLafyzAluy3"
   }
 ]

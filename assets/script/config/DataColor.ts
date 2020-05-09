@@ -1,8 +1,8 @@
 /** 所有颜色的数据 */
-export const DataColor = {
+export const DataColor: fy.FColor.ConfigColor = {
 
     // 默认颜色
-    "none": "#ffffff",
+    "none": "FFFFFF",
 
     "zhifubao_blue": "#027AFF",
     "bg_ivory": "#fffbf0",
