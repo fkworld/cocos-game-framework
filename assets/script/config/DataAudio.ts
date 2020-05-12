@@ -1,7 +1,7 @@
 /**
  * 音乐音效配置文件
  */
-export const DataAudio: fy.FAudio.ConfigAudio = {
+export const DataAudio: fy.ConfigAudio = {
 
     // 带 ### 标记的表示音乐类
     "###bgm": "",

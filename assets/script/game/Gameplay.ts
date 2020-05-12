@@ -19,7 +19,7 @@ export class Gameplay extends cc.Component {
     }
 
     /** 游戏状态 */
-    state = new fy.FState.SFSM<GameState>({
+    state = new fy.SFSM<GameState>({
         id: "GameplayState",
         initial: "init",
         states: {
