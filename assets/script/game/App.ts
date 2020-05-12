@@ -6,6 +6,18 @@ import { DataVersion, DataVersionInfo } from "../config/DataVersion";
 import { PanelExample } from "../panel/PanelExample";
 
 const { ccclass, property } = cc._decorator;
+const APP_CONFIG: fy.Config = {
+    version: DataVersion,
+    version_info: DataVersionInfo,
+    local: DataLocal,
+    text: DataLanguage,
+    editor_language: "chinese",
+    color: DataColor,
+    audio: DataAudio,
+    meta_json_file: "game-config-csv-all.json",
+    panel_parent: null,
+}
+fy.init_editor(APP_CONFIG)
 
 /**
  * 游戏启动主入口
@@ -29,17 +41,9 @@ export class App extends cc.Component {
         // loading动画
         // this.loading_show()
         // 各子系统初始化
-        fy.FVersion.init(DataVersion, DataVersionInfo)
-        fy.FLocal.init(DataLocal)
-        fy.FAudio.init(DataAudio)
-        fy.FText.init(DataLanguage)
-        fy.FColor.init(DataColor)
-        fy.FPanel.init(this.panel_parent)
-        await Promise.all([
-            fy.FMeta.init_async("game-config-csv-all.json")
-        ])
+        await fy.init_runtime(Object.assign(APP_CONFIG, { panel_parent: this.panel_parent }))
         // 游戏启动逻辑
-        fy.FPanel.open(PanelExample)
+        fy.open_panel(PanelExample)
         // 载入完毕，关闭loading页面
         // this.loading_hide()
     }

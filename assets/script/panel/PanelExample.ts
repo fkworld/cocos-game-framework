@@ -7,15 +7,15 @@ const { ccclass, property, menu } = cc._decorator
  */
 @ccclass
 @menu("panel/PanelExample")
-@fy.FPanel.SetPanelContext("panel/PanelExample.prefab")
-export class PanelExample extends fy.FPanel.PanelBase {
+@fy.DeSetPanelContext("panel/PanelExample.prefab")
+export class PanelExample extends fy.PanelBase {
 
     async on_create() {
 
     }
 
     async on_open() {
-
+        cc.log(this.node.parent)
     }
 
     async on_close() {

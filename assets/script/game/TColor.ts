@@ -28,6 +28,6 @@ export class TColor extends cc.Component {
     private set E(v: boolean) { CC_EDITOR && this.update_color() }
 
     private update_color() {
-        this.node.color = fy.FColor.get_color(this.key as any)
+        this.node.color = fy.get_color(this.key as any)
     }
 }
