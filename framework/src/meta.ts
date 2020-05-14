@@ -31,13 +31,13 @@ export class MetaBase {
   static _meta_merge = null;
   /** 在获取时初始化 */
   static get meta_merge() {
-    if (!this.meta_merge) {
+    if (!this._meta_merge) {
       this._meta_merge = this.meta_names.reduce((r, name) => {
         r = { ...metas[name] };
         return r;
       }, {});
     }
-    return this.meta_merge;
+    return this._meta_merge;
   }
   /** 是否是不存在id而使用的默认值 */
   is_default: boolean;
