@@ -18,14 +18,11 @@ export class Gameplay extends cc.Component {
   }
 
   /** 游戏状态 */
-  state = new fy.SimpleFSM<GameState>(
-    {
-      init: ["start"],
-      start: ["end"],
-      end: ["start"],
-    },
-    "init"
-  );
+  state = new fy.SimpleFSM<GameState>("init", {
+    init: ["start"],
+    start: ["end"],
+    end: ["start"],
+  });
 
   /** 游戏初始化。包括各个游戏内子系统的初始化 */
   game_init() {}
