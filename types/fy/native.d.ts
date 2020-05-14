@@ -1,6 +1,6 @@
-/** 判断为android平台 */
+/** 判断为 android 平台 */
 export declare const is_android: () => boolean;
-/** 判断为ios平台 */
+/** 判断为 ios 平台 */
 export declare const is_ios: () => boolean;
 /** 判断为原生平台 */
 export declare const is_native: () => boolean;
@@ -12,6 +12,7 @@ export declare const is_native: () => boolean;
 export declare const call: (method: string, params: string) => string;
 /**
  * 异步调用
+ * - TODO：添加 wait_time 的作用
  * @param method 方法名
  * @param params 入参
  * @param wait_time 最大等待时间，默认为100s

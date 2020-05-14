@@ -3,9 +3,7 @@
  */
 @fy.DeSetMetaContext("MetaExample")
 export class MetaExample extends fy.MetaBase {
+  use_special(s: object): void {}
 
-    use_special(s: object): void { }
-
-    use_default(id: string): void { }
-
+  use_default(id: string): void {}
 }

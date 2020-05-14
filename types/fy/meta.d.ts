@@ -2,20 +2,20 @@
  * 在编辑器中载入meta数据
  * @param file
  */
-export declare const init_meta_editor_async: (file: string) => Promise<void>;
+export declare const _init_meta_editor_async: (file: string) => Promise<void>;
 /**
  * 在运行时载入meta数据
  * @param file
  */
-export declare const init_meta_runtime_async: (file: string) => Promise<void>;
+export declare const _init_meta_runtime_async: (file: string) => Promise<void>;
 /** meta的基础类 */
 export declare class MetaBase {
     /** 对应meta表的名称 */
     static meta_names: string[];
     /** 临时存储的合并表，合并多个表的内容 */
-    static meta_merge: {};
+    static _meta_merge: any;
     /** 在获取时初始化 */
-    static get_meta_merge(): {};
+    static get meta_merge(): any;
     /** 是否是不存在id而使用的默认值 */
     is_default: boolean;
     /** 创建meta类实例时，对传入的单行源数据进行处理 */

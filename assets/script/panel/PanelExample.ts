@@ -1,4 +1,4 @@
-const { ccclass, property, menu } = cc._decorator
+const { ccclass, property, menu } = cc._decorator;
 
 /**
  * [Panel] PanelExample
@@ -9,16 +9,9 @@ const { ccclass, property, menu } = cc._decorator
 @menu("panel/PanelExample")
 @fy.DeSetPanelContext("panel/PanelExample.prefab")
 export class PanelExample extends fy.PanelBase {
+  async on_create() {}
 
-    async on_create() {
+  async on_open() {}
 
-    }
-
-    async on_open() {
-        cc.log(this.node.parent)
-    }
-
-    async on_close() {
-
-    }
+  async on_close() {}
 }
