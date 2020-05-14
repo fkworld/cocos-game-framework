@@ -65,14 +65,11 @@ export const _init_audio_runtime = (config: ConfigAudio) => {
   audios = new Map(
     Object.entries(config).map(([k, v]) => {
       let ins: AudioIns = {
-        fsm: new SimpleFSM<AudioState>(
-          {
-            prepare: ["ok", "error"],
-            ok: [],
-            error: [],
-          },
-          "prepare"
-        ),
+        fsm: new SimpleFSM<AudioState>("prepare", {
+          prepare: ["ok", "error"],
+          ok: [],
+          error: [],
+        }),
         type: k.includes("###") ? "music" : "sound",
         url: v,
       };

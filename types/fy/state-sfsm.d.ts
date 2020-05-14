@@ -9,9 +9,9 @@ export declare class SimpleFSM<TState extends string> {
      * @param states 状态描述，value 值为其可跳转的状态
      * @param initial
      */
-    constructor(states: {
+    constructor(initial: TState, states: {
         [key in TState]: TState[];
-    }, initial: TState);
+    });
     /** 当前状态 */
     private state;
     /** 状态描述 */

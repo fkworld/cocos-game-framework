@@ -9,7 +9,7 @@ export class SimpleFSM<TState extends string> {
    * @param states 状态描述，value 值为其可跳转的状态
    * @param initial
    */
-  constructor(states: { [key in TState]: TState[] }, initial: TState) {
+  constructor(initial: TState, states: { [key in TState]: TState[] }) {
     this.state = initial;
     this.states = states;
     this.is_lock = false;

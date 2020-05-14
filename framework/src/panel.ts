@@ -64,13 +64,10 @@ export const DeSetPanelContext = (path: string, type = "old", z_index_base = 0) 
       type: type as PanelType,
       prefab: null,
       ins: null,
-      state: new SimpleFSM<PanelState>(
-        {
-          open: ["close"],
-          close: ["open"],
-        },
-        "close"
-      ),
+      state: new SimpleFSM<PanelState>("close", {
+        open: ["close"],
+        close: ["open"],
+      }),
     };
   };
 };
