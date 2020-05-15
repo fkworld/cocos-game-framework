@@ -14,7 +14,7 @@ const APP_CONFIG: fy.Config = {
   color: DataColor,
   audio: DataAudio,
   editor_language: "chinese",
-  meta_json_file: "game-config-csv-all.json",
+  meta_json_file: "csv/all.json",
   panel_parent: null,
 };
 fy.init_editor(APP_CONFIG);
@@ -28,6 +28,14 @@ fy.init_editor(APP_CONFIG);
 export class App extends cc.Component {
   start() {
     this.start_app();
+  }
+
+  @property({ tooltip: "点击创建json文件" })
+  private get E() {
+    return false;
+  }
+  private set E(v: boolean) {
+    CC_EDITOR && fy.parse_csv_all("csv", "all.json");
   }
 
   @property({ tooltip: "panel所挂载的父节点", type: cc.Node })
