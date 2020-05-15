@@ -94,10 +94,26 @@ export const set_node_by_wp = (node: cc.Node, wp: cc.Vec3, flag = false) => {
 
 /**
  * 载入单个资源
- * - 既可以在editor中载入，也可以在运行时载入，但载入方式有差异
+ * - 一般用于已知 uuid 的载入
+ * @description cc.loader.load
+ * @param resources
+ */
+export const load = async (
+  resources: string | string[] | { type: "uuid"; uuid?: string; url?: string }
+): Promise<any> => {
+  return await new Promise(res => {
+    cc.loader.load(resources, (err: any, r: any) => {
+      err && cc.warn(TAG, `载入资源失败，resources=${resources}，err=${err}`);
+      err ? res(null) : res(r);
+    });
+  });
+};
+
+/**
+ * 载入 resources 下的单个资源
+ * - 统一在运行时载入和在编辑器中载入
  * - 如果无此资源，则报错并返回null
- * - 【注意】运行时载入时无需传入文件后缀名，编辑器中载入需要有后缀名
- * - 【注意】在编辑器中载入
+ * @description cc.loader.loadRes
  * @param path
  * @param type
  */
@@ -105,21 +121,17 @@ export const load_res = async <T extends typeof cc.Asset>(
   path: string,
   type: T
 ): Promise<InstanceType<T>> => {
-  return await new Promise(res => {
-    if (CC_EDITOR) {
-      // 在编辑器中载入
-      let url = `db://assets/resources/${path}`;
-      // 针jpg和png资源完善路径
-      if (new cc.SpriteFrame() instanceof type) {
-        // cc.path.join 的声明有错误，需要使用 as any 修正
-        url = (cc.path.join as any)(url, get_filename(url));
-      }
-      let uuid = Editor.assetdb.remote.urlToUuid(url);
-      cc.loader.load({ type: "uuid", uuid: uuid }, (err: any, resource: any) => {
-        err && cc.warn(TAG, `载入资源失败, path=${path}, err=${err}`);
-        err ? res(null) : res(resource);
-      });
-    } else {
+  if (CC_EDITOR) {
+    let url = to_editor_url(path);
+    // 针jpg和png资源完善路径
+    if (new cc.SpriteFrame() instanceof type) {
+      // cc.path.join 的声明有错误，需要使用 as any 修正
+      url = (cc.path.join as any)(url, get_filename(url));
+    }
+    let uuid = Editor.assetdb.remote.urlToUuid(url);
+    await load({ type: "uuid", uuid: uuid });
+  } else {
+    return await new Promise(res => {
       // 运行时载入
       // 后缀名处理：去掉后缀名
       path = cc.path.mainFileName(path);
@@ -127,13 +139,13 @@ export const load_res = async <T extends typeof cc.Asset>(
         err && cc.warn(TAG, `载入资源失败, path=${path}, err=${err}`);
         err ? res(null) : res(resource);
       });
-    }
-  });
+    });
+  }
 };
 
 /**
- * 载入dir资源
- * - 【注意】编辑器中的载入顺序与打包之后的载入顺序不同（不同的打包平台顺序也不同）,因此在载入完成后需要对数组排序进行处理
+ * 载入 dir 下的所有资源
+ * - 不同平台下的载入顺序不同，因此在载入完毕后需要进行排序
  * @param path
  * @param type
  */
@@ -173,4 +185,11 @@ export interface CCCCircle {
  * 获取无后缀的文件名
  * @param path
  */
-export const get_filename = (path: string) => cc.path.basename(path, cc.path.extname(path));
+export const get_filename = (path: string) => cc.path.basename("/" + path, cc.path.extname(path));
+
+/**
+ * 将 resources 下的路径转为编辑器 url
+ * @param resources_path
+ */
+export const to_editor_url = (path: string) =>
+  (cc.path.join as any)("db://assets/resources/", path);
