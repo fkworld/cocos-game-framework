@@ -36,17 +36,27 @@ export declare const get_node_wp: (node: cc.Node) => cc.Vec3;
 export declare const set_node_by_wp: (node: cc.Node, wp: cc.Vec3, flag?: boolean) => cc.Vec3;
 /**
  * 载入单个资源
- * - 既可以在editor中载入，也可以在运行时载入，但载入方式有差异
+ * - 一般用于已知 uuid 的载入
+ * @description cc.loader.load
+ * @param resources
+ */
+export declare const load: (resources: string | {
+    type: "uuid";
+    uuid?: string;
+    url?: string;
+} | string[]) => Promise<any>;
+/**
+ * 载入 resources 下的单个资源
+ * - 统一在运行时载入和在编辑器中载入
  * - 如果无此资源，则报错并返回null
- * - 【注意】运行时载入时无需传入文件后缀名，编辑器中载入需要有后缀名
- * - 【注意】在编辑器中载入
+ * @description cc.loader.loadRes
  * @param path
  * @param type
  */
 export declare const load_res: <T extends typeof cc.Asset>(path: string, type: T) => Promise<InstanceType<T>>;
 /**
- * 载入dir资源
- * - 【注意】编辑器中的载入顺序与打包之后的载入顺序不同（不同的打包平台顺序也不同）,因此在载入完成后需要对数组排序进行处理
+ * 载入 dir 下的所有资源
+ * - 不同平台下的载入顺序不同，因此在载入完毕后需要进行排序
  * @param path
  * @param type
  */
@@ -72,3 +82,8 @@ export interface CCCCircle {
  * @param path
  */
 export declare const get_filename: (path: string) => any;
+/**
+ * 将 resources 下的路径转为编辑器 url
+ * @param resources_path
+ */
+export declare const to_editor_url: (path: string) => any;

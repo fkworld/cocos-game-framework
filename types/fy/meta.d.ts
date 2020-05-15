@@ -1,5 +1,5 @@
 /**
- * 在编辑器中载入meta数据
+ * 在编辑器中载入 meta 数据
  * @param file
  */
 export declare const _init_meta_editor_async: (file: string) => Promise<void>;
@@ -25,7 +25,7 @@ export declare class MetaBase {
 }
 /**
  * 设置meta类上下文的装饰器函数
- * @param meta_names
+ * @param meta_names meta 配置表名（推荐不附带后缀名）
  */
 export declare const DeSetMetaContext: (...meta_names: string[]) => (constructor: typeof MetaBase) => void;
 /**

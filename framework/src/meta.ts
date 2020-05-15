@@ -1,13 +1,13 @@
 // 数据配置表模块
 
-import { load_res } from "./tool-ccc";
 import { TAG } from "./tool";
+import { get_filename, load_res } from "./tool-ccc";
 
-/** meta源数据 */
-let metas: object;
+/** meta 源数据 */
+let metas: {};
 
 /**
- * 在编辑器中载入meta数据
+ * 在编辑器中载入 meta 数据
  * @param file
  */
 export const _init_meta_editor_async = async (file: string) => {
@@ -33,6 +33,8 @@ export class MetaBase {
   static get meta_merge() {
     if (!this._meta_merge) {
       this._meta_merge = this.meta_names.reduce((r, name) => {
+        name = get_filename(name);
+        cc.log(metas, name);
         r = { ...metas[name] };
         return r;
       }, {});
@@ -49,7 +51,7 @@ export class MetaBase {
 
 /**
  * 设置meta类上下文的装饰器函数
- * @param meta_names
+ * @param meta_names meta 配置表名（推荐不附带后缀名）
  */
 export const DeSetMetaContext = (...meta_names: string[]) => {
   return (constructor: typeof MetaBase) => {
