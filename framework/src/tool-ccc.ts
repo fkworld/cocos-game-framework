@@ -101,11 +101,13 @@ export const set_node_by_wp = (node: cc.Node, wp: cc.Vec3, flag = false) => {
 export const load = async (
   resources: string | string[] | { type: "uuid"; uuid?: string; url?: string }
 ): Promise<any> => {
-  return await new Promise(res => {
+  return new Promise(res => {
     cc.loader.load(resources, (err: any, r: any) => {
-      (err || !r) && cc.warn(TAG, `载入资源失败，resources=${resources}，err=${err}`);
+      err && cc.warn(TAG, `载入资源失败，resources=${resources}，err=${err}`);
       err ? res(null) : res(r);
     });
+  }).catch(err => {
+    cc.warn(TAG, `载入资源失败，resources=${resources}，err=${err}`);
   });
 };
 
@@ -129,14 +131,14 @@ export const load_res = async <T extends typeof cc.Asset>(
       url = (cc.path.join as any)(url, get_filename(url));
     }
     let uuid = Editor.assetdb.remote.urlToUuid(url);
-    return await load({ type: "uuid", uuid: uuid });
+    return load({ type: "uuid", uuid: uuid });
   } else {
-    return await new Promise(res => {
+    return new Promise(res => {
       // 运行时载入
       // 后缀名处理：去掉后缀名
       path = cc.path.mainFileName(path);
       cc.loader.loadRes(path, type, (err, r) => {
-        (err || !r) && cc.warn(TAG, `载入资源失败, path=${path}, err=${err}`);
+        err && cc.warn(TAG, `载入资源失败, path=${path}, err=${err}`);
         err ? res(null) : res(r);
       });
     });
@@ -153,9 +155,9 @@ export const load_res_dir = async <T extends typeof cc.Asset>(
   path: string,
   type: T
 ): Promise<InstanceType<T>[]> => {
-  return await new Promise(res => {
+  return new Promise(res => {
     cc.loader.loadResDir(path, type, (err, r) => {
-      (err || !r) && cc.warn(TAG, `载入资源组失败, path=${path}, err=${err}`);
+      err && cc.warn(TAG, `载入资源组失败, path=${path}, err=${err}`);
       err ? res(null) : res(r);
     });
   });
