@@ -1,8 +1,5 @@
 // 通用方法
 
-/** 输出log */
-export const TAG = "@fy:";
-
 /**
  * 求一个数的正数模
  * @param n
@@ -63,3 +60,15 @@ export const wait_for_do = async (
 export const get_template_string = (template: string, ...params: string[]): string => {
   return template.replace(/\{([0-9]+?)\}/g, (match, index) => params[index] ?? `\{${index}\}`);
 };
+
+/**
+ * 判断是否为 string 类型
+ * @param x
+ */
+export const is_string = (x: any): x is string => typeof x === "string";
+
+/**
+ * 判断是否为 number 类型
+ * @param x
+ */
+export const is_number = (x: any): x is number => typeof x === "number";

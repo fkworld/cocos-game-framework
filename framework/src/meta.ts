@@ -1,6 +1,6 @@
 // 数据配置表模块
 
-import { TAG } from "./tool";
+import { log, LogLevel } from "./log";
 import { get_filename, load_res } from "./tool-ccc";
 
 /** meta 源数据 */
@@ -20,7 +20,7 @@ export const _init_meta_editor_async = async (file: string) => {
  */
 export const _init_meta_runtime_async = async (file: string) => {
   metas = (await load_res(file, cc.JsonAsset)).json;
-  cc.log(TAG, "初始化meta模块成功，metas=", metas);
+  log(LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
 };
 
 /** meta的基础类 */
@@ -34,7 +34,6 @@ export class MetaBase {
     if (!this._meta_merge) {
       this._meta_merge = this.meta_names.reduce((r, name) => {
         name = get_filename(name);
-        cc.log(metas, name);
         r = { ...metas[name] };
         return r;
       }, {});

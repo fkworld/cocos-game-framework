@@ -1,6 +1,6 @@
 // 本地存储模块
 
-import { TAG } from "./tool";
+import { log, LogLevel } from "./log";
 import { version_center } from "./version";
 
 /**
@@ -32,7 +32,7 @@ export const _init_local_runtime = (config: ConfigLocal) => {
   locals = new Map();
   locals_default = config;
   version_center.has("resetLocal") && cc.sys.localStorage.clear();
-  cc.log(TAG, "初始化local模块成功，local_config=", config);
+  log(LogLevel.NORMAL, "初始化local模块成功，local_config=", config);
 };
 
 /**

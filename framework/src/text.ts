@@ -2,7 +2,8 @@
 
 import { event_center } from "./event";
 import { get_local, set_local } from "./local";
-import { get_template_string, TAG } from "./tool";
+import { log, LogLevel } from "./log";
+import { get_template_string } from "./tool";
 
 /** 事件：语言更改 */
 export const EVENT_LANGUAGE_CHANGE = "@event:text/language-change";
@@ -40,7 +41,7 @@ export const _init_text_editor = (config: ConfigLanguage, editor: string) => {
   if (CC_EDITOR) {
     languages = config;
     editor_language = editor;
-    !languages[editor_language] && cc.log(TAG, "无法载入编辑器text语言");
+    !languages[editor_language] && log(LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
   }
 };
 
@@ -50,7 +51,7 @@ export const _init_text_editor = (config: ConfigLanguage, editor: string) => {
  */
 export const _init_text_runtime = (config: ConfigLanguage) => {
   languages = config;
-  cc.log(TAG, "初始化text模块成功，text_config=", config);
+  log(LogLevel.NORMAL, "初始化text模块成功，text_config=", config);
 };
 
 /** 获取当前的语言 key */
@@ -77,7 +78,7 @@ export const get_text = (key: string, ...params: string[]) => {
   if (text) {
     return get_template_string(text, ...params);
   } else {
-    cc.warn(TAG, `key不存在, key=${key}`);
+    log(LogLevel.ERROR, `key不存在, key=${key}`);
     return key;
   }
 };

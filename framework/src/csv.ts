@@ -1,5 +1,5 @@
-import { TAG } from "./tool";
-import { to_editor_url, load } from "./tool-ccc";
+import { log, LogLevel } from "./log";
+import { load, to_editor_url } from "./tool-ccc";
 
 /** 需要使用到的正则 */
 const REGS = {
@@ -70,6 +70,8 @@ export const parse_csv_all = async (path: string, target: string) => {
     return r;
   }, {});
   Editor.assetdb.createOrSave(url_target, JSON.stringify(json), (err: any) => {
-    err ? cc.warn(TAG, "写入csv的总json文件失败") : cc.log(TAG, "写入csv的总json文件成功");
+    err
+      ? log(LogLevel.ERROR, "写入csv的总json文件失败")
+      : log(LogLevel.NORMAL, "写入csv的总json文件成功");
   });
 };
