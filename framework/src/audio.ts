@@ -2,8 +2,8 @@
 
 import { event_center } from "./event";
 import { get_local, set_local } from "./local";
+import { log, LogLevel } from "./log";
 import { SimpleFSM } from "./state-sfsm";
-import { TAG } from "./tool";
 import { load_res } from "./tool-ccc";
 
 /** 事件，打开音乐开关 */
@@ -80,7 +80,7 @@ export const _init_audio_runtime = (config: ConfigAudio) => {
   );
   music_switch = get_local("music") === "true";
   sound_switch = get_local("sound") === "true";
-  cc.log(TAG, "初始化audio模块成功，audio_config=", config);
+  log(LogLevel.NORMAL, "初始化audio模块成功，audio_config=", config);
 };
 
 /** 获取音乐开关 */

@@ -3,6 +3,7 @@ export * from "./color";
 export * from "./csv";
 export * from "./event";
 export * from "./local";
+export * from "./log";
 export * from "./meta";
 export * from "./native";
 export * from "./panel";
@@ -10,6 +11,7 @@ export * from "./state-node-anima";
 export * from "./state-sfsm";
 export * from "./state-table";
 export * from "./text";
+export * from "./time";
 export * from "./tool";
 export * from "./tool-ccc";
 export * from "./tool-random";
@@ -18,10 +20,10 @@ export * from "./version";
 import { ConfigAudio, _init_audio_runtime } from "./audio";
 import { ConfigColor, _init_color_editor, _init_color_runtime } from "./color";
 import { ConfigLocal, _init_local_runtime } from "./local";
+import { log, LogLevel } from "./log";
 import { _init_meta_editor_async, _init_meta_runtime_async } from "./meta";
 import { _init_panel_runtime } from "./panel";
 import { ConfigLanguage, _init_text_editor, _init_text_runtime } from "./text";
-import { TAG } from "./tool";
 import {
   ConfigVersion,
   ConfigVersionInfo,
@@ -73,5 +75,5 @@ export const init_runtime = async (config: Config) => {
   _init_audio_runtime(config.audio);
   _init_panel_runtime(config.panel_parent);
   await _init_meta_runtime_async(config.meta_json_file);
-  cc.log(TAG, "初始化框架成功", VERSION, VERSION_TIME);
+  log(LogLevel.NORMAL, "初始化框架成功", VERSION, VERSION_TIME);
 };

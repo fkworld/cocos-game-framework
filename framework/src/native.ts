@@ -3,7 +3,7 @@
 // js与OC间的互相调用，参考：http://docs.cocos.com/creator/manual/zh/advanced-topics/oc-reflection.html
 
 import { event_center, on_success_once_event } from "./event";
-import { TAG, do_delay } from "./tool";
+import { log, LogLevel } from "./log";
 
 /** 入口封装类 */
 const GATE_CLASS = "JSBinding";
@@ -38,10 +38,10 @@ export const is_native = () => cc.sys.isNative;
  */
 export const call = (method: string, params: string): string => {
   if (is_ios()) {
-    cc.log(TAG, method, params);
+    log(LogLevel.DEV, method, params);
     return jsb.reflection.callStaticMethod(GATE_CLASS, method + ":", params);
   } else if (is_android()) {
-    cc.log(TAG, method, params);
+    log(LogLevel.DEV, method, params);
     return jsb.reflection.callStaticMethod(
       ANDROID_CONFIG.CLASS_PATH + GATE_CLASS,
       method,
@@ -90,7 +90,7 @@ export const call_async = async (method: string, params: {}, wait_time = 100): P
  * @param call_result 调用结果
  */
 window[NATIVE_CALLBACK] = (call_id: string, call_result: string) => {
-  console.log(TAG, NATIVE_CALLBACK, call_id, call_result);
+  log(LogLevel.DEV, NATIVE_CALLBACK, call_id, call_result);
   native_callbacks.set(call_id, call_result);
   event_center.emit(EVENT_NATIVE_CALLBACK);
 };

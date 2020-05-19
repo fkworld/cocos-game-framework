@@ -1,7 +1,7 @@
 // 版本管理模块，使用标记管理版本
 
+import { log, LogLevel } from "./log";
 import { StateTable } from "./state-table";
-import { TAG } from "./tool";
 
 /**
  * 版本标记信息
@@ -60,7 +60,7 @@ export const _init_version_editor = (config: ConfigVersion) => {
  */
 export const _init_version_runtime = (config: ConfigVersion, info: ConfigVersionInfo) => {
   init(config);
-  cc.log(TAG, "初始化version模块成功", version_center.log_keys(), JSON.stringify(info));
+  log(LogLevel.NORMAL, "初始化version模块成功", version_center.log_keys(), JSON.stringify(info));
 };
 
 /** dev模式下全局变量；针对类的装饰器 */

@@ -1,7 +1,7 @@
 // 界面模块
 
+import { log, LogLevel } from "./log";
 import { SimpleFSM } from "./state-sfsm";
-import { TAG } from "./tool";
 import { load_res } from "./tool-ccc";
 
 /**
@@ -87,7 +87,7 @@ type ParamPanelClose<T extends PanelClass> = Parameters<T["prototype"]["on_close
  */
 export const _init_panel_runtime = (node: cc.Node) => {
   parent = node;
-  cc.log(TAG, "初始化panel模块成功，panel_parent=", node);
+  log(LogLevel.NORMAL, "初始化panel模块成功，panel_parent=", node);
 };
 
 /**
