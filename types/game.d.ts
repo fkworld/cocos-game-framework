@@ -1,9 +1,12 @@
 declare namespace cc {
-  /** cc.tween方法 */
-  function tween(target?: cc.Node): NewTween;
+  /** cc.tween 方法 */
+  export function tween<T>(target?: T): _FixTween<T>;
 
-  /** ease字符串,参考:https://docs.cocos.com/creator/api/zh/editor/share/easing.html */
-  type tweenEasing =
+  /**
+   * ease 字符串
+   * - 参考:https://docs.cocos.com/creator/api/zh/editor/share/easing.html
+   */
+  type TweenEasing =
     | "linear"
     | "fade"
     | "quadIn"
@@ -47,36 +50,47 @@ declare namespace cc {
     | "bounceInOut"
     | "bounceOutIn";
 
-  /** 可选属性,参考:cc.Node */
-  type tweenProps = Partial<cc.Node>;
+  /** 可选属性 */
+  type _TweenProps<T> = Partial<T>;
 
-  /** 可选参数 */
-  type tweenOpts = {
-    progress?: Function;
-    easing?: Function | tweenEasing;
+  /** 可选参数
+   * - 【注意】progress 函数中需要的类型一般为 number，未必一定是 number
+   */
+  type _TweenOpts = {
+    easing?: TweenEasing | ((t: number) => number);
+    progress?: (start: number, end: number, current: number, ratio: number) => number;
   };
 
-  /** cc.Tween,为了区分开来使用cc.NewTween */
-  class NewTween {
-    then(other: Action | NewTween): NewTween;
-    target(target: any): NewTween;
-    start(): NewTween;
-    stop(): NewTween;
-    clone(target?: any): NewTween;
-    to(duration: number, props?: tweenProps, opts?: tweenOpts): NewTween;
-    by(duration: number, props?: tweenProps, opts?: tweenOpts): NewTween;
-    set(props: tweenProps): NewTween;
-    delay(duration: number): NewTween;
-    call(callback: Function): NewTween;
-    hide(): NewTween;
-    show(): NewTween;
-    removeSelf(): NewTween;
-    sequence(...actions: (Action | NewTween)[]): NewTween;
-    parallel(...actions: (Action | NewTween)[]): NewTween;
-    repeat(repeatTimes: number, action?: Action | NewTween): NewTween;
-    repeatForever(action?: Action | NewTween): NewTween;
-    reverseTime(action?: Action | NewTween): NewTween;
-    tween(target?: any): NewTween;
+  /**
+   * 修复之后的 Tween 类，附带完整的类型提示
+   * - 【注意】不包括 cc.Action，不要在使用 tween 时使用 action。
+   */
+  class _FixTween<T> {
+    then(other: _FixTween<T>): this;
+    target(target: T): this;
+    start(): this;
+    stop(): this;
+    tag(tag: number): this;
+    clone(target?: T): this;
+    union(): this;
+    bezierTo(duration: number, c1: Vec2, c2: Vec2, to: Vec2): this;
+    bezierBy(duration: number, c1: Vec2, c2: Vec2, to: Vec2): this;
+    flipX(): this;
+    flipY(): this;
+    blink(duration: number, times: number, opts?: _TweenOpts): this;
+    to(duration: number, props?: _TweenProps<T>, opts?: _TweenOpts): this;
+    by(duration: number, props?: _TweenProps<T>, opts?: _TweenOpts): this;
+    set(props: _TweenProps<T>): this;
+    delay(duration: number): this;
+    call(callback: Function): this;
+    hide(): this;
+    show(): this;
+    removeSelf(): this;
+    sequence(...actions: _FixTween<T>[]): this;
+    parallel(...actions: _FixTween<T>[]): this;
+    repeat(repeatTimes: number, action?: _FixTween<T>): this;
+    repeatForever(action?: _FixTween<T>): this;
+    reverseTime(action?: _FixTween<T>): this;
   }
 }
 

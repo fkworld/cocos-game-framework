@@ -6,7 +6,7 @@ export namespace SimpleNodeAnima {
   interface ParamAnima {
     time?: number; // 时间，默认为 0.3
     delay?: number; // 延迟，默认为 0
-    ease?: cc.tweenEasing; // ease 函数，默认为 linear
+    ease?: cc.TweenEasing; // ease 函数，默认为 linear
   }
 
   /** 保存在 node 上的状态存储 */
