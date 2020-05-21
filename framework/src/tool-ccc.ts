@@ -1,6 +1,6 @@
 // cocos creator 相关逻辑
 
-import { TAG } from "./tool";
+import { log, LogLevel } from "./log";
 
 /**
  * 适配 canvas
@@ -41,34 +41,38 @@ export const do_widget_all = (node: cc.Node) => {
 };
 
 /**
- * 间隔帧执行
- * @param f 执行函数
- * @param all_count 总计数
- * @param interval 间隔帧；默认为1，表示连续执行
- * @param target 执行组件
+ * schedule/scheduleOnce 的封装
+ * - 【原理】使用 cc.Tween 实现。
+ * - 【取消】使用 cc.Tween.stopAllByTarget 方法
+ * @param target
+ * @param interval 执行间隔，单位为 s。
+ * @param count 重复次数，包括首次。如果为 0，则表示一直重复，此时会直接抛出 res。
+ * @param is_first 是否在启动时执行首次
+ * @param f
  */
-export const do_with_frame = async (
-  f: (index: number) => void,
-  all_count: number,
+export const do_schedule = async (
+  target: object,
   interval: number,
-  target: cc.Component
+  count: number,
+  is_first: boolean,
+  f: (index: number) => void
 ) => {
-  await new Promise(res => {
-    let count = (all_count - 1) * interval; // 执行总帧数
-    let frame_index = 0; // 帧index
-    let f_index = 0; // 函数执行index
-    target.schedule(
-      () => {
-        if (frame_index % interval === 0) {
-          f(f_index);
-          f_index += 1;
-        }
-        frame_index += 1;
-        frame_index > count && res();
-      },
-      0,
-      count
-    );
+  return new Promise(res => {
+    let index = 0;
+    let do_f = () => {
+      f(index);
+      index += 1;
+    };
+    if (is_first) {
+      do_f();
+      count -= 1;
+    }
+    if (count <= 0) {
+      res();
+      cc.tween(target).delay(interval).call(do_f).union().repeatForever().start();
+    } else {
+      cc.tween(target).delay(interval).call(do_f).union().repeat(count).call(res).start();
+    }
   });
 };
 
@@ -103,11 +107,11 @@ export const load = async (
 ): Promise<any> => {
   return new Promise(res => {
     cc.loader.load(resources, (err: any, r: any) => {
-      err && cc.warn(TAG, `载入资源失败，resources=${resources}，err=${err}`);
+      err && log(LogLevel.ERROR, `载入资源失败，resources=${resources}，err=${err}`);
       err ? res(null) : res(r);
     });
   }).catch(err => {
-    cc.warn(TAG, `载入资源失败，resources=${resources}，err=${err}`);
+    log(LogLevel.ERROR, `载入资源失败，resources=${resources}，err=${err}`);
   });
 };
 
@@ -138,7 +142,7 @@ export const load_res = async <T extends typeof cc.Asset>(
       // 后缀名处理：去掉后缀名
       path = cc.path.mainFileName(path);
       cc.loader.loadRes(path, type, (err, r) => {
-        err && cc.warn(TAG, `载入资源失败, path=${path}, err=${err}`);
+        err && log(LogLevel.ERROR, `载入资源失败, path=${path}, err=${err}`);
         err ? res(null) : res(r);
       });
     });
@@ -157,7 +161,7 @@ export const load_res_dir = async <T extends typeof cc.Asset>(
 ): Promise<InstanceType<T>[]> => {
   return new Promise(res => {
     cc.loader.loadResDir(path, type, (err, r) => {
-      err && cc.warn(TAG, `载入资源组失败, path=${path}, err=${err}`);
+      err && log(LogLevel.ERROR, `载入资源组失败, path=${path}, err=${err}`);
       err ? res(null) : res(r);
     });
   });

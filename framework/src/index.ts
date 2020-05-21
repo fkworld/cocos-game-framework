@@ -20,7 +20,7 @@ export * from "./version";
 import { ConfigAudio, _init_audio_runtime } from "./audio";
 import { ConfigColor, _init_color_editor, _init_color_runtime } from "./color";
 import { ConfigLocal, _init_local_runtime } from "./local";
-import { log, LogLevel } from "./log";
+import { log, LogLevel, _init_log } from "./log";
 import { _init_meta_editor_async, _init_meta_runtime_async } from "./meta";
 import { _init_panel_runtime } from "./panel";
 import { ConfigLanguage, _init_text_editor, _init_text_runtime } from "./text";
@@ -48,6 +48,7 @@ export interface Config {
   editor_language: string;
   meta_json_file: string;
   panel_parent: cc.Node;
+  log_level: LogLevel;
 }
 
 /**
@@ -56,6 +57,7 @@ export interface Config {
  */
 export const init_editor = async (config: Config) => {
   // 注意初始化次序
+  _init_log(config.log_level);
   _init_version_editor(config.version);
   _init_text_editor(config.text, config.editor_language);
   _init_color_editor(config.color);
@@ -68,6 +70,7 @@ export const init_editor = async (config: Config) => {
  */
 export const init_runtime = async (config: Config) => {
   // 注意初始化次序
+  _init_log(config.log_level);
   _init_version_runtime(config.version, config.version_info);
   _init_local_runtime(config.local);
   _init_text_runtime(config.text);

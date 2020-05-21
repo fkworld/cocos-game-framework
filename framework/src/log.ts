@@ -14,7 +14,7 @@ export const EVENT_LOG_IMPORTANT_ERROR = "@event:log/important-error";
 /**
  * log 等级
  */
-export const enum LogLevel {
+export enum LogLevel {
   /** 开发者，仅供开发者查看。 */
   DEV,
   /** 正常 */
@@ -64,12 +64,12 @@ export const log = (level: LogLevel, ...params: any[]) => {
     switch (level) {
       case LogLevel.DEV:
       case LogLevel.NORMAL:
-        return console.log(`[${level}]:`, ...params);
+        return cc.log.call(`[${level}]:`, ...params);
       case LogLevel.WARN:
-        return console.log(`[${level}]:`, ...params);
+        return cc.warn.call(`[${level}]:`, ...params);
       case LogLevel.ERROR:
       case LogLevel.IMPORTANT_ERROR:
-        return console.log(`[${level}]:`, ...params);
+        return cc.error.call(`[${level}]:`, ...params);
     }
   }
 };
