@@ -1,41 +1,28 @@
 export * from "./audio";
 export * from "./color";
-export * from "./csv";
 export * from "./event";
 export * from "./local";
 export * from "./log";
 export * from "./meta";
 export * from "./native";
 export * from "./panel";
-export * from "./state-node-anima";
-export * from "./state-sfsm";
-export * from "./state-table";
 export * from "./text";
-export * from "./time";
+export * as Time from "./time";
 export * from "./tool";
 export * from "./tool-ccc";
+export * from "./tool-fsm";
+export * from "./tool-node-anima";
 export * from "./tool-random";
+export * from "./tool-state-table";
 export * from "./version";
 
 import { ConfigAudio, _init_audio_runtime } from "./audio";
 import { ConfigColor, _init_color_editor, _init_color_runtime } from "./color";
 import { ConfigLocal, _init_local_runtime } from "./local";
 import { log, LogLevel, _init_log } from "./log";
-import { _init_meta_editor_async, _init_meta_runtime_async } from "./meta";
 import { _init_panel_runtime } from "./panel";
 import { ConfigLanguage, _init_text_editor, _init_text_runtime } from "./text";
-import {
-  ConfigVersion,
-  ConfigVersionInfo,
-  _init_version_editor,
-  _init_version_runtime,
-} from "./version";
-
-/** 当前版本号 */
-export const VERSION = "1.0.0";
-
-/** 当前版本时间 */
-export const VERSION_TIME = "2020.5.11";
+import { ConfigVersion, ConfigVersionInfo, _init_version_runtime } from "./version";
 
 /** 框架初始化依赖配置 */
 export interface Config {
@@ -46,10 +33,15 @@ export interface Config {
   audio: ConfigAudio;
   text: ConfigLanguage;
   editor_language: string;
-  meta_json_file: string;
   panel_parent: cc.Node;
   log_level: LogLevel;
 }
+
+/** 当前版本号 */
+export const VERSION = "1.0.0";
+
+/** 当前版本时间 */
+export const VERSION_TIME = "2020.5.11";
 
 /**
  * 在编辑器中初始化框架
@@ -58,10 +50,8 @@ export interface Config {
 export const init_editor = async (config: Config) => {
   // 注意初始化次序
   _init_log(config.log_level);
-  _init_version_editor(config.version);
   _init_text_editor(config.text, config.editor_language);
   _init_color_editor(config.color);
-  await _init_meta_editor_async(config.meta_json_file);
 };
 
 /**
@@ -77,6 +67,5 @@ export const init_runtime = async (config: Config) => {
   _init_color_runtime(config.color);
   _init_audio_runtime(config.audio);
   _init_panel_runtime(config.panel_parent);
-  await _init_meta_runtime_async(config.meta_json_file);
   log(LogLevel.NORMAL, "初始化框架成功", VERSION, VERSION_TIME);
 };

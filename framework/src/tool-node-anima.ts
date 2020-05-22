@@ -4,15 +4,15 @@
 export namespace SimpleNodeAnima {
   /** 动画参数 */
   interface ParamAnima {
-    time?: number; // 时间，默认为 0.3
-    delay?: number; // 延迟，默认为 0
-    ease?: cc.TweenEasing; // ease 函数，默认为 linear
+    time?: number; // 时间，默认为0.3
+    delay?: number; // 延迟，默认为0
+    ease?: cc.TweenEasing; // ease函数，默认为linear
   }
 
-  /** 保存在 node 上的状态存储 */
+  /** 保存在node上的状态存储 */
   const KEY_STATES = Symbol();
 
-  /** 保存在 node 上的当前状态 */
+  /** 保存在node上的当前状态 */
   const KEY_STATE_NOW = Symbol();
 
   /**

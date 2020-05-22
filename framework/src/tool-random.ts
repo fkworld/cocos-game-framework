@@ -1,11 +1,14 @@
-// 与随机有关的通用方法
+/**
+ * 工具函数模块
+ * - 与随机数相关的函数
+ */
 
 /**
  * 获取一个随机值
  * @param min
  * @param max
  * @param floating 为true则表示返回整数，默认为false
- * @deprecated 建议使用lodash/random代替
+ * @deprecated 建议使用lodash.random代替
  */
 export const random = (min: number, max: number, floating: boolean = false) => {
   if (floating) {
@@ -20,7 +23,7 @@ export const random = (min: number, max: number, floating: boolean = false) => {
 /**
  * 获取一个随机数组项，概率相同
  * @param array
- * @deprecated 建议使用lodash/sample代替
+ * @deprecated 建议使用lodash.sample代替
  */
 export const random_array_item = <T>(array: Array<T>): T => {
   return array[Math.trunc(Math.random() * array.length)];

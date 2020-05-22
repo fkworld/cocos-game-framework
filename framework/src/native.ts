@@ -1,6 +1,8 @@
-// 原生模块
-// js与java间的互相调用，参考：http://docs.cocos.com/creator/manual/zh/advanced-topics/java-reflection.html?h=java
-// js与OC间的互相调用，参考：http://docs.cocos.com/creator/manual/zh/advanced-topics/oc-reflection.html
+/**
+ * 原生模块
+ * - js与java间的互相调用，参考：http://docs.cocos.com/creator/manual/zh/advanced-topics/java-reflection.html?h=java
+ * - js与OC间的互相调用，参考：http://docs.cocos.com/creator/manual/zh/advanced-topics/oc-reflection.html
+ */
 
 import { event_center, on_success_once_event } from "./event";
 import { log, LogLevel } from "./log";
@@ -19,13 +21,13 @@ const ANDROID_CONFIG = {
 /** 事件：原生回调游戏 */
 const EVENT_NATIVE_CALLBACK = "@event:native/native-callback";
 
-/** 原生给的回调结果，由回调 id 和回调结果组成 */
+/** 原生给的回调结果，由回调id和回调结果组成 */
 let native_callbacks: Map<string, string> = new Map();
 
-/** 判断为 android 平台 */
+/** 判断为android平台 */
 export const is_android = () => cc.sys.isNative && cc.sys.os == cc.sys.OS_ANDROID;
 
-/** 判断为 ios 平台 */
+/** 判断为ios平台 */
 export const is_ios = () => cc.sys.isNative && cc.sys.os == cc.sys.OS_IOS;
 
 /** 判断为原生平台 */
@@ -49,14 +51,14 @@ export const call = (method: string, params: string): string => {
       params
     );
   } else {
-    // 非原生平台，返回 null
-    return null;
+    // 非原生平台
+    return;
   }
 };
 
 /**
  * 异步调用
- * - TODO：添加 wait_time 的作用
+ * - TODO：添加wait_time的作用
  * @param method 方法名
  * @param params 入参
  * @param wait_time 最大等待时间，默认为100s
@@ -85,7 +87,7 @@ export const call_async = async (method: string, params: {}, wait_time = 100): P
 };
 
 /**
- * 原生调 js 的全局方法
+ * 原生调js的全局方法
  * @param call_id 调用id
  * @param call_result 调用结果
  */

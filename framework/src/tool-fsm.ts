@@ -1,12 +1,12 @@
 /**
  * 简单有限状态机：simple finite state machine
- * - 【string标记】使用string作为状态（state）的标记
- * - 【锁定机制】在执行事件过渡动作时，整个状态机处于锁定状态
+ * - 使用string类型作为state的标记
+ * - 在执行事件过渡动作时，整个状态机处于锁定状态
  */
 export class SimpleFSM<TState extends string> {
   /**
    * 初始化状态机
-   * @param states 状态描述，value 值为其可跳转的状态
+   * @param states 状态描述，value值为其可跳转的状态
    * @param initial
    */
   constructor(initial: TState, states: { [key in TState]: TState[] }) {
@@ -37,7 +37,7 @@ export class SimpleFSM<TState extends string> {
     return states.includes(this.state);
   }
 
-  /** is_state 的 lock 版本 */
+  /** is_state的lock版本 */
   is_state_with_lock(...states: TState[]) {
     return this.is_state(...states) && !this.is_lock;
   }
@@ -47,7 +47,7 @@ export class SimpleFSM<TState extends string> {
     return this.states[this.state].includes(state);
   }
 
-  /** can_go_state 的 lock 版本 */
+  /** can_go_state的lock版本 */
   can_go_state_with_lock(state: TState) {
     return this.can_go_state(state) && !this.is_lock;
   }
@@ -62,7 +62,7 @@ export class SimpleFSM<TState extends string> {
     }
   }
 
-  /** try_go_state 的 lock 版本 */
+  /** try_go_state的lock 版本 */
   try_go_state_with_lock(state: TState) {
     if (this.can_go_state_with_lock(state)) {
       this.state = state;

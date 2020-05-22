@@ -1,5 +1,7 @@
 /**
  * 状态表
+ * - key 为状态名称
+ * - value 状态内容
  */
 export class StateTable<TKey extends string, TValue> {
   constructor(source: { [K in TKey]: TValue }) {
@@ -7,7 +9,7 @@ export class StateTable<TKey extends string, TValue> {
   }
 
   /** 存储 */
-  private source: Map<TKey, TValue> = new Map();
+  private source: Map<TKey, TValue>;
 
   /**
    * 判断是否包含某个状态
@@ -25,9 +27,7 @@ export class StateTable<TKey extends string, TValue> {
     return this.source.get(key);
   }
 
-  /**
-   * 获取全部状态
-   */
+  /** 获取全部状态 */
   get_all() {
     return this.source;
   }
@@ -37,7 +37,7 @@ export class StateTable<TKey extends string, TValue> {
    * @param key
    * @param value
    */
-  add(key: TKey, value = null) {
+  add(key: TKey, value?: any) {
     this.source.set(key, value);
   }
 
@@ -46,7 +46,7 @@ export class StateTable<TKey extends string, TValue> {
    * @param key
    * @param value
    */
-  del(key: TKey, value = null) {
+  del(key: TKey, value?: any) {
     this.source.delete(key);
   }
 

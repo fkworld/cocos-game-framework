@@ -1,13 +1,16 @@
-// 界面模块
+/**
+ * 界面模块
+ * - 需要在运行时初始化，传入父节点
+ */
 
 import { log, LogLevel } from "./log";
-import { SimpleFSM } from "./state-sfsm";
+import { SimpleFSM } from "./tool-fsm";
 import { load_res } from "./tool-ccc";
 
 /**
  * 界面类型
  * - new 新创建一个页面
- * - old 寻找旧页面，将 node.active 置为 true
+ * - old 寻找旧页面，将node.active置为 true
  */
 type PanelType = "new" | "old";
 
@@ -35,7 +38,7 @@ type PanelContext = {
 };
 
 /** 父节点 */
-let parent: cc.Node = null;
+let parent: cc.Node;
 
 /** 当前节点的 node.zIndex */
 let now_z_index: number = 0;
@@ -43,17 +46,17 @@ let now_z_index: number = 0;
 /** 界面脚本的实现基类 */
 export abstract class PanelBase extends cc.Component {
   /** 界面的上下文信息 */
-  static context: PanelContext = null;
-  /** 界面首次打开执行函数，处理只执行 1 次的逻辑，比如创建 */
+  static context: PanelContext;
+  /** 界面首次打开执行函数，处理只执行1次的逻辑，比如创建 */
   abstract async on_create(): Promise<void>;
-  /** 界面打开函数，处理动画和逻辑，会在 onLoad 之后，start 之前执行 */
+  /** 界面打开函数，处理动画和逻辑，会在onLoad之后，start之前执行 */
   abstract async on_open(...params: any[]): Promise<void>;
-  /** 界面关闭函数，处理动画和逻辑，会在 onDestroy 之前执行 */
+  /** 界面关闭函数，处理动画和逻辑，会在onDestroy之前执行 */
   abstract async on_close(...params: any[]): Promise<void>;
 }
 
 /**
- * 设置 panel 类上下文的装饰器
+ * 设置panel类上下文的装饰器
  * @param config
  */
 export const DeSetPanelContext = (path: string, type = "old", z_index_base = 0) => {
@@ -62,8 +65,8 @@ export const DeSetPanelContext = (path: string, type = "old", z_index_base = 0) 
       path: path,
       z_index_base: z_index_base,
       type: type as PanelType,
-      prefab: null,
-      ins: null,
+      prefab: undefined,
+      ins: undefined,
       state: new SimpleFSM<PanelState>("close", {
         open: ["close"],
         close: ["open"],
@@ -72,13 +75,13 @@ export const DeSetPanelContext = (path: string, type = "old", z_index_base = 0) 
   };
 };
 
-/** panel 的子类 */
+/** panel的子类 */
 type PanelClass = typeof PanelBase;
 
-/** panel 子类的 on_open 方法参数 */
+/** panel子类的on_open方法参数 */
 type ParamPanelOpen<T extends PanelClass> = Parameters<T["prototype"]["on_open"]>;
 
-/** panel 子类的 on_close 方法参数 */
+/** panel子类的on_close方法参数 */
 type ParamPanelClose<T extends PanelClass> = Parameters<T["prototype"]["on_close"]>;
 
 /**
@@ -154,7 +157,7 @@ export const close_panel = async <T extends PanelClass>(
   await panel.context.ins.on_close(...params);
   if (panel.context.type === "new") {
     panel.context.ins.node.destroy();
-    panel.context.ins = null;
+    panel.context.ins = undefined;
   } else if (panel.context.type === "old") {
     panel.context.ins.node.active = false;
   }

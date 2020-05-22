@@ -1,4 +1,7 @@
-// 多语言模块
+/**
+ * 多语言模块
+ * - 需要在编辑器中，运行时初始化，传入2个配置数据：ConfigLanguage，编辑器语言
+ */
 
 import { event_center } from "./event";
 import { get_local, set_local } from "./local";
