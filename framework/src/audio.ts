@@ -1,17 +1,20 @@
-// 声音模块
+/**
+ * 声音模块
+ * - 用于处理游戏内的声音逻辑
+ */
 
 import { event_center } from "./event";
 import { get_local, set_local } from "./local";
 import { log, LogLevel } from "./log";
-import { SimpleFSM } from "./state-sfsm";
+import { SimpleFSM } from "./tool-fsm";
 import { load_res } from "./tool-ccc";
 
-/** 事件，打开音乐开关 */
+/** 事件：打开音乐开关 */
 export const EVENT_MUSIC_SWITCH_OPEN = "@event:audio/music-switch-open";
 
 /**
  * 声音配置
- * - key 中使用“###”来表示其为音乐类，否则为音效类
+ * - key 中使用###来表示其为音乐类，否则为音效类
  * - value 表示声音文件的路径
  */
 export interface ConfigAudio {
@@ -41,7 +44,7 @@ interface AudioIns {
   type: AudioType;
   /** 声音文件的 url */
   url?: string;
-  /** 声音的 cc.AudioClip 资源，默认为 null */
+  /** 声音的cc.AudioClip资源，默认为undefined */
   clip?: cc.AudioClip;
   /** 声音的播放 id */
   id?: number;

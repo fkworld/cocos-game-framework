@@ -1,10 +1,13 @@
-// cocos creator 相关逻辑
+/**
+ * 工具函数模块
+ * - 与cocos creator相关的函数
+ */
 
 import { log, LogLevel } from "./log";
 
 /**
- * 适配 canvas
- * - 【注意】cc.winSize 只有在适配后才能获取到正确的值，因此需要使用 cc.getFrameSize 来获取初始的屏幕大小
+ * 适配canvas
+ * - 【注意】cc.winSize只有在适配后才能获取到正确的值，因此需要使用cc.getFrameSize来获取初始的屏幕大小
  * @param canvas
  */
 export const adjust_canvas = (canvas: cc.Canvas) => {
@@ -41,12 +44,12 @@ export const do_widget_all = (node: cc.Node) => {
 };
 
 /**
- * schedule/scheduleOnce 的封装
- * - 【原理】使用 cc.Tween 实现。
- * - 【取消】使用 cc.Tween.stopAllByTarget 方法
+ * schedule/scheduleOnce的封装
+ * - 使用cc.Tween实现
+ * - 使用cc.Tween.stopAllByTarget方法来取消
  * @param target
- * @param interval 执行间隔，单位为 s。
- * @param count 重复次数，包括首次。如果为 0，则表示一直重复，此时会直接抛出 res。
+ * @param interval 执行间隔，单位为s。
+ * @param count 重复次数，包括首次。如果为0，则表示一直重复，此时会直接抛出res。
  * @param is_first 是否在启动时执行首次
  * @param f
  */
@@ -98,7 +101,7 @@ export const set_node_by_wp = (node: cc.Node, wp: cc.Vec3, flag = false) => {
 
 /**
  * 载入单个资源
- * - 一般用于已知 uuid 的载入
+ * - 一般用于已知uuid的载入
  * @description cc.loader.load
  * @param resources
  */
@@ -108,7 +111,7 @@ export const load = async (
   return new Promise(res => {
     cc.loader.load(resources, (err: any, r: any) => {
       err && log(LogLevel.ERROR, `载入资源失败，resources=${resources}，err=${err}`);
-      err ? res(null) : res(r);
+      err ? res() : res(r);
     });
   }).catch(err => {
     log(LogLevel.ERROR, `载入资源失败，resources=${resources}，err=${err}`);
@@ -116,11 +119,10 @@ export const load = async (
 };
 
 /**
- * 载入 resources 下的单个资源
+ * 载入resources下的单个资源
  * - 统一在运行时载入和在编辑器中载入
- * - 如果无此资源，则报错并返回null
- * @description cc.loader.loadRes
- * @param path
+ * - 如果无此资源，则报错并返回undefined
+ * @param path 资源路径，以运行时路径为准
  * @param type
  */
 export const load_res = async <T extends typeof cc.Asset>(
@@ -131,7 +133,7 @@ export const load_res = async <T extends typeof cc.Asset>(
     let url = to_editor_url(path);
     // 针jpg和png资源完善路径
     if (new cc.SpriteFrame() instanceof type) {
-      // cc.path.join 的声明有错误，需要使用 as any 修正
+      // cc.path.join的声明有错误，需要使用as any修正
       url = (cc.path.join as any)(url, get_filename(url));
     }
     let uuid = Editor.assetdb.remote.urlToUuid(url);
@@ -139,18 +141,17 @@ export const load_res = async <T extends typeof cc.Asset>(
   } else {
     return new Promise(res => {
       // 运行时载入
-      // 后缀名处理：去掉后缀名
       path = cc.path.mainFileName(path);
       cc.loader.loadRes(path, type, (err, r) => {
         err && log(LogLevel.ERROR, `载入资源失败, path=${path}, err=${err}`);
-        err ? res(null) : res(r);
+        err ? res() : res(r);
       });
     });
   }
 };
 
 /**
- * 载入 dir 下的所有资源
+ * 载入resources下某个文件夹下的所有资源
  * - 不同平台下的载入顺序不同，因此在载入完毕后需要进行排序
  * @param path
  * @param type
@@ -162,7 +163,7 @@ export const load_res_dir = async <T extends typeof cc.Asset>(
   return new Promise(res => {
     cc.loader.loadResDir(path, type, (err, r) => {
       err && log(LogLevel.ERROR, `载入资源组失败, path=${path}, err=${err}`);
-      err ? res(null) : res(r);
+      err ? res() : res(r);
     });
   });
 };
@@ -181,7 +182,7 @@ export const pointLineDistance = cc.Intersection.pointLineDistance;
 export const pointInCircle = (point: cc.Vec2, circle: CCCCircle) =>
   point.sub(circle.position).len() <= circle.radius;
 
-/** 在 ccc 中表示一个圆 */
+/** 在ccc中表示一个圆 */
 export interface CCCCircle {
   position: cc.Vec2;
   radius: number;
