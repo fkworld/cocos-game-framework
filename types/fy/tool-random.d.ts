@@ -1,15 +1,19 @@
 /**
+ * 工具函数模块
+ * - 与随机数相关的函数
+ */
+/**
  * 获取一个随机值
  * @param min
  * @param max
  * @param floating 为true则表示返回整数，默认为false
- * @deprecated 建议使用lodash/random代替
+ * @deprecated 建议使用lodash.random代替
  */
 export declare const random: (min: number, max: number, floating?: boolean) => number;
 /**
  * 获取一个随机数组项，概率相同
  * @param array
- * @deprecated 建议使用lodash/sample代替
+ * @deprecated 建议使用lodash.sample代替
  */
 export declare const random_array_item: <T>(array: T[]) => T;
 /**

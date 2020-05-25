@@ -1,13 +1,12 @@
 /**
- * 在编辑器中载入 meta 数据
- * @param file
+ * 数值表模块
+ * - 需要在编辑器中手动将resources/csv下的csv文件生成json文件
+ * - 在运行时自动初始化，载入json文件
  */
-export declare const _init_meta_editor_async: (file: string) => Promise<void>;
 /**
  * 在运行时载入meta数据
- * @param file
  */
-export declare const _init_meta_runtime_async: (file: string) => Promise<void>;
+export declare const _init_meta_runtime_async: () => Promise<void>;
 /** meta的基础类 */
 export declare class MetaBase {
     /** 对应meta表的名称 */
@@ -44,3 +43,12 @@ export declare const get_metas: <T extends typeof MetaBase>(meta_class: T) => In
  * @param meta_class
  */
 export declare const get_metas_ids: <T extends typeof MetaBase>(meta_class: T) => string[];
+/**
+ * 解析csv文件为json对象
+ * @param source csv文件内容
+ */
+export declare const parse_csv: (source: string) => {};
+/**
+ * 将resoueces/csv/路径下的所有csv文件，转换为同路径下的json文件
+ */
+export declare const parse_csv_all: () => Promise<void>;

@@ -1,8 +1,12 @@
-import { SimpleFSM } from "./state-sfsm";
+/**
+ * 界面模块
+ * - 需要在运行时初始化，传入父节点
+ */
+import { SimpleFSM } from "./tool-fsm";
 /**
  * 界面类型
  * - new 新创建一个页面
- * - old 寻找旧页面，将 node.active 置为 true
+ * - old 寻找旧页面，将node.active置为 true
  */
 declare type PanelType = "new" | "old";
 /**
@@ -30,15 +34,15 @@ declare type PanelContext = {
 export declare abstract class PanelBase extends cc.Component {
     /** 界面的上下文信息 */
     static context: PanelContext;
-    /** 界面首次打开执行函数，处理只执行 1 次的逻辑，比如创建 */
+    /** 界面首次打开执行函数，处理只执行1次的逻辑，比如创建 */
     abstract on_create(): Promise<void>;
-    /** 界面打开函数，处理动画和逻辑，会在 onLoad 之后，start 之前执行 */
+    /** 界面打开函数，处理动画和逻辑，会在onLoad之后，start之前执行 */
     abstract on_open(...params: any[]): Promise<void>;
-    /** 界面关闭函数，处理动画和逻辑，会在 onDestroy 之前执行 */
+    /** 界面关闭函数，处理动画和逻辑，会在onDestroy之前执行 */
     abstract on_close(...params: any[]): Promise<void>;
 }
 /**
- * 设置 panel 类上下文的装饰器
+ * 设置panel类上下文的装饰器
  * @param config
  */
 export declare const DeSetPanelContext: (path: string, type?: string, z_index_base?: number) => (constructor: typeof PanelBase) => void;

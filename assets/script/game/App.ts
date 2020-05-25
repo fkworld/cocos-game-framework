@@ -14,8 +14,8 @@ const APP_CONFIG: fy.Config = {
   color: DataColor,
   audio: DataAudio,
   editor_language: "chinese",
-  meta_json_file: "csv/all.json",
-  panel_parent: null,
+  panel_parent: undefined,
+  log_level: fy.LogLevel.DEV,
 };
 fy.init_editor(APP_CONFIG);
 
@@ -35,7 +35,7 @@ export class App extends cc.Component {
     return false;
   }
   private set E(v: boolean) {
-    CC_EDITOR && fy.parse_csv_all("csv", "all.json");
+    CC_EDITOR && fy.parse_csv_all();
   }
 
   @property({ tooltip: "panel所挂载的父节点", type: cc.Node })
