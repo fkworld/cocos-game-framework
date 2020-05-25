@@ -18,10 +18,7 @@
   "homepage": "https://github.com/fkworld/cocos-game-framework#readme",
   "dependencies": {
     "@types/lodash": "^4.14.149",
-    "@types/papaparse": "^5.0.3",
-    "papaparse": "^5.2.0",
     "rollup": "^2.8.2",
-    "rollup-plugin-terser": "^5.3.0",
     "rollup-plugin-typescript2": "^0.27.0",
     "typescript": "^3.8.3"
   }
