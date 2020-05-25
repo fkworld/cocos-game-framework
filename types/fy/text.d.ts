@@ -1,3 +1,7 @@
+/**
+ * 多语言模块
+ * - 需要在编辑器中，运行时初始化，传入2个配置数据：ConfigLanguage，编辑器语言
+ */
 /** 事件：语言更改 */
 export declare const EVENT_LANGUAGE_CHANGE = "@event:text/language-change";
 /**

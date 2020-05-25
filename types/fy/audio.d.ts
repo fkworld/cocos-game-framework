@@ -1,8 +1,12 @@
-/** 事件，打开音乐开关 */
+/**
+ * 声音模块
+ * - 用于处理游戏内的声音逻辑
+ */
+/** 事件：打开音乐开关 */
 export declare const EVENT_MUSIC_SWITCH_OPEN = "@event:audio/music-switch-open";
 /**
  * 声音配置
- * - key 中使用“###”来表示其为音乐类，否则为音效类
+ * - key 中使用###来表示其为音乐类，否则为音效类
  * - value 表示声音文件的路径
  */
 export interface ConfigAudio {

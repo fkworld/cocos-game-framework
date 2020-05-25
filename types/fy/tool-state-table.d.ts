@@ -1,5 +1,7 @@
 /**
  * 状态表
+ * - key 为状态名称
+ * - value 状态内容
  */
 export declare class StateTable<TKey extends string, TValue> {
     constructor(source: {
@@ -17,9 +19,7 @@ export declare class StateTable<TKey extends string, TValue> {
      * @param key
      */
     get(key: TKey): TValue;
-    /**
-     * 获取全部状态
-     */
+    /** 获取全部状态 */
     get_all(): Map<TKey, TValue>;
     /**
      * 新增某个状态

@@ -1,5 +1,7 @@
-/** 输出log */
-export declare const TAG = "@fy:";
+/**
+ * 工具函数模块
+ * - 无特定分类
+ */
 /**
  * 求一个数的正数模
  * @param n
@@ -11,14 +13,6 @@ export declare const get_positive_mode: (n: number, mode: number) => number;
  * @param time 单位s
  */
 export declare const do_delay: (time: number) => Promise<void>;
-/**
- * 等待执行
- * @param f_do 执行函数
- * @param f_is 判定函数
- * @param wait_all 最高等待时间
- * @param wait_interval 等待间隔
- */
-export declare const wait_for_do: (f_do: Function, f_is: Function, wait_all?: number, wait_interval?: number) => Promise<void>;
 /**
  * 带参数的自定义模版字符串
  * @param template 自定义模板字符串，使用{index}来表示参数，index表示参数序号
@@ -32,3 +26,12 @@ export declare const wait_for_do: (f_do: Function, f_is: Function, wait_all?: nu
  * ```
  */
 export declare const get_template_string: (template: string, ...params: string[]) => string;
+export declare const is_string: (x: any) => x is string;
+export declare const is_number: (x: any) => x is number;
+export declare const is_boolean: (x: any) => x is boolean;
+export declare const is_function: (x: any) => x is Function;
+export declare const is_object: (x: any) => x is object;
+export declare const is_symbol: (x: any) => x is symbol;
+export declare const is_bigint: (x: any) => x is bigint;
+export declare const is_undefined: (x: any) => x is undefined;
+export declare const is_array: (x: any) => x is any[];

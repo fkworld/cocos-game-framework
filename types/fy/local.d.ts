@@ -1,7 +1,11 @@
 /**
+ * 本地存储模块
+ * - 需要在运行时初始化
+ */
+/**
  * 本地存储配置
- * - key 表示存储在本地的 key
- * - value 表示默认值，可以为 string | boolean | number，但是在获取时只会获取到 string
+ * - key 表示存储在本地的key
+ * - value 表示默认值，可以为string，boolean，number，但是在获取时只会获取到string
  */
 export interface ConfigLocal {
     /** 语言 */
@@ -19,7 +23,7 @@ export interface ConfigLocal {
 export declare const _init_local_runtime: (config: ConfigLocal) => void;
 /**
  * 获取本地存储值
- * - 返回值会转化为 string 或 null
+ * - 无值，则返回undefined
  * - 顺序依次为：缓存，本地存储，配置的默认值
  * @param key
  */
