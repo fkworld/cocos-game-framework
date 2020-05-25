@@ -1,0 +1,22 @@
+{
+  // 请参阅 https://go.microsoft.com/fwlink/?LinkId=733558
+  //查看有关 tasks.json 格式的文档
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": [],
+      "label": "npm: build",
+      "detail": "npx rollup -c",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      }
+    }
+  ]
+}
