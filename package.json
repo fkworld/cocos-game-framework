@@ -4,7 +4,8 @@
   "description": "[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) [![blog](https://img.shields.io/badge/blog-game--develop--road-yellow.svg)](https://www.yuque.com/fengyong/game-develop-road) ![](https://img.shields.io/badge/Cocos--Creator-2.2.1-blue) ![](https://img.shields.io/badge/框架版本-1.0.0-blue) ![](https://img.shields.io/badge/脚本语言-TypeScript-blue)",
   "main": "index.js",
   "scripts": {
-    "build": "npx rollup -c"
+    "build": "npx rollup -c",
+    "copy": "npx ts-node scripts/copy-to-example-project.ts"
   },
   "repository": {
     "type": "git",
@@ -18,8 +19,13 @@
   "homepage": "https://github.com/fkworld/cocos-game-framework#readme",
   "dependencies": {
     "@types/lodash": "^4.14.149",
+    "fs-extra": "^9.0.0",
     "rollup": "^2.8.2",
     "rollup-plugin-typescript2": "^0.27.0",
+    "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.1"
   }
 }

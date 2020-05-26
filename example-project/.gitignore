@@ -1,5 +1,8 @@
 # project
-/dist/
+/library/
+/temp/
+/local/
+/build/
 
 # os
 .DS_Store

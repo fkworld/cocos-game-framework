@@ -1,22 +1,14 @@
-// 特别注意：json 严格来说不可添加注释，这里作为 ts 的配置文件使用可以添加注释
 {
   "compilerOptions": {
-    // 文档错误参考：http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-    // 2.3.3 版本，tsconfig.ts 会直接影响编译结果，而非文档中所说的不影响
-    // 因此需要设置为 ES5 和 CommonJS
     "target": "ES5",
     "module": "CommonJS",
-    "lib": [
-      "DOM",
-      // 注意，此处使用 ESNext 不代表完全可以使用新语法，与编辑器使用的 ts 版本有关，但并不知道使用的版本是什么
-      "ESNext"
-    ],
+    "lib": ["DOM", "ESNext"],
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "downlevelIteration": true,
-    "esModuleInterop": true,
-    // 允许 umd 模块直接使用，针对插件脚本
-    "allowUmdGlobalAccess": true
+    "esModuleInterop": true
   },
-  "exclude": ["node_modules", "library", "local", "temp", "build", "settings"]
+  "files": ["example-project/creator.d.ts", "types/game.d.ts"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "example-project"]
 }

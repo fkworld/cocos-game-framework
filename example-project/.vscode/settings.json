@@ -1,0 +1,39 @@
+{
+  // 搜索过滤
+  "search.exclude": {
+    // 不搜索以下路径下文件
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "build/": true,
+    "temp/": true,
+    "library/": true,
+    // 不搜索ts的声明文件
+    "types/": true,
+    // 不搜索以下格式文件
+    "**/*.anim": true,
+    "**/*.prefab": true,
+    "**/*.json": true,
+    "**/*.png": true,
+    "**/*.ttf": true,
+    "**/*.mp3": true,
+    "**/*.fire": true
+  },
+  // 文件显示面板过滤
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/*.meta": true,
+    "library/": true,
+    "local/": true,
+    "temp/": true,
+    "node_modules/": true
+  },
+  // 编辑器在保存时自动格式化
+  "editor.formatOnSave": true,
+  // 默认使用prettier进行格式化
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // prettier设置
+  "prettier.arrowParens": "avoid",
+  "prettier.printWidth": 100,
+  "prettier.trailingComma": "all"
+}
