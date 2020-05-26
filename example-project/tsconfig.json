@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    // 文档错误参考：http://docs.cocos.com/creator/manual/zh/scripting/typescript.html
+    // 2.3.3 版本，tsconfig.ts 会直接影响编译结果，而非文档中所说的不影响
+    // 因此需要设置为 ES5 和 CommonJS
+    "target": "ES5",
+    "module": "CommonJS",
+    "lib": ["DOM", "ESNext"],
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    // 允许 umd 模块直接使用，针对插件脚本
+    "allowUmdGlobalAccess": true
+  },
+  "exclude": ["node_modules", "library", "local", "temp", "build", "settings"]
+}

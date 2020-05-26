@@ -79,7 +79,7 @@ export const _init_audio_runtime = (config: ConfigAudio) => {
       // TODO：设置单实例，可能会有bug，需要测试
       cc.audioEngine.setMaxAudioInstance(1);
       return [k, ins];
-    })
+    }),
   );
   music_switch = get_local("music") === "true";
   sound_switch = get_local("sound") === "true";
