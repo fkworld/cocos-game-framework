@@ -10,6 +10,6 @@
     "resolveJsonModule": true
   },
   "files": ["example-project/creator.d.ts", "types/game.d.ts"],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "__test__/**/*"],
   "exclude": ["node_modules", "example-project"]
 }
