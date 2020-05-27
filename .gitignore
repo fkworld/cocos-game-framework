@@ -1,5 +1,7 @@
 # project
 /dist/
+# jest 代码覆盖率统计文档
+/coverage/
 
 # os
 .DS_Store

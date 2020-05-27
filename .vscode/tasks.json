@@ -16,6 +16,13 @@
       "problemMatcher": [],
       "label": "npm: copy",
       "detail": "npx ts-node scripts/copy-to-example-project.ts"
+    },
+    {
+      "type": "npm",
+      "script": "test",
+      "problemMatcher": [],
+      "label": "npm: test",
+      "detail": "npx jest"
     }
   ]
 }
