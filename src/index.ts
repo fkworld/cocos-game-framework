@@ -16,6 +16,7 @@ export * from "./tool-random";
 export * from "./tool-state-table";
 export * from "./version";
 
+import { version } from "../package.json";
 import { ConfigAudio, _init_audio_runtime } from "./audio";
 import { ConfigColor, _init_color_editor, _init_color_runtime } from "./color";
 import { ConfigLocal, _init_local_runtime } from "./local";
@@ -38,11 +39,8 @@ export interface Config {
   log_level: LogLevel;
 }
 
-/** 当前版本号 */
-export const VERSION = "1.0.0";
-
-/** 当前版本时间 */
-export const VERSION_TIME = "2020.5.11";
+/** 框架版本号 */
+export const VERSION = version;
 
 /**
  * 在编辑器中初始化框架
@@ -69,5 +67,5 @@ export const init_runtime = async (config: Config) => {
   _init_audio_runtime(config.audio);
   _init_panel_runtime(config.panel_parent);
   await _init_meta_runtime_async();
-  log(LogLevel.NORMAL, "初始化框架成功", VERSION, VERSION_TIME);
+  log(LogLevel.NORMAL, "初始化框架成功", VERSION);
 };
