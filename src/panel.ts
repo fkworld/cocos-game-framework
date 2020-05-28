@@ -108,8 +108,8 @@ export const pre_panel = async (panel: PanelClass) => {
  * @param panel
  */
 const get_panel = async (panel: PanelClass) => {
-  await pre_panel(panel);
   if (!panel.context.ins) {
+    await pre_panel(panel);
     let node = cc.instantiate(panel.context.prefab);
     node.parent = parent;
     node.position = cc.Vec3.ZERO;
