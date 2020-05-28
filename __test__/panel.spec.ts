@@ -1,4 +1,3 @@
-import { mocked } from "ts-jest/utils";
 import * as panel from "../src/panel";
 
 @panel.DeSetPanelContext("")
@@ -17,8 +16,7 @@ class PanelTest extends panel.PanelBase {
   }
 }
 
-cc.instantiate = jest.fn();
-mocked(cc.instantiate).mockImplementation(() => {
+jest.spyOn(cc, "instantiate").mockImplementation(() => {
   let mockedNode = new cc.Node();
   mockedNode.addComponent(PanelTest);
   return mockedNode;

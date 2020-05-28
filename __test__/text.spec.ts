@@ -1,10 +1,8 @@
-import { mocked } from "ts-jest/utils";
 import * as local from "../src/local";
 import * as text from "../src/text";
 
-jest.mock("../src/local");
-mocked(local.get_local).mockReturnValue("chinese");
-mocked(local.set_local).mockReturnValue(undefined);
+jest.spyOn(local, "get_local").mockReturnValue("chinese");
+jest.spyOn(local, "set_local").mockReturnValue(undefined);
 
 text._init_text_runtime({
   chinese: { a: "My name is {0}." },
