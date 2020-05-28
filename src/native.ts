@@ -9,14 +9,12 @@ import { log, LogLevel } from "./log";
 
 /** 入口封装类 */
 const GATE_CLASS = "JSBinding";
-/** 原生调用游戏的全局方法 */
-const NATIVE_CALLBACK = "NativeCallback";
 /** android 平台的单独配置 */
 const ANDROID_CONFIG = {
   /** 类位置 */
   CLASS_PATH: "org/cocos2dx/javascript/",
   /** 方法签名 */
-  FUNC_SIGNATURE: "(Ljava/lang/String;)Ljava/lang/String;",
+  METHOD_SIGNATURE: "(Ljava/lang/String;)Ljava/lang/String;",
 };
 /** 事件：原生回调游戏 */
 const EVENT_NATIVE_CALLBACK = "@event:native/native-callback";
@@ -36,19 +34,20 @@ export const is_native = () => cc.sys.isNative;
 /**
  * 调用原生
  * @param method 方法名
- * @param params 入参
+ * @param params 入参；如果是json字符串，请在外部手动传入
  */
-export const call = (method: string, params: string): string => {
+export const call = (method: string, params = {}): string => {
+  let params_json = JSON.stringify(params);
   if (is_ios()) {
-    log(LogLevel.DEV, method, params);
-    return jsb.reflection.callStaticMethod(GATE_CLASS, method + ":", params);
+    log(LogLevel.DEV, method, params_json);
+    return jsb.reflection.callStaticMethod(GATE_CLASS, method + ":", params_json);
   } else if (is_android()) {
-    log(LogLevel.DEV, method, params);
+    log(LogLevel.DEV, method, params_json);
     return jsb.reflection.callStaticMethod(
       ANDROID_CONFIG.CLASS_PATH + GATE_CLASS,
       method,
-      ANDROID_CONFIG.FUNC_SIGNATURE,
-      params
+      ANDROID_CONFIG.METHOD_SIGNATURE,
+      params_json,
     );
   } else {
     // 非原生平台
@@ -63,13 +62,11 @@ export const call = (method: string, params: string): string => {
  * @param params 入参
  * @param wait_time 最大等待时间，默认为100s
  */
-export const call_async = async (method: string, params: {}, wait_time = 100): Promise<string> => {
-  // 拼接回调 id：方法名+当前时间+随机数
+export const call_async = async (method: string, params = {}, wait_time = 100): Promise<string> => {
+  // 拼接回调id：方法名+当前时间+随机数
   let call_id = `${method}/${Date.now().toString(36)}/${Math.random().toFixed(5)}`;
-  // 拼接入参
-  let params_with_call_id = Object.assign(params, { call_id: call_id });
   // 通知原生
-  call(method, JSON.stringify(params_with_call_id));
+  call(method, Object.assign(params, { call_id }));
   // 监听回调
   return new Promise(res => {
     on_success_once_event(
@@ -81,7 +78,7 @@ export const call_async = async (method: string, params: {}, wait_time = 100): P
         let result = native_callbacks.get(call_id);
         native_callbacks.delete(call_id);
         res(result);
-      }
+      },
     );
   });
 };
@@ -91,8 +88,8 @@ export const call_async = async (method: string, params: {}, wait_time = 100): P
  * @param call_id 调用id
  * @param call_result 调用结果
  */
-window[NATIVE_CALLBACK] = (call_id: string, call_result: string) => {
-  log(LogLevel.DEV, NATIVE_CALLBACK, call_id, call_result);
+window["NativeCallback"] = (call_id: string, call_result: string) => {
+  log(LogLevel.DEV, "NativeCallback", call_id, call_result);
   native_callbacks.set(call_id, call_result);
   event_center.emit(EVENT_NATIVE_CALLBACK);
 };
