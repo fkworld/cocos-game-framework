@@ -24,7 +24,7 @@ export namespace SimpleNodeAnima {
   export const set_all = (
     node: cc.Node,
     init_state: string,
-    states: { [key: string]: Partial<cc.Node> }
+    states: { [key: string]: Partial<cc.Node> },
   ) => {
     node[KEY_STATES] = states;
     node[KEY_STATE_NOW] = init_state;
