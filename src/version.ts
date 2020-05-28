@@ -25,15 +25,15 @@ export interface ConfigVersion {
  */
 export interface ConfigVersionInfo {
   /** 项目名称 */
-  name: string;
+  name?: string;
   /** 项目作者 */
-  author: string;
+  author?: string;
   /** 项目版本，例如：1.0.0/2020.5.11 */
-  version: string;
+  version?: string;
   /** ios项目打包版本，例如：1.0.0/2020051101/2020.5.11 */
-  ios_version: string;
+  ios_version?: string;
   /** android项目打包版本，例如：1.0.0/2020051102/2020.5.11 */
-  android_version: string;
+  android_version?: string;
 }
 
 /** 版本标记 */
@@ -49,7 +49,7 @@ export const _init_version_runtime = (config: ConfigVersion, info: ConfigVersion
   version_center.get_all().forEach((v, k) => {
     !v && version_center.del(k);
   });
-  log(LogLevel.NORMAL, "初始化version模块成功", version_center.log_keys(), JSON.stringify(info));
+  log(LogLevel.NORMAL, "初始化version模块成功", version_center.get_keys(), info);
 };
 
 /** dev模式下全局变量，针对类的装饰器 */
