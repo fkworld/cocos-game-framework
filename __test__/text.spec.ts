@@ -3,17 +3,12 @@ import * as local from "../src/local";
 import * as text from "../src/text";
 
 jest.mock("../src/local");
-const mockedLocal = mocked(local, true);
-mockedLocal.get_local.mockReturnValue("chinese");
-mockedLocal.set_local.mockReturnValue(undefined);
+mocked(local.get_local).mockReturnValue("chinese");
+mocked(local.set_local).mockReturnValue(undefined);
 
-const CONFIG_TEXT: text.ConfigText = {
-  a: "My name is {0}.",
-};
-const CONFIG_LANGUAGE: text.ConfigLanguage = {
-  chinese: CONFIG_TEXT,
-};
-text._init_text_runtime(CONFIG_LANGUAGE);
+text._init_text_runtime({
+  chinese: { a: "My name is {0}." },
+});
 
 test("get_language", () => {
   expect(text.get_language()).toBe("chinese");
