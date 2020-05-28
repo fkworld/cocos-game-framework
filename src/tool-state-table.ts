@@ -50,8 +50,8 @@ export class StateTable<TKey extends string, TValue> {
     this.source.delete(key);
   }
 
-  /** 输出所有的状态key */
-  log_keys(): string {
-    return JSON.stringify([...this.source.keys()]);
+  /** 获取所有的key */
+  get_keys(): string[] {
+    return [...this.source.keys()];
   }
 }
