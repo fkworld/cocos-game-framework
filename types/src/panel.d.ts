@@ -50,7 +50,7 @@ export declare const DeSetPanelContext: (path: string, type?: string, z_index_ba
  * 初始化系统，传入父节点
  * @param node
  */
-export declare const _init_panel_runtime: (node: cc.Node) => void;
+export declare const _init_panel: (node?: cc.Node) => void;
 /**
  * 预载入界面 prefab
  * @param panel

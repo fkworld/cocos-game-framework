@@ -21,7 +21,10 @@ import { ConfigLocal } from "./local";
 import { LogLevel } from "./log";
 import { ConfigLanguage } from "./text";
 import { ConfigVersion, ConfigVersionInfo } from "./version";
-/** 框架初始化依赖配置 */
+/**
+ * 框架初始化依赖配置
+ * - 如果需要使用默认配置，则置值为undefined
+ */
 export interface Config {
     version: ConfigVersion;
     version_info: ConfigVersionInfo;
@@ -33,10 +36,8 @@ export interface Config {
     panel_parent: cc.Node;
     log_level: LogLevel;
 }
-/** 当前版本号 */
-export declare const VERSION = "1.0.0";
-/** 当前版本时间 */
-export declare const VERSION_TIME = "2020.5.11";
+/** 框架版本号 */
+export declare const VERSION: string;
 /**
  * 在编辑器中初始化框架
  * @param config

@@ -22,7 +22,7 @@
       "script": "test",
       "problemMatcher": [],
       "label": "npm: test",
-      "detail": "npx jest"
+      "detail": "npx jest --silent --coverage"
     }
   ]
 }

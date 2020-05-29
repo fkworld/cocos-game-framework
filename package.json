@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx rollup -c",
     "copy": "npx ts-node scripts/copy-to-example-project.ts",
-    "test": "npx jest"
+    "test": "npx jest --silent --coverage"
   },
   "repository": {
     "type": "git",
