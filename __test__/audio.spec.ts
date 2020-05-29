@@ -1,12 +1,6 @@
 import * as audio from "../src/audio";
-import * as local from "../src/local";
 
-local._init_local_runtime({
-  language: "chinese",
-  music: true,
-  sound: true,
-});
-audio._init_audio_runtime({
+audio._init_audio({
   test_music: "###muisc",
   test_sound: "sound",
 });

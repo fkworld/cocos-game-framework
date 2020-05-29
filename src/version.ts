@@ -44,7 +44,10 @@ export let version_center: StateTable<string, number>;
  * @param config 版本标记信息
  * @param info 版本额外信息
  */
-export const _init_version_runtime = (config: ConfigVersion, info: ConfigVersionInfo) => {
+export const _init_version = (
+  config: ConfigVersion = { resetLocal: 1 },
+  info: ConfigVersionInfo = {},
+) => {
   version_center = new StateTable(config);
   version_center.get_all().forEach((v, k) => {
     !v && version_center.del(k);

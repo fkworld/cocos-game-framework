@@ -9,7 +9,7 @@ import { log, LogLevel } from "./log";
 import { get_template_string } from "./tool";
 
 /** 事件：语言更改 */
-export const EVENT_LANGUAGE_CHANGE = "@event:text/language-change";
+export const EVENT_LANGUAGE_CHANGE = "text/language-change";
 
 /**
  * 语言配置
@@ -18,15 +18,8 @@ export const EVENT_LANGUAGE_CHANGE = "@event:text/language-change";
  */
 export interface ConfigLanguage {
   /** 默认为中文 */
-  chinese: ConfigText;
-  [k: string]: ConfigText;
-}
-
-/**
- * 语言配置文件
- */
-export interface ConfigText {
-  [k: string]: string;
+  chinese: { [k: string]: string };
+  [k: string]: ConfigLanguage["chinese"];
 }
 
 /** 配置 */
@@ -40,21 +33,14 @@ let editor_language: string;
  * @param config
  * @param editor 编辑器默认语言
  */
-export const _init_text_editor = (config: ConfigLanguage, editor: string) => {
-  if (CC_EDITOR) {
-    languages = config;
-    editor_language = editor;
-    !languages[editor_language] && log(LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
-  }
-};
-
-/**
- * 在运行时初始化 text 模块
- * @param config
- */
-export const _init_text_runtime = (config: ConfigLanguage) => {
+export const _init_text = (
+  config: ConfigLanguage = { chinese: {} },
+  editor: string = "chinese",
+) => {
   languages = config;
-  log(LogLevel.NORMAL, "初始化text模块成功，text_config=", config);
+  editor_language = editor;
+  !languages[editor_language] && log(LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
+  !CC_EDITOR && log(LogLevel.NORMAL, "初始化text模块成功，text_config=", config);
 };
 
 /** 获取当前的语言 key */
@@ -77,7 +63,8 @@ export const change_language = (new_language: string) => {
  * @param params
  */
 export const get_text = (key: string, ...params: string[]) => {
-  let text = CC_EDITOR ? languages[editor_language][key] : languages[get_language()][key];
+  let language = CC_EDITOR ? editor_language : get_language();
+  let text = languages[language][key];
   if (text) {
     return get_template_string(text, ...params);
   } else {

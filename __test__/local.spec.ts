@@ -1,12 +1,6 @@
 import * as local from "../src/local";
-import * as version from "../src/version";
 
-jest.spyOn(cc.sys.localStorage.__proto__, "clear").mockReturnValue(undefined);
-jest.spyOn(cc.sys.localStorage.__proto__, "getItem").mockReturnValue(undefined);
-jest.spyOn(cc.sys.localStorage.__proto__, "setItem").mockReturnValue(undefined);
-
-version._init_version_runtime({ resetLocal: 1 }, {});
-local._init_local_runtime({
+local._init_local({
   language: "chinese",
   music: true,
   sound: true,

@@ -88,7 +88,7 @@ type ParamPanelClose<T extends PanelClass> = Parameters<T["prototype"]["on_close
  * 初始化系统，传入父节点
  * @param node
  */
-export const _init_panel_runtime = (node: cc.Node) => {
+export const _init_panel = (node: cc.Node = new cc.Node()) => {
   parent = node;
   log(LogLevel.NORMAL, "初始化panel模块成功，panel_parent=", node);
 };

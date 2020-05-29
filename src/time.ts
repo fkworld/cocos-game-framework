@@ -116,7 +116,7 @@ export const to_group = (source: TimeInput): TimeGroup => {
 /**
  * 将给定微秒数格式化
  * @param ms 微秒数
- * @param zero 是否显示为 0 的值
+ * @param zero 是否显示为0的值
  * @example
  * ```
  * to_show(888888888); //-> 246:54:48

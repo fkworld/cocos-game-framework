@@ -6,11 +6,11 @@
 import { event_center } from "./event";
 import { get_local, set_local } from "./local";
 import { log, LogLevel } from "./log";
-import { SimpleFSM } from "./tool-fsm";
 import { load_res } from "./tool-ccc";
+import { SimpleFSM } from "./tool-fsm";
 
 /** 事件：打开音乐开关 */
-export const EVENT_MUSIC_SWITCH_OPEN = "@event:audio/music-switch-open";
+export const EVENT_MUSIC_SWITCH_OPEN = "audio/music-switch-open";
 
 /**
  * 声音配置
@@ -61,10 +61,10 @@ let sound_switch: boolean;
 
 /**
  * 初始化
- * - TODO 在初始化中设置声音实例为 1，可能会有 bug，需要进一步测试
+ * - TODO：在初始化中设置声音实例为1，可能会有bug，需要进一步测试
  * @param config
  */
-export const _init_audio_runtime = (config: ConfigAudio) => {
+export const _init_audio = (config: ConfigAudio = {}) => {
   audios = new Map(
     Object.entries(config).map(([k, v]) => {
       let ins: AudioIns = {
@@ -106,7 +106,7 @@ export const reverse_sound_switch = () => {
 };
 
 /**
- * 预载入一个 audio
+ * 预载入一个audio
  * @param key
  */
 export const pre_audio = async (key: string) => {
@@ -122,14 +122,14 @@ export const pre_audio = async (key: string) => {
  * 获取声音实例
  * @param key
  */
-const get_audio_ins = async (key: string): Promise<AudioIns> => {
+export const get_audio = async (key: string): Promise<AudioIns> => {
   await pre_audio(key);
   return audios.get(key);
 };
 
 /** 播放一个声音 */
 export const play_audio = async (key: string) => {
-  let data = await get_audio_ins(key);
+  let data = await get_audio(key);
   if (
     data.fsm.is_state("error") ||
     (data.type === "music" && !music_switch) ||
@@ -145,7 +145,7 @@ export const play_audio = async (key: string) => {
 
 /** 停止某一个声音 */
 export const stop_audio = async (key: string) => {
-  let data = await get_audio_ins(key);
+  let data = await get_audio(key);
   if (data.fsm.is_state("error")) {
     return;
   }

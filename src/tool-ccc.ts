@@ -58,7 +58,7 @@ export const do_schedule = async (
   interval: number,
   count: number,
   is_first: boolean,
-  f: (index: number) => void
+  f: (index: number) => void,
 ) => {
   return new Promise(res => {
     let index = 0;
@@ -106,7 +106,7 @@ export const set_node_by_wp = (node: cc.Node, wp: cc.Vec3, flag = false) => {
  * @param resources
  */
 export const load = async (
-  resources: string | string[] | { type: "uuid"; uuid?: string; url?: string }
+  resources: string | string[] | { type: "uuid"; uuid?: string; url?: string },
 ): Promise<any> => {
   return new Promise(res => {
     cc.loader.load(resources, (err: any, r: any) => {
@@ -127,7 +127,7 @@ export const load = async (
  */
 export const load_res = async <T extends typeof cc.Asset>(
   path: string,
-  type: T
+  type: T,
 ): Promise<InstanceType<T>> => {
   if (CC_EDITOR) {
     let url = to_editor_url(path);
@@ -158,7 +158,7 @@ export const load_res = async <T extends typeof cc.Asset>(
  */
 export const load_res_dir = async <T extends typeof cc.Asset>(
   path: string,
-  type: T
+  type: T,
 ): Promise<InstanceType<T>[]> => {
   return new Promise(res => {
     cc.loader.loadResDir(path, type, (err, r) => {
@@ -169,16 +169,18 @@ export const load_res_dir = async <T extends typeof cc.Asset>(
 };
 
 // cc.Intersection
-export const lineLine = cc.Intersection.lineLine;
-export const lineRect = cc.Intersection.lineRect;
-export const linePolygon = cc.Intersection.linePolygon;
-export const rectRect = cc.Intersection.rectRect;
-export const rectPolygon = cc.Intersection.rectPolygon;
-export const polygonPolygon = cc.Intersection.polygonPolygon;
-export const polygonCircle = cc.Intersection.polygonCircle;
-export const circleCircle = cc.Intersection.circleCircle;
-export const pointInPolygon = cc.Intersection.pointInPolygon;
-export const pointLineDistance = cc.Intersection.pointLineDistance;
+export const {
+  lineLine,
+  lineRect,
+  linePolygon,
+  rectRect,
+  rectPolygon,
+  polygonCircle,
+  polygonPolygon,
+  circleCircle,
+  pointInPolygon,
+  pointLineDistance,
+} = cc.Intersection;
 export const pointInCircle = (point: cc.Vec2, circle: CCCCircle) =>
   point.sub(circle.position).len() <= circle.radius;
 

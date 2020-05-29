@@ -2,7 +2,7 @@
  * 日志模块
  */
 
-/** log 等级 */
+/** log等级 */
 export enum LogLevel {
   /** 开发者。 */
   DEV,
@@ -22,9 +22,9 @@ export let log_level: LogLevel;
 export const _init_log = (level: LogLevel) => (log_level = level);
 
 /**
- * 输出 log
- * - 根据给定的 log_level 输出 log 信息。
- * - console 还有很多高级用法，这里不做封装，可以直接使用。参考：https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13
+ * 输出log
+ * - 根据给定的log_level输出log信息。
+ * - console还有很多高级用法，这里不做封装，可以直接使用。参考：https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13
  * @param level
  * @param params
  */

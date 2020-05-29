@@ -1,5 +1,14 @@
 import * as meta from "../src/meta";
 
+meta._init_meta_async(
+  JSON.stringify({
+    MetaTest: {
+      1: { id: "1", name: "fy" },
+      2: { id: "2", name: "fyfy" },
+    },
+  }),
+);
+
 @meta.DeSetMetaContext("MetaTest")
 class MetaTest extends meta.MetaBase {
   use_special(s: object): void {
@@ -11,25 +20,9 @@ class MetaTest extends meta.MetaBase {
     this.id = id;
     this.name = `fy${id}`;
   }
-
   id: string;
   name: string;
 }
-
-const CSV = `
-#common-line\r\n
-@id,name\r\n
-1,fy\r\n
-2,fyfy\r\n
-`;
-const CONFIG_METAS = JSON.stringify({
-  MetaTest: {
-    1: { id: "1", name: "fy" },
-    2: { id: "2", name: "fyfy" },
-  },
-});
-
-meta._init_meta_async(CONFIG_METAS);
 
 test("get_meta", () => {
   let meta1 = meta.get_meta(MetaTest, "1");
@@ -51,7 +44,7 @@ test("get_metas_ids", () => {
 });
 
 test("_parse_csv", () => {
-  expect(meta._parse_csv(CSV)).toEqual({
+  expect(meta._parse_csv("#common-line\r\n@id,name\r\n1,fy\r\n2,fyfy\r\n")).toEqual({
     1: { id: "1", name: "fy" },
     2: { id: "2", name: "fyfy" },
   });

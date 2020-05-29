@@ -17,16 +17,19 @@ export * from "./tool-state-table";
 export * from "./version";
 
 import { version } from "../package.json";
-import { ConfigAudio, _init_audio_runtime } from "./audio";
-import { ConfigColor, _init_color_editor, _init_color_runtime } from "./color";
-import { ConfigLocal, _init_local_runtime } from "./local";
+import { ConfigAudio, _init_audio } from "./audio";
+import { ConfigColor, _init_color } from "./color";
+import { ConfigLocal, _init_local } from "./local";
 import { log, LogLevel, _init_log } from "./log";
 import { _init_meta_async } from "./meta";
-import { _init_panel_runtime } from "./panel";
-import { ConfigLanguage, _init_text_editor, _init_text_runtime } from "./text";
-import { ConfigVersion, ConfigVersionInfo, _init_version_runtime } from "./version";
+import { _init_panel } from "./panel";
+import { ConfigLanguage, _init_text } from "./text";
+import { ConfigVersion, ConfigVersionInfo, _init_version } from "./version";
 
-/** 框架初始化依赖配置 */
+/**
+ * 框架初始化依赖配置
+ * - 如果需要使用默认配置，则置值为undefined
+ */
 export interface Config {
   version: ConfigVersion;
   version_info: ConfigVersionInfo;
@@ -49,8 +52,8 @@ export const VERSION = version;
 export const init_editor = async (config: Config) => {
   // 注意初始化次序
   _init_log(config.log_level);
-  _init_text_editor(config.text, config.editor_language);
-  _init_color_editor(config.color);
+  _init_text(config.text, config.editor_language);
+  _init_color(config.color);
 };
 
 /**
@@ -60,12 +63,12 @@ export const init_editor = async (config: Config) => {
 export const init_runtime = async (config: Config) => {
   // 注意初始化次序
   _init_log(config.log_level);
-  _init_version_runtime(config.version, config.version_info);
-  _init_local_runtime(config.local);
-  _init_text_runtime(config.text);
-  _init_color_runtime(config.color);
-  _init_audio_runtime(config.audio);
-  _init_panel_runtime(config.panel_parent);
+  _init_version(config.version, config.version_info);
+  _init_local(config.local);
+  _init_text(config.text, config.editor_language);
+  _init_color(config.color);
+  _init_audio(config.audio);
+  _init_panel(config.panel_parent);
   await _init_meta_async();
   log(LogLevel.NORMAL, "初始化框架成功", VERSION);
 };
