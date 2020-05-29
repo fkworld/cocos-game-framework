@@ -1,14 +1,14 @@
 /**
  * 数值表模块
  * - 需要在编辑器中手动将resources/csv下的csv文件生成json文件
- * - 在运行时自动初始化，载入json文件
+ * - 在运行时自动初始化，载入json数据；如果不传入数据，则载入自动生成的json文件
  */
 
 import { log, LogLevel } from "./log";
-import { get_filename, load_res, to_editor_url, load } from "./tool-ccc";
+import { get_filename, load, load_res, to_editor_url } from "./tool-ccc";
 
 /** 生成和读取的json文件 */
-const JSON_FILENAME = "csv/csv-auto-generate.json";
+const JSON_FILENAME = "csv/auto-generate.json";
 
 /** 需要使用到的正则 */
 const REGS = {
@@ -27,9 +27,10 @@ let metas: {};
 
 /**
  * 在运行时载入meta数据
+ * @param json json字符串数据，如果没有传入，则载入自动生成的文件
  */
-export const _init_meta_runtime_async = async () => {
-  metas = (await load_res(JSON_FILENAME, cc.JsonAsset)).json;
+export const _init_meta_async = async (json?: string) => {
+  metas = json ? JSON.parse(json) : (await load_res(JSON_FILENAME, cc.JsonAsset)).json;
   log(LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
 };
 
@@ -53,9 +54,9 @@ export class MetaBase {
   /** 是否是不存在id而使用的默认值 */
   is_default: boolean;
   /** 创建meta类实例时，对传入的单行源数据进行处理 */
-  use_special(s: object): void {}
+  use_special(s: object) {}
   /** 创建meta类实例时，如果没有源数据，则设置为给定的默认值 */
-  use_default(id: string): void {}
+  use_default(id: string) {}
 }
 
 /**
@@ -100,7 +101,7 @@ export const get_metas_ids = <T extends typeof MetaBase>(meta_class: T): string[
  * 解析csv文件为json对象
  * @param source csv文件内容
  */
-export const parse_csv = (source: string): {} => {
+export const _parse_csv = (source: string): {} => {
   // 属性行
   let headers: string[] = [];
   // 拆分行
@@ -121,7 +122,7 @@ export const parse_csv = (source: string): {} => {
         headers.map((header, index) => {
           let fix_piece = pieces[index]?.trim().replace(/^"|"$/g, "").replace(/""/g, '"') ?? "";
           return [header, fix_piece];
-        })
+        }),
       );
     }
     return result;
@@ -138,10 +139,10 @@ export const parse_csv_all = async () => {
     Editor.assetdb.queryAssets(url_source, "text", (err, results) => res(results));
   });
   let file_texts: cc.TextAsset[] = await Promise.all(
-    files.map(file => load({ type: "uuid", uuid: file.uuid }))
+    files.map(file => load({ type: "uuid", uuid: file.uuid })),
   );
   let json = file_texts.reduce((r, text) => {
-    r[text.name] = parse_csv(text.text);
+    r[text.name] = _parse_csv(text.text);
     return r;
   }, {});
   Editor.assetdb.createOrSave(url_target, JSON.stringify(json), (err: any) => {
