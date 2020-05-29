@@ -1,5 +1,13 @@
 import * as panel from "../src/panel";
 
+jest.spyOn(cc, "instantiate").mockImplementation(() => {
+  let mockedNode = new cc.Node();
+  mockedNode.addComponent(PanelTest);
+  return mockedNode;
+});
+
+panel._init_panel(new cc.Node());
+
 @panel.DeSetPanelContext("")
 class PanelTest extends panel.PanelBase {
   static ins: PanelTest;
@@ -15,14 +23,6 @@ class PanelTest extends panel.PanelBase {
     PanelTest.a = 3;
   }
 }
-
-jest.spyOn(cc, "instantiate").mockImplementation(() => {
-  let mockedNode = new cc.Node();
-  mockedNode.addComponent(PanelTest);
-  return mockedNode;
-});
-
-panel._init_panel_runtime(new cc.Node());
 
 test("open_panel", async () => {
   expect(PanelTest.ins).toBeUndefined();

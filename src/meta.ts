@@ -29,7 +29,7 @@ let metas: {};
  * 在运行时载入meta数据
  * @param json json字符串数据，如果没有传入，则载入自动生成的文件
  */
-export const _init_meta_async = async (json?: string) => {
+export const _init_meta_async = async (json = "{}") => {
   metas = json ? JSON.parse(json) : (await load_res(JSON_FILENAME, cc.JsonAsset)).json;
   log(LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
 };

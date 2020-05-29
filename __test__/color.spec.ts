@@ -1,12 +1,10 @@
 import * as color from "../src/color";
 
-const CONFIG = {
+color._init_color({
   none: "FFFFFF",
   a: "000000",
   b: "111111",
-};
-
-color._init_color_runtime(CONFIG);
+});
 
 test("get_color", () => {
   expect(color.get_color("a").toString()).toBe("rgba(0, 0, 0, 255)");
