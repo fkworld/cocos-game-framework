@@ -4,7 +4,7 @@
  * - js与OC间的互相调用，参考：http://docs.cocos.com/creator/manual/zh/advanced-topics/oc-reflection.html
  */
 
-import { event_center, on_success_once_event } from "./event";
+import { event_center } from "./event";
 import { log, LogLevel } from "./log";
 
 /** 入口封装类 */
@@ -69,16 +69,17 @@ export const call_async = async (method: string, params = {}, wait_time = 100): 
   call(method, Object.assign(params, { call_id }));
   // 监听回调
   return new Promise(res => {
-    on_success_once_event(
+    let t = {};
+    event_center.on(
       EVENT_NATIVE_CALLBACK,
       () => {
-        return native_callbacks.has(call_id);
+        if (native_callbacks.has(call_id)) {
+          res(native_callbacks.get(call_id));
+          event_center.targetOff(t);
+          native_callbacks.delete(call_id);
+        }
       },
-      () => {
-        let result = native_callbacks.get(call_id);
-        native_callbacks.delete(call_id);
-        res(result);
-      },
+      t,
     );
   });
 };
