@@ -11,16 +11,16 @@ export interface ConfigLocal {
     /** 语言 */
     language: string;
     /** 音乐开关 */
-    music: true;
+    music: boolean;
     /** 音效开关 */
-    sound: true;
+    sound: boolean;
     [k: string]: string | boolean | number;
 }
 /**
  * 在运行时初始化
  * @param config
  */
-export declare const _init_local_runtime: (config: ConfigLocal) => void;
+export declare const _init_local: (config?: ConfigLocal) => void;
 /**
  * 获取本地存储值
  * - 无值，则返回undefined

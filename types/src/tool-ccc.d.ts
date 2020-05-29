@@ -67,16 +67,7 @@ export declare const load_res: <T extends typeof cc.Asset>(path: string, type: T
  * @param type
  */
 export declare const load_res_dir: <T extends typeof cc.Asset>(path: string, type: T) => Promise<InstanceType<T>[]>;
-export declare const lineLine: typeof cc.Intersection.lineLine;
-export declare const lineRect: typeof cc.Intersection.lineRect;
-export declare const linePolygon: typeof cc.Intersection.linePolygon;
-export declare const rectRect: typeof cc.Intersection.rectRect;
-export declare const rectPolygon: typeof cc.Intersection.rectPolygon;
-export declare const polygonPolygon: typeof cc.Intersection.polygonPolygon;
-export declare const polygonCircle: typeof cc.Intersection.polygonCircle;
-export declare const circleCircle: typeof cc.Intersection.circleCircle;
-export declare const pointInPolygon: typeof cc.Intersection.pointInPolygon;
-export declare const pointLineDistance: typeof cc.Intersection.pointLineDistance;
+export declare const lineLine: typeof cc.Intersection.lineLine, lineRect: typeof cc.Intersection.lineRect, linePolygon: typeof cc.Intersection.linePolygon, rectRect: typeof cc.Intersection.rectRect, rectPolygon: typeof cc.Intersection.rectPolygon, polygonCircle: typeof cc.Intersection.polygonCircle, polygonPolygon: typeof cc.Intersection.polygonPolygon, circleCircle: typeof cc.Intersection.circleCircle, pointInPolygon: typeof cc.Intersection.pointInPolygon, pointLineDistance: typeof cc.Intersection.pointLineDistance;
 export declare const pointInCircle: (point: cc.Vec2, circle: CCCCircle) => boolean;
 /** 在ccc中表示一个圆 */
 export interface CCCCircle {

@@ -33,6 +33,6 @@ export declare class StateTable<TKey extends string, TValue> {
      * @param value
      */
     del(key: TKey, value?: any): void;
-    /** 输出所有的状态key */
-    log_keys(): string;
+    /** 获取所有的key */
+    get_keys(): string[];
 }

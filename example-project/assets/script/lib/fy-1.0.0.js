@@ -1,4 +1,4 @@
-// fy, v1.0.0, 2020.5.22, https://github.com/fkworld/cocos-game-framework
+// fy-1.0.0, https://github.com/fkworld/cocos-game-framework
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -112,21 +112,6 @@
      */
     /** 事件中心 */
     var event_center = new cc.EventTarget();
-    /**
-     * 监听事件，直到某个条件成功后，不再监听此事件
-     * @param event
-     * @param f_is
-     * @param f_success
-     */
-    var on_success_once_event = function (event, f_is, f_success) {
-        var v = {};
-        event_center.on(event, function () {
-            if (f_is()) {
-                event_center.targetOff(v);
-                f_success();
-            }
-        }, v);
-    };
 
     /**
      * 日志模块
@@ -145,9 +130,9 @@
     })(exports.LogLevel || (exports.LogLevel = {}));
     var _init_log = function (level) { return (exports.log_level = level); };
     /**
-     * 输出 log
-     * - 根据给定的 log_level 输出 log 信息。
-     * - console 还有很多高级用法，这里不做封装，可以直接使用。参考：https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13
+     * 输出log
+     * - 根据给定的log_level输出log信息。
+     * - console还有很多高级用法，这里不做封装，可以直接使用。参考：https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13
      * @param level
      * @param params
      */
@@ -214,9 +199,9 @@
         StateTable.prototype.del = function (key, value) {
             this.source.delete(key);
         };
-        /** 输出所有的状态key */
-        StateTable.prototype.log_keys = function () {
-            return JSON.stringify(__spread(this.source.keys()));
+        /** 获取所有的key */
+        StateTable.prototype.get_keys = function () {
+            return __spread(this.source.keys());
         };
         return StateTable;
     }());
@@ -232,12 +217,14 @@
      * @param config 版本标记信息
      * @param info 版本额外信息
      */
-    var _init_version_runtime = function (config, info) {
+    var _init_version = function (config, info) {
+        if (config === void 0) { config = { resetLocal: 1 }; }
+        if (info === void 0) { info = {}; }
         exports.version_center = new StateTable(config);
         exports.version_center.get_all().forEach(function (v, k) {
             !v && exports.version_center.del(k);
         });
-        log(exports.LogLevel.NORMAL, "初始化version模块成功", exports.version_center.log_keys(), JSON.stringify(info));
+        log(exports.LogLevel.NORMAL, "初始化version模块成功", exports.version_center.get_keys(), info);
     };
     /** dev模式下全局变量，针对类的装饰器 */
     var DeDevConsole = function (constructor) {
@@ -260,7 +247,8 @@
      * 在运行时初始化
      * @param config
      */
-    var _init_local_runtime = function (config) {
+    var _init_local = function (config) {
+        if (config === void 0) { config = { language: "chinese", music: true, sound: true }; }
         locals = new Map();
         locals_default = config;
         exports.version_center.has("resetLocal") && cc.sys.localStorage.clear();
@@ -285,86 +273,14 @@
      */
     var set_local = function (key, value) {
         locals.set(key, value);
-        Promise.resolve().then(function () {
-            cc.sys.localStorage.setItem(key, value);
-        });
+        Promise.resolve().then(function () { return cc.sys.localStorage.setItem(key, value); });
     };
-
-    /**
-     * 简单有限状态机：simple finite state machine
-     * - 使用string类型作为state的标记
-     * - 在执行事件过渡动作时，整个状态机处于锁定状态
-     */
-    var SimpleFSM = /** @class */ (function () {
-        /**
-         * 初始化状态机
-         * @param states 状态描述，value值为其可跳转的状态
-         * @param initial
-         */
-        function SimpleFSM(initial, states) {
-            this.state = initial;
-            this.states = states;
-            this.is_lock = false;
-        }
-        /** 锁定状态机 */
-        SimpleFSM.prototype.lock = function () {
-            this.is_lock = true;
-        };
-        /** 解锁状态机 */
-        SimpleFSM.prototype.unlock = function () {
-            this.is_lock = false;
-        };
-        /** 是否处于某个状态中 */
-        SimpleFSM.prototype.is_state = function () {
-            var states = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                states[_i] = arguments[_i];
-            }
-            return states.includes(this.state);
-        };
-        /** is_state的lock版本 */
-        SimpleFSM.prototype.is_state_with_lock = function () {
-            var states = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                states[_i] = arguments[_i];
-            }
-            return this.is_state.apply(this, __spread(states)) && !this.is_lock;
-        };
-        /** 是否可以去到下个状态 */
-        SimpleFSM.prototype.can_go_state = function (state) {
-            return this.states[this.state].includes(state);
-        };
-        /** can_go_state的lock版本 */
-        SimpleFSM.prototype.can_go_state_with_lock = function (state) {
-            return this.can_go_state(state) && !this.is_lock;
-        };
-        /** 尝试去到下个状态 */
-        SimpleFSM.prototype.try_go_state = function (state) {
-            if (this.can_go_state(state)) {
-                this.state = state;
-                return true;
-            }
-            else {
-                return false;
-            }
-        };
-        /** try_go_state的lock 版本 */
-        SimpleFSM.prototype.try_go_state_with_lock = function (state) {
-            if (this.can_go_state_with_lock(state)) {
-                this.state = state;
-                return true;
-            }
-            else {
-                return false;
-            }
-        };
-        return SimpleFSM;
-    }());
 
     /**
      * 工具函数模块
      * - 与cocos creator相关的函数
      */
+    var _a;
     /**
      * 适配canvas
      * - 【注意】cc.winSize只有在适配后才能获取到正确的值，因此需要使用cc.getFrameSize来获取初始的屏幕大小
@@ -516,16 +432,7 @@
         });
     }); };
     // cc.Intersection
-    var lineLine = cc.Intersection.lineLine;
-    var lineRect = cc.Intersection.lineRect;
-    var linePolygon = cc.Intersection.linePolygon;
-    var rectRect = cc.Intersection.rectRect;
-    var rectPolygon = cc.Intersection.rectPolygon;
-    var polygonPolygon = cc.Intersection.polygonPolygon;
-    var polygonCircle = cc.Intersection.polygonCircle;
-    var circleCircle = cc.Intersection.circleCircle;
-    var pointInPolygon = cc.Intersection.pointInPolygon;
-    var pointLineDistance = cc.Intersection.pointLineDistance;
+    var lineLine = (_a = cc.Intersection, _a.lineLine), lineRect = _a.lineRect, linePolygon = _a.linePolygon, rectRect = _a.rectRect, rectPolygon = _a.rectPolygon, polygonCircle = _a.polygonCircle, polygonPolygon = _a.polygonPolygon, circleCircle = _a.circleCircle, pointInPolygon = _a.pointInPolygon, pointLineDistance = _a.pointLineDistance;
     var pointInCircle = function (point, circle) {
         return point.sub(circle.position).len() <= circle.radius;
     };
@@ -543,11 +450,82 @@
     };
 
     /**
+     * 简单有限状态机：simple finite state machine
+     * - 使用string类型作为state的标记
+     * - 在执行事件过渡动作时，整个状态机处于锁定状态
+     */
+    var SimpleFSM = /** @class */ (function () {
+        /**
+         * 初始化状态机
+         * @param states 状态描述，value值为其可跳转的状态
+         * @param initial
+         */
+        function SimpleFSM(initial, states) {
+            this.state = initial;
+            this.states = states;
+            this.is_lock = false;
+        }
+        /** 锁定状态机 */
+        SimpleFSM.prototype.lock = function () {
+            this.is_lock = true;
+        };
+        /** 解锁状态机 */
+        SimpleFSM.prototype.unlock = function () {
+            this.is_lock = false;
+        };
+        /** 是否处于某个状态中 */
+        SimpleFSM.prototype.is_state = function () {
+            var states = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                states[_i] = arguments[_i];
+            }
+            return states.includes(this.state);
+        };
+        /** is_state的lock版本 */
+        SimpleFSM.prototype.is_state_with_lock = function () {
+            var states = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                states[_i] = arguments[_i];
+            }
+            return this.is_state.apply(this, __spread(states)) && !this.is_lock;
+        };
+        /** 是否可以去到下个状态 */
+        SimpleFSM.prototype.can_go_state = function (state) {
+            return this.states[this.state].includes(state);
+        };
+        /** can_go_state的lock版本 */
+        SimpleFSM.prototype.can_go_state_with_lock = function (state) {
+            return this.can_go_state(state) && !this.is_lock;
+        };
+        /** 尝试去到下个状态 */
+        SimpleFSM.prototype.try_go_state = function (state) {
+            if (this.can_go_state(state)) {
+                this.state = state;
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        /** try_go_state的lock 版本 */
+        SimpleFSM.prototype.try_go_state_with_lock = function (state) {
+            if (this.can_go_state_with_lock(state)) {
+                this.state = state;
+                return true;
+            }
+            else {
+                return false;
+            }
+        };
+        return SimpleFSM;
+    }());
+
+    /**
      * 声音模块
      * - 用于处理游戏内的声音逻辑
      */
     /** 事件：打开音乐开关 */
-    var EVENT_MUSIC_SWITCH_OPEN = "@event:audio/music-switch-open";
+    var EVENT_MUSIC_SWITCH_OPEN = "audio/music-switch-open";
     /** 所有声音的实例信息 */
     var audios;
     /** 音乐开关 */
@@ -556,10 +534,11 @@
     var sound_switch;
     /**
      * 初始化
-     * - TODO 在初始化中设置声音实例为 1，可能会有 bug，需要进一步测试
+     * - TODO：在初始化中设置声音实例为1，可能会有bug，需要进一步测试
      * @param config
      */
-    var _init_audio_runtime = function (config) {
+    var _init_audio = function (config) {
+        if (config === void 0) { config = {}; }
         audios = new Map(Object.entries(config).map(function (_a) {
             var _b = __read(_a, 2), k = _b[0], v = _b[1];
             var ins = {
@@ -595,7 +574,7 @@
         set_local("sound", "" + sound_switch);
     };
     /**
-     * 预载入一个 audio
+     * 预载入一个audio
      * @param key
      */
     var pre_audio = function (key) { return __awaiter(void 0, void 0, void 0, function () {
@@ -621,7 +600,7 @@
      * 获取声音实例
      * @param key
      */
-    var get_audio_ins = function (key) { return __awaiter(void 0, void 0, void 0, function () {
+    var get_audio = function (key) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, pre_audio(key)];
@@ -636,7 +615,7 @@
         var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, get_audio_ins(key)];
+                case 0: return [4 /*yield*/, get_audio(key)];
                 case 1:
                     data = _a.sent();
                     if (data.fsm.is_state("error") ||
@@ -657,7 +636,7 @@
         var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, get_audio_ins(key)];
+                case 0: return [4 /*yield*/, get_audio(key)];
                 case 1:
                     data = _a.sent();
                     if (data.fsm.is_state("error")) {
@@ -673,22 +652,11 @@
      * 颜色模块
      * - 需要在编辑器中和运行时初始化
      */
-    /** 颜色配置表 */
     var colors;
-    /**
-     * 需要在编辑器中初始化
-     * @param config
-     */
-    var _init_color_editor = function (config) {
-        CC_EDITOR && (colors = config);
-    };
-    /**
-     * 在运行时初始化颜色模块
-     * @param config
-     */
-    var _init_color_runtime = function (config) {
+    var _init_color = function (config) {
+        if (config === void 0) { config = { none: "ffffff" }; }
         colors = config;
-        log(exports.LogLevel.NORMAL, "初始化color模块成功，color_config=", config);
+        !CC_EDITOR && log(exports.LogLevel.NORMAL, "初始化color模块成功，color_config=", config);
     };
     /**
      * 从配置中获取颜色，如果无颜色，则返回白色
@@ -707,10 +675,10 @@
     /**
      * 数值表模块
      * - 需要在编辑器中手动将resources/csv下的csv文件生成json文件
-     * - 在运行时自动初始化，载入json文件
+     * - 在运行时自动初始化，载入json数据；如果不传入数据，则载入自动生成的json文件
      */
     /** 生成和读取的json文件 */
-    var JSON_FILENAME = "csv/csv-auto-generate.json";
+    var JSON_FILENAME = "csv/auto-generate.json";
     /** 需要使用到的正则 */
     var REGS = {
         // 注释行标记
@@ -726,18 +694,30 @@
     var metas;
     /**
      * 在运行时载入meta数据
+     * @param json json字符串数据，如果没有传入，则载入自动生成的文件
      */
-    var _init_meta_runtime_async = function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, load_res(JSON_FILENAME, cc.JsonAsset)];
-                case 1:
-                    metas = (_a.sent()).json;
-                    log(exports.LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
-                    return [2 /*return*/];
-            }
+    var _init_meta_async = function (json) {
+        if (json === void 0) { json = "{}"; }
+        return __awaiter(void 0, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!json) return [3 /*break*/, 1];
+                        _a = JSON.parse(json);
+                        return [3 /*break*/, 3];
+                    case 1: return [4 /*yield*/, load_res(JSON_FILENAME, cc.JsonAsset)];
+                    case 2:
+                        _a = (_b.sent()).json;
+                        _b.label = 3;
+                    case 3:
+                        metas = _a;
+                        log(exports.LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
+                        return [2 /*return*/];
+                }
+            });
         });
-    }); };
+    };
     /** meta的基础类 */
     var MetaBase = /** @class */ (function () {
         function MetaBase() {
@@ -805,7 +785,7 @@
      * 解析csv文件为json对象
      * @param source csv文件内容
      */
-    var parse_csv = function (source) {
+    var _parse_csv = function (source) {
         // 属性行
         var headers = [];
         // 拆分行
@@ -850,7 +830,7 @@
                 case 2:
                     file_texts = _a.sent();
                     json = file_texts.reduce(function (r, text) {
-                        r[text.name] = parse_csv(text.text);
+                        r[text.name] = _parse_csv(text.text);
                         return r;
                     }, {});
                     Editor.assetdb.createOrSave(url_target, JSON.stringify(json), function (err) {
@@ -870,14 +850,12 @@
      */
     /** 入口封装类 */
     var GATE_CLASS = "JSBinding";
-    /** 原生调用游戏的全局方法 */
-    var NATIVE_CALLBACK = "NativeCallback";
     /** android 平台的单独配置 */
     var ANDROID_CONFIG = {
         /** 类位置 */
         CLASS_PATH: "org/cocos2dx/javascript/",
         /** 方法签名 */
-        FUNC_SIGNATURE: "(Ljava/lang/String;)Ljava/lang/String;",
+        METHOD_SIGNATURE: "(Ljava/lang/String;)Ljava/lang/String;",
     };
     /** 事件：原生回调游戏 */
     var EVENT_NATIVE_CALLBACK = "@event:native/native-callback";
@@ -892,16 +870,18 @@
     /**
      * 调用原生
      * @param method 方法名
-     * @param params 入参
+     * @param params 入参；如果是json字符串，请在外部手动传入
      */
     var call = function (method, params) {
+        if (params === void 0) { params = {}; }
+        var params_json = JSON.stringify(params);
         if (is_ios()) {
-            log(exports.LogLevel.DEV, method, params);
-            return jsb.reflection.callStaticMethod(GATE_CLASS, method + ":", params);
+            log(exports.LogLevel.DEV, method, params_json);
+            return jsb.reflection.callStaticMethod(GATE_CLASS, method + ":", params_json);
         }
         else if (is_android()) {
-            log(exports.LogLevel.DEV, method, params);
-            return jsb.reflection.callStaticMethod(ANDROID_CONFIG.CLASS_PATH + GATE_CLASS, method, ANDROID_CONFIG.FUNC_SIGNATURE, params);
+            log(exports.LogLevel.DEV, method, params_json);
+            return jsb.reflection.callStaticMethod(ANDROID_CONFIG.CLASS_PATH + GATE_CLASS, method, ANDROID_CONFIG.METHOD_SIGNATURE, params_json);
         }
         else {
             // 非原生平台
@@ -916,22 +896,23 @@
      * @param wait_time 最大等待时间，默认为100s
      */
     var call_async = function (method, params, wait_time) {
+        if (params === void 0) { params = {}; }
         return __awaiter(void 0, void 0, void 0, function () {
-            var call_id, params_with_call_id;
+            var call_id;
             return __generator(this, function (_a) {
                 call_id = method + "/" + Date.now().toString(36) + "/" + Math.random().toFixed(5);
-                params_with_call_id = Object.assign(params, { call_id: call_id });
                 // 通知原生
-                call(method, JSON.stringify(params_with_call_id));
+                call(method, Object.assign(params, { call_id: call_id }));
                 // 监听回调
                 return [2 /*return*/, new Promise(function (res) {
-                        on_success_once_event(EVENT_NATIVE_CALLBACK, function () {
-                            return native_callbacks.has(call_id);
-                        }, function () {
-                            var result = native_callbacks.get(call_id);
-                            native_callbacks.delete(call_id);
-                            res(result);
-                        });
+                        var t = {};
+                        event_center.on(EVENT_NATIVE_CALLBACK, function () {
+                            if (native_callbacks.has(call_id)) {
+                                res(native_callbacks.get(call_id));
+                                event_center.targetOff(t);
+                                native_callbacks.delete(call_id);
+                            }
+                        }, t);
                     })];
             });
         });
@@ -941,8 +922,8 @@
      * @param call_id 调用id
      * @param call_result 调用结果
      */
-    window[NATIVE_CALLBACK] = function (call_id, call_result) {
-        log(exports.LogLevel.DEV, NATIVE_CALLBACK, call_id, call_result);
+    window["NativeCallback"] = function (call_id, call_result) {
+        log(exports.LogLevel.DEV, "NativeCallback", call_id, call_result);
         native_callbacks.set(call_id, call_result);
         event_center.emit(EVENT_NATIVE_CALLBACK);
     };
@@ -988,7 +969,8 @@
      * 初始化系统，传入父节点
      * @param node
      */
-    var _init_panel_runtime = function (node) {
+    var _init_panel = function (node) {
+        if (node === void 0) { node = new cc.Node(); }
         parent = node;
         log(exports.LogLevel.NORMAL, "初始化panel模块成功，panel_parent=", node);
     };
@@ -1019,10 +1001,11 @@
         var node;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, pre_panel(panel)];
+                case 0:
+                    if (!!panel.context.ins) return [3 /*break*/, 3];
+                    return [4 /*yield*/, pre_panel(panel)];
                 case 1:
                     _a.sent();
-                    if (!!panel.context.ins) return [3 /*break*/, 3];
                     node = cc.instantiate(panel.context.prefab);
                     node.parent = parent;
                     node.position = cc.Vec3.ZERO;
@@ -1161,7 +1144,7 @@
      * - 需要在编辑器中，运行时初始化，传入2个配置数据：ConfigLanguage，编辑器语言
      */
     /** 事件：语言更改 */
-    var EVENT_LANGUAGE_CHANGE = "@event:text/language-change";
+    var EVENT_LANGUAGE_CHANGE = "text/language-change";
     /** 配置 */
     var languages;
     /** 编辑器默认语言 */
@@ -1171,20 +1154,13 @@
      * @param config
      * @param editor 编辑器默认语言
      */
-    var _init_text_editor = function (config, editor) {
-        if (CC_EDITOR) {
-            languages = config;
-            editor_language = editor;
-            !languages[editor_language] && log(exports.LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
-        }
-    };
-    /**
-     * 在运行时初始化 text 模块
-     * @param config
-     */
-    var _init_text_runtime = function (config) {
+    var _init_text = function (config, editor) {
+        if (config === void 0) { config = { chinese: {} }; }
+        if (editor === void 0) { editor = "chinese"; }
         languages = config;
-        log(exports.LogLevel.NORMAL, "初始化text模块成功，text_config=", config);
+        editor_language = editor;
+        !languages[editor_language] && log(exports.LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
+        !CC_EDITOR && log(exports.LogLevel.NORMAL, "初始化text模块成功，text_config=", config);
     };
     /** 获取当前的语言 key */
     var get_language = function () {
@@ -1208,7 +1184,8 @@
         for (var _i = 1; _i < arguments.length; _i++) {
             params[_i - 1] = arguments[_i];
         }
-        var text = CC_EDITOR ? languages[editor_language][key] : languages[get_language()][key];
+        var language = CC_EDITOR ? editor_language : get_language();
+        var text = languages[language][key];
         if (text) {
             return get_template_string.apply(void 0, __spread([text], params));
         }
@@ -1297,7 +1274,7 @@
     /**
      * 将给定微秒数格式化
      * @param ms 微秒数
-     * @param zero 是否显示为 0 的值
+     * @param zero 是否显示为0的值
      * @example
      * ```
      * to_show(888888888); //-> 246:54:48
@@ -1475,10 +1452,10 @@
         return cc.v3(random(-r, r, true), random(-r, r, true));
     };
 
-    /** 当前版本号 */
-    var VERSION = "1.0.0";
-    /** 当前版本时间 */
-    var VERSION_TIME = "2020.5.11";
+    var version = "1.0.0";
+
+    /** 框架版本号 */
+    var VERSION = version;
     /**
      * 在编辑器中初始化框架
      * @param config
@@ -1487,8 +1464,8 @@
         return __generator(this, function (_a) {
             // 注意初始化次序
             _init_log(config.log_level);
-            _init_text_editor(config.text, config.editor_language);
-            _init_color_editor(config.color);
+            _init_text(config.text, config.editor_language);
+            _init_color(config.color);
             return [2 /*return*/];
         });
     }); };
@@ -1502,16 +1479,16 @@
                 case 0:
                     // 注意初始化次序
                     _init_log(config.log_level);
-                    _init_version_runtime(config.version, config.version_info);
-                    _init_local_runtime(config.local);
-                    _init_text_runtime(config.text);
-                    _init_color_runtime(config.color);
-                    _init_audio_runtime(config.audio);
-                    _init_panel_runtime(config.panel_parent);
-                    return [4 /*yield*/, _init_meta_runtime_async()];
+                    _init_version(config.version, config.version_info);
+                    _init_local(config.local);
+                    _init_text(config.text, config.editor_language);
+                    _init_color(config.color);
+                    _init_audio(config.audio);
+                    _init_panel(config.panel_parent);
+                    return [4 /*yield*/, _init_meta_async()];
                 case 1:
                     _a.sent();
-                    log(exports.LogLevel.NORMAL, "初始化框架成功", VERSION, VERSION_TIME);
+                    log(exports.LogLevel.NORMAL, "初始化框架成功", VERSION);
                     return [2 /*return*/];
             }
         });
@@ -1529,17 +1506,15 @@
     exports.StateTable = StateTable;
     exports.Time = time;
     exports.VERSION = VERSION;
-    exports.VERSION_TIME = VERSION_TIME;
-    exports._init_audio_runtime = _init_audio_runtime;
-    exports._init_color_editor = _init_color_editor;
-    exports._init_color_runtime = _init_color_runtime;
-    exports._init_local_runtime = _init_local_runtime;
+    exports._init_audio = _init_audio;
+    exports._init_color = _init_color;
+    exports._init_local = _init_local;
     exports._init_log = _init_log;
-    exports._init_meta_runtime_async = _init_meta_runtime_async;
-    exports._init_panel_runtime = _init_panel_runtime;
-    exports._init_text_editor = _init_text_editor;
-    exports._init_text_runtime = _init_text_runtime;
-    exports._init_version_runtime = _init_version_runtime;
+    exports._init_meta_async = _init_meta_async;
+    exports._init_panel = _init_panel;
+    exports._init_text = _init_text;
+    exports._init_version = _init_version;
+    exports._parse_csv = _parse_csv;
     exports.adjust_canvas = adjust_canvas;
     exports.call = call;
     exports.call_async = call_async;
@@ -1551,6 +1526,7 @@
     exports.do_widget = do_widget;
     exports.do_widget_all = do_widget_all;
     exports.event_center = event_center;
+    exports.get_audio = get_audio;
     exports.get_color = get_color;
     exports.get_filename = get_filename;
     exports.get_language = get_language;
@@ -1586,9 +1562,7 @@
     exports.load_res = load_res;
     exports.load_res_dir = load_res_dir;
     exports.log = log;
-    exports.on_success_once_event = on_success_once_event;
     exports.open_panel = open_panel;
-    exports.parse_csv = parse_csv;
     exports.parse_csv_all = parse_csv_all;
     exports.play_audio = play_audio;
     exports.pointInCircle = pointInCircle;
