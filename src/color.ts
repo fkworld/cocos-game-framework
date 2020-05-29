@@ -11,7 +11,7 @@ import { LogLevel, log } from "./log";
  */
 export interface ConfigColor {
   /** 默认颜色 */
-  none: "FFFFFF";
+  none: string;
   [k: string]: string;
 }
 
