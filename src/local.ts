@@ -15,9 +15,9 @@ export interface ConfigLocal {
   /** 语言 */
   language: string;
   /** 音乐开关 */
-  music: true;
+  music: boolean;
   /** 音效开关 */
-  sound: true;
+  sound: boolean;
   [k: string]: string | boolean | number;
 }
 
