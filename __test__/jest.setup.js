@@ -1,2 +1,2 @@
 require("./cocos2d-js-min.js");
-require("../src/index").init_runtime({});
+require("../src/index").init({});
