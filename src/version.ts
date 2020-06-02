@@ -52,7 +52,6 @@ export const _init_version = (
   version_center.get_all().forEach((v, k) => {
     !v && version_center.del(k);
   });
-  log(LogLevel.NORMAL, "初始化version模块成功", version_center.get_keys(), info);
 };
 
 /** dev模式下全局变量，针对类的装饰器 */

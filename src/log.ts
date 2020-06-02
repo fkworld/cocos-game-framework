@@ -19,7 +19,9 @@ export enum LogLevel {
 /** 当前的输出等级 */
 export let log_level: LogLevel;
 
-export const _init_log = (level: LogLevel) => (log_level = level);
+export const _init_log = (level: LogLevel) => {
+  log_level = level;
+};
 
 /**
  * 输出log

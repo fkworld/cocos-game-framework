@@ -40,7 +40,6 @@ export const _init_text = (
   languages = config;
   editor_language = editor;
   !languages[editor_language] && log(LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
-  !CC_EDITOR && log(LogLevel.NORMAL, "初始化text模块成功，text_config=", config);
 };
 
 /** 获取当前的语言 key */

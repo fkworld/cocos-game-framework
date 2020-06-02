@@ -37,7 +37,6 @@ export const _init_local = (
   locals = new Map();
   locals_default = config;
   version_center.has("resetLocal") && cc.sys.localStorage.clear();
-  log(LogLevel.NORMAL, "初始化local模块成功，local_config=", config);
 };
 
 /**
