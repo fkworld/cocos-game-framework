@@ -1,16 +1,17 @@
 /**
  * 数值表模块
- * - 需要在编辑器中手动将resources/csv下的csv文件生成json文件
- * - 在运行时自动初始化，载入json数据；如果不传入数据，则载入自动生成的json文件
+ * - 需要在编辑器中手动将resources/csv下的csv文件生成ts文件
+ * - 需要在运行时载入
+ * - csv格式时为了更好的组织数值，也可以直接传入数值，结构为name-id-key-value三级对象，均为string
  */
 
 import { log, LogLevel } from "./log";
-import { get_filename, load, load_res, to_editor_url } from "./tool-ccc";
+import { get_filename, load, to_editor_url } from "./tool-ccc";
 
-/** 生成和读取的json文件 */
-const JSON_FILENAME = "csv/auto-generate.json";
+export type ConfigMeta = { [meta: string]: { [id: string]: { [key: string]: string } } };
 
-/** 需要使用到的正则 */
+const AUTO_GENERATE_FILENAME = "csv/auto-generate.ts";
+
 const REGS = {
   // 注释行标记
   COMMENT: /^#/,
@@ -22,19 +23,13 @@ const REGS = {
   LINE: /(?<=,|^)(("[^"]*")+|[^,]*)(?=,|$)/g,
 };
 
-/** meta源数据 */
-let metas: {};
+let metas: ConfigMeta;
 
-/**
- * 在运行时载入meta数据
- * @param json json字符串数据，如果没有传入，则载入自动生成的文件
- */
-export const _init_meta_async = async (json = "{}") => {
-  metas = json ? JSON.parse(json) : (await load_res(JSON_FILENAME, cc.JsonAsset)).json;
+export const _init_meta = (config: ConfigMeta = {}) => {
+  metas = config;
   log(LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
 };
 
-/** meta的基础类 */
 export class MetaBase {
   /** 对应meta表的名称 */
   static meta_names: string[];
@@ -61,7 +56,7 @@ export class MetaBase {
 
 /**
  * 设置meta类上下文的装饰器函数
- * @param meta_names meta 配置表名（推荐不附带后缀名）
+ * @param meta_names meta配置表名
  */
 export const DeSetMetaContext = (...meta_names: string[]) => {
   return (constructor: typeof MetaBase) => {
@@ -133,8 +128,8 @@ export const _parse_csv = (source: string): {} => {
  * 将resoueces/csv/路径下的所有csv文件，转换为同路径下的json文件
  */
 export const parse_csv_all = async () => {
-  let url_target = to_editor_url(JSON_FILENAME);
-  let url_source = to_editor_url(cc.path.dirname(JSON_FILENAME) + "/*.csv");
+  let url_target = to_editor_url(AUTO_GENERATE_FILENAME);
+  let url_source = to_editor_url(cc.path.dirname(AUTO_GENERATE_FILENAME) + "/*.csv");
   let files: Partial<Editor.assetdb.TypeAssetInfo>[] = await new Promise(res => {
     Editor.assetdb.queryAssets(url_source, "text", (err, results) => res(results));
   });
@@ -145,9 +140,13 @@ export const parse_csv_all = async () => {
     r[text.name] = _parse_csv(text.text);
     return r;
   }, {});
-  Editor.assetdb.createOrSave(url_target, JSON.stringify(json), (err: any) => {
-    err
-      ? log(LogLevel.ERROR, "写入csv的总json文件失败，可能是路径问题")
-      : log(LogLevel.NORMAL, "写入csv的总json文件成功");
-  });
+  Editor.assetdb.createOrSave(
+    url_target,
+    `export const CONFIG_META=${JSON.stringify(json)}`,
+    (err: any) => {
+      err
+        ? log(LogLevel.ERROR, "生成csv的ts文件失败")
+        : log(LogLevel.NORMAL, "写入csv的ts文件成功");
+    },
+  );
 };

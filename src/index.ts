@@ -21,7 +21,7 @@ import { ConfigAudio, _init_audio } from "./audio";
 import { ConfigColor, _init_color } from "./color";
 import { ConfigLocal, _init_local } from "./local";
 import { log, LogLevel, _init_log } from "./log";
-import { _init_meta_async } from "./meta";
+import { ConfigMeta, _init_meta } from "./meta";
 import { _init_panel } from "./panel";
 import { ConfigLanguage, _init_text } from "./text";
 import { ConfigVersion, ConfigVersionInfo, _init_version } from "./version";
@@ -37,6 +37,7 @@ export interface Config {
   color: ConfigColor;
   audio: ConfigAudio;
   text: ConfigLanguage;
+  meta: ConfigMeta;
   editor_language: string;
   panel_parent: cc.Node;
   log_level: LogLevel;
@@ -46,22 +47,10 @@ export interface Config {
 export const VERSION = version;
 
 /**
- * 在编辑器中初始化框架
+ * 初始化框架
  * @param config
  */
-export const init_editor = async (config: Config) => {
-  // 注意初始化次序
-  _init_log(config.log_level);
-  _init_text(config.text, config.editor_language);
-  _init_color(config.color);
-};
-
-/**
- * 在运行时初始化框架
- * @param config
- */
-export const init_runtime = async (config: Config) => {
-  // 注意初始化次序
+export const init = (config: Config) => {
   _init_log(config.log_level);
   _init_version(config.version, config.version_info);
   _init_local(config.local);
@@ -69,6 +58,6 @@ export const init_runtime = async (config: Config) => {
   _init_color(config.color);
   _init_audio(config.audio);
   _init_panel(config.panel_parent);
-  await _init_meta_async();
-  log(LogLevel.NORMAL, "初始化框架成功", VERSION);
+  _init_meta(config.meta);
+  !CC_EDITOR && log(LogLevel.DEV, "初始化框架成功", VERSION);
 };

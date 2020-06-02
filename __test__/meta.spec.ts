@@ -1,13 +1,13 @@
 import * as meta from "../src/meta";
 
-meta._init_meta_async(
-  JSON.stringify({
+beforeAll(() => {
+  meta._init_meta({
     MetaTest: {
       1: { id: "1", name: "fy" },
       2: { id: "2", name: "fyfy" },
     },
-  }),
-);
+  });
+});
 
 @meta.DeSetMetaContext("MetaTest")
 class MetaTest extends meta.MetaBase {
