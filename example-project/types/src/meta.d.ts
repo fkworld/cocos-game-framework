@@ -1,14 +1,17 @@
 /**
  * 数值表模块
- * - 需要在编辑器中手动将resources/csv下的csv文件生成json文件
- * - 在运行时自动初始化，载入json数据；如果不传入数据，则载入自动生成的json文件
+ * - 需要在编辑器中手动将resources/csv下的csv文件生成ts文件
+ * - 需要在运行时载入
+ * - csv格式时为了更好的组织数值，也可以直接传入数值，结构为name-id-key-value三级对象，均为string
  */
-/**
- * 在运行时载入meta数据
- * @param json json字符串数据，如果没有传入，则载入自动生成的文件
- */
-export declare const _init_meta_async: (json?: string) => Promise<void>;
-/** meta的基础类 */
+export declare type ConfigMeta = {
+    [meta: string]: {
+        [id: string]: {
+            [key: string]: string;
+        };
+    };
+};
+export declare const _init_meta: (config?: ConfigMeta) => void;
 export declare class MetaBase {
     /** 对应meta表的名称 */
     static meta_names: string[];
@@ -25,7 +28,7 @@ export declare class MetaBase {
 }
 /**
  * 设置meta类上下文的装饰器函数
- * @param meta_names meta 配置表名（推荐不附带后缀名）
+ * @param meta_names meta配置表名
  */
 export declare const DeSetMetaContext: (...meta_names: string[]) => (constructor: typeof MetaBase) => void;
 /**

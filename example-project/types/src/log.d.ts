@@ -16,7 +16,7 @@ export declare enum LogLevel {
 }
 /** 当前的输出等级 */
 export declare let log_level: LogLevel;
-export declare const _init_log: (level: LogLevel) => LogLevel;
+export declare const _init_log: (level: LogLevel) => void;
 /**
  * 输出log
  * - 根据给定的log_level输出log信息。

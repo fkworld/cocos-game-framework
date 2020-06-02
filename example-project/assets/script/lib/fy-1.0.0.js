@@ -114,49 +114,6 @@
     var event_center = new cc.EventTarget();
 
     /**
-     * 日志模块
-     */
-    (function (LogLevel) {
-        /** 开发者。 */
-        LogLevel[LogLevel["DEV"] = 0] = "DEV";
-        /** 正常。 */
-        LogLevel[LogLevel["NORMAL"] = 1] = "NORMAL";
-        /** 警告信息。发生了一些错误，一般不会导致游戏崩溃。 */
-        LogLevel[LogLevel["WARN"] = 2] = "WARN";
-        /** 错误信息。发生了一些错误，可能会导致游戏崩溃。 */
-        LogLevel[LogLevel["ERROR"] = 3] = "ERROR";
-        /** 重大错误信息。一般需要重启游戏。 */
-        LogLevel[LogLevel["IMPORTANT_ERROR"] = 4] = "IMPORTANT_ERROR";
-    })(exports.LogLevel || (exports.LogLevel = {}));
-    var _init_log = function (level) { return (exports.log_level = level); };
-    /**
-     * 输出log
-     * - 根据给定的log_level输出log信息。
-     * - console还有很多高级用法，这里不做封装，可以直接使用。参考：https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13
-     * @param level
-     * @param params
-     */
-    var log = function (level) {
-        var params = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            params[_i - 1] = arguments[_i];
-        }
-        if (level < exports.log_level) {
-            return;
-        }
-        switch (level) {
-            case exports.LogLevel.DEV:
-            case exports.LogLevel.NORMAL:
-                return cc.log.apply(cc, __spread(["[" + level + "]:"], params));
-            case exports.LogLevel.WARN:
-                return cc.warn.apply(cc, __spread(["[" + level + "]:"], params));
-            case exports.LogLevel.ERROR:
-            case exports.LogLevel.IMPORTANT_ERROR:
-                return cc.error.apply(cc, __spread(["[" + level + "]:"], params));
-        }
-    };
-
-    /**
      * 状态表
      * - key 为状态名称
      * - value 状态内容
@@ -219,12 +176,10 @@
      */
     var _init_version = function (config, info) {
         if (config === void 0) { config = { resetLocal: 1 }; }
-        if (info === void 0) { info = {}; }
         exports.version_center = new StateTable(config);
         exports.version_center.get_all().forEach(function (v, k) {
             !v && exports.version_center.del(k);
         });
-        log(exports.LogLevel.NORMAL, "初始化version模块成功", exports.version_center.get_keys(), info);
     };
     /** dev模式下全局变量，针对类的装饰器 */
     var DeDevConsole = function (constructor) {
@@ -252,7 +207,6 @@
         locals = new Map();
         locals_default = config;
         exports.version_center.has("resetLocal") && cc.sys.localStorage.clear();
-        log(exports.LogLevel.NORMAL, "初始化local模块成功，local_config=", config);
     };
     /**
      * 获取本地存储值
@@ -274,6 +228,51 @@
     var set_local = function (key, value) {
         locals.set(key, value);
         Promise.resolve().then(function () { return cc.sys.localStorage.setItem(key, value); });
+    };
+
+    /**
+     * 日志模块
+     */
+    (function (LogLevel) {
+        /** 开发者。 */
+        LogLevel[LogLevel["DEV"] = 0] = "DEV";
+        /** 正常。 */
+        LogLevel[LogLevel["NORMAL"] = 1] = "NORMAL";
+        /** 警告信息。发生了一些错误，一般不会导致游戏崩溃。 */
+        LogLevel[LogLevel["WARN"] = 2] = "WARN";
+        /** 错误信息。发生了一些错误，可能会导致游戏崩溃。 */
+        LogLevel[LogLevel["ERROR"] = 3] = "ERROR";
+        /** 重大错误信息。一般需要重启游戏。 */
+        LogLevel[LogLevel["IMPORTANT_ERROR"] = 4] = "IMPORTANT_ERROR";
+    })(exports.LogLevel || (exports.LogLevel = {}));
+    var _init_log = function (level) {
+        exports.log_level = level;
+    };
+    /**
+     * 输出log
+     * - 根据给定的log_level输出log信息。
+     * - console还有很多高级用法，这里不做封装，可以直接使用。参考：https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13
+     * @param level
+     * @param params
+     */
+    var log = function (level) {
+        var params = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            params[_i - 1] = arguments[_i];
+        }
+        if (level < exports.log_level) {
+            return;
+        }
+        switch (level) {
+            case exports.LogLevel.DEV:
+            case exports.LogLevel.NORMAL:
+                return cc.log.apply(cc, __spread(["[" + level + "]:"], params));
+            case exports.LogLevel.WARN:
+                return cc.warn.apply(cc, __spread(["[" + level + "]:"], params));
+            case exports.LogLevel.ERROR:
+            case exports.LogLevel.IMPORTANT_ERROR:
+                return cc.error.apply(cc, __spread(["[" + level + "]:"], params));
+        }
     };
 
     /**
@@ -556,7 +555,6 @@
         }));
         music_switch = get_local("music") === "true";
         sound_switch = get_local("sound") === "true";
-        log(exports.LogLevel.NORMAL, "初始化audio模块成功，audio_config=", config);
     };
     /** 获取音乐开关 */
     var get_music_switch = function () { return music_switch; };
@@ -656,7 +654,6 @@
     var _init_color = function (config) {
         if (config === void 0) { config = { none: "ffffff" }; }
         colors = config;
-        !CC_EDITOR && log(exports.LogLevel.NORMAL, "初始化color模块成功，color_config=", config);
     };
     /**
      * 从配置中获取颜色，如果无颜色，则返回白色
@@ -674,12 +671,11 @@
 
     /**
      * 数值表模块
-     * - 需要在编辑器中手动将resources/csv下的csv文件生成json文件
-     * - 在运行时自动初始化，载入json数据；如果不传入数据，则载入自动生成的json文件
+     * - 需要在编辑器中手动将resources/csv下的csv文件生成ts文件
+     * - 需要在运行时载入
+     * - csv格式时为了更好的组织数值，也可以直接传入数值，结构为name-id-key-value三级对象，均为string
      */
-    /** 生成和读取的json文件 */
-    var JSON_FILENAME = "csv/auto-generate.json";
-    /** 需要使用到的正则 */
+    var AUTO_GENERATE_FILENAME = "csv/auto-generate.ts";
     var REGS = {
         // 注释行标记
         COMMENT: /^#/,
@@ -690,35 +686,11 @@
         // 单行中的块拆分正则
         LINE: /(?<=,|^)(("[^"]*")+|[^,]*)(?=,|$)/g,
     };
-    /** meta源数据 */
     var metas;
-    /**
-     * 在运行时载入meta数据
-     * @param json json字符串数据，如果没有传入，则载入自动生成的文件
-     */
-    var _init_meta_async = function (json) {
-        if (json === void 0) { json = "{}"; }
-        return __awaiter(void 0, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        if (!json) return [3 /*break*/, 1];
-                        _a = JSON.parse(json);
-                        return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, load_res(JSON_FILENAME, cc.JsonAsset)];
-                    case 2:
-                        _a = (_b.sent()).json;
-                        _b.label = 3;
-                    case 3:
-                        metas = _a;
-                        log(exports.LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
-                        return [2 /*return*/];
-                }
-            });
-        });
+    var _init_meta = function (config) {
+        if (config === void 0) { config = {}; }
+        metas = config;
     };
-    /** meta的基础类 */
     var MetaBase = /** @class */ (function () {
         function MetaBase() {
         }
@@ -745,7 +717,7 @@
     }());
     /**
      * 设置meta类上下文的装饰器函数
-     * @param meta_names meta 配置表名（推荐不附带后缀名）
+     * @param meta_names meta配置表名
      */
     var DeSetMetaContext = function () {
         var meta_names = [];
@@ -819,8 +791,8 @@
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    url_target = to_editor_url(JSON_FILENAME);
-                    url_source = to_editor_url(cc.path.dirname(JSON_FILENAME) + "/*.csv");
+                    url_target = to_editor_url(AUTO_GENERATE_FILENAME);
+                    url_source = to_editor_url(cc.path.dirname(AUTO_GENERATE_FILENAME) + "/*.csv");
                     return [4 /*yield*/, new Promise(function (res) {
                             Editor.assetdb.queryAssets(url_source, "text", function (err, results) { return res(results); });
                         })];
@@ -833,10 +805,10 @@
                         r[text.name] = _parse_csv(text.text);
                         return r;
                     }, {});
-                    Editor.assetdb.createOrSave(url_target, JSON.stringify(json), function (err) {
+                    Editor.assetdb.createOrSave(url_target, "export const CONFIG_META=" + JSON.stringify(json), function (err) {
                         err
-                            ? log(exports.LogLevel.ERROR, "写入csv的总json文件失败，可能是路径问题")
-                            : log(exports.LogLevel.NORMAL, "写入csv的总json文件成功");
+                            ? log(exports.LogLevel.ERROR, "生成csv的ts文件失败")
+                            : log(exports.LogLevel.NORMAL, "写入csv的ts文件成功");
                     });
                     return [2 /*return*/];
             }
@@ -972,7 +944,6 @@
     var _init_panel = function (node) {
         if (node === void 0) { node = new cc.Node(); }
         parent = node;
-        log(exports.LogLevel.NORMAL, "初始化panel模块成功，panel_parent=", node);
     };
     /**
      * 预载入界面 prefab
@@ -1160,7 +1131,6 @@
         languages = config;
         editor_language = editor;
         !languages[editor_language] && log(exports.LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
-        !CC_EDITOR && log(exports.LogLevel.NORMAL, "初始化text模块成功，text_config=", config);
     };
     /** 获取当前的语言 key */
     var get_language = function () {
@@ -1457,42 +1427,20 @@
     /** 框架版本号 */
     var VERSION = version;
     /**
-     * 在编辑器中初始化框架
+     * 初始化框架
      * @param config
      */
-    var init_editor = function (config) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            // 注意初始化次序
-            _init_log(config.log_level);
-            _init_text(config.text, config.editor_language);
-            _init_color(config.color);
-            return [2 /*return*/];
-        });
-    }); };
-    /**
-     * 在运行时初始化框架
-     * @param config
-     */
-    var init_runtime = function (config) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    // 注意初始化次序
-                    _init_log(config.log_level);
-                    _init_version(config.version, config.version_info);
-                    _init_local(config.local);
-                    _init_text(config.text, config.editor_language);
-                    _init_color(config.color);
-                    _init_audio(config.audio);
-                    _init_panel(config.panel_parent);
-                    return [4 /*yield*/, _init_meta_async()];
-                case 1:
-                    _a.sent();
-                    log(exports.LogLevel.NORMAL, "初始化框架成功", VERSION);
-                    return [2 /*return*/];
-            }
-        });
-    }); };
+    var init = function (config) {
+        _init_log(config.log_level);
+        _init_version(config.version, config.version_info);
+        _init_local(config.local);
+        _init_text(config.text, config.editor_language);
+        _init_color(config.color);
+        _init_audio(config.audio);
+        _init_panel(config.panel_parent);
+        _init_meta(config.meta);
+        !CC_EDITOR && log(exports.LogLevel.DEV, "初始化框架成功", VERSION, config);
+    };
 
     exports.DeDevConsole = DeDevConsole;
     exports.DeDevConsoleNamespace = DeDevConsoleNamespace;
@@ -1510,7 +1458,7 @@
     exports._init_color = _init_color;
     exports._init_local = _init_local;
     exports._init_log = _init_log;
-    exports._init_meta_async = _init_meta_async;
+    exports._init_meta = _init_meta;
     exports._init_panel = _init_panel;
     exports._init_text = _init_text;
     exports._init_version = _init_version;
@@ -1540,8 +1488,7 @@
     exports.get_sound_switch = get_sound_switch;
     exports.get_template_string = get_template_string;
     exports.get_text = get_text;
-    exports.init_editor = init_editor;
-    exports.init_runtime = init_runtime;
+    exports.init = init;
     exports.is_android = is_android;
     exports.is_array = is_array;
     exports.is_bigint = is_bigint;
