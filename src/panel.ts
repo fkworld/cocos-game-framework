@@ -90,7 +90,6 @@ type ParamPanelClose<T extends PanelClass> = Parameters<T["prototype"]["on_close
  */
 export const _init_panel = (node: cc.Node = new cc.Node()) => {
   parent = node;
-  log(LogLevel.NORMAL, "初始化panel模块成功，panel_parent=", node);
 };
 
 /**

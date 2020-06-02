@@ -59,5 +59,5 @@ export const init = (config: Config) => {
   _init_audio(config.audio);
   _init_panel(config.panel_parent);
   _init_meta(config.meta);
-  !CC_EDITOR && log(LogLevel.DEV, "初始化框架成功", VERSION);
+  !CC_EDITOR && log(LogLevel.DEV, "初始化框架成功", VERSION, config);
 };

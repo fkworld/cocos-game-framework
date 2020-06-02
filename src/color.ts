@@ -19,7 +19,6 @@ let colors: ConfigColor;
 
 export const _init_color = (config: ConfigColor = { none: "ffffff" }) => {
   colors = config;
-  !CC_EDITOR && log(LogLevel.NORMAL, "初始化color模块成功，color_config=", config);
 };
 
 /**

@@ -83,7 +83,6 @@ export const _init_audio = (config: ConfigAudio = {}) => {
   );
   music_switch = get_local("music") === "true";
   sound_switch = get_local("sound") === "true";
-  log(LogLevel.NORMAL, "初始化audio模块成功，audio_config=", config);
 };
 
 /** 获取音乐开关 */

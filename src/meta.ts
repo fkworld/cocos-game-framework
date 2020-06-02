@@ -27,7 +27,6 @@ let metas: ConfigMeta;
 
 export const _init_meta = (config: ConfigMeta = {}) => {
   metas = config;
-  log(LogLevel.NORMAL, "初始化meta模块成功，metas=", metas);
 };
 
 export class MetaBase {
