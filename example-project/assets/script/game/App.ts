@@ -1,3 +1,4 @@
+import { CONFIG_META } from "../../resources/csv/auto-generate";
 import { DataAudio } from "../config/DataAudio";
 import { DataColor } from "../config/DataColor";
 import { DataLocal } from "../config/DataLocal";
@@ -13,11 +14,12 @@ const APP_CONFIG: fy.Config = {
   text: DataLanguage,
   color: DataColor,
   audio: DataAudio,
+  meta: CONFIG_META,
   editor_language: "chinese",
   panel_parent: undefined,
   log_level: fy.LogLevel.DEV,
 };
-fy.init_editor(APP_CONFIG);
+CC_EDITOR && fy.init(APP_CONFIG);
 
 /**
  * 游戏启动主入口
@@ -46,7 +48,8 @@ export class App extends cc.Component {
     // loading动画
     // this.loading_show()
     // 各子系统初始化
-    await fy.init_runtime(Object.assign(APP_CONFIG, { panel_parent: this.panel_parent }));
+    APP_CONFIG.panel_parent = this.panel_parent;
+    await fy.init(APP_CONFIG);
     fy.adjust_canvas(cc.Canvas.instance);
     // 游戏启动逻辑
     fy.open_panel(PanelExample);

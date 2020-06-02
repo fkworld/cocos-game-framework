@@ -19,6 +19,7 @@ import { ConfigAudio } from "./audio";
 import { ConfigColor } from "./color";
 import { ConfigLocal } from "./local";
 import { LogLevel } from "./log";
+import { ConfigMeta } from "./meta";
 import { ConfigLanguage } from "./text";
 import { ConfigVersion, ConfigVersionInfo } from "./version";
 /**
@@ -32,6 +33,7 @@ export interface Config {
     color: ConfigColor;
     audio: ConfigAudio;
     text: ConfigLanguage;
+    meta: ConfigMeta;
     editor_language: string;
     panel_parent: cc.Node;
     log_level: LogLevel;
@@ -39,12 +41,7 @@ export interface Config {
 /** 框架版本号 */
 export declare const VERSION: string;
 /**
- * 在编辑器中初始化框架
+ * 初始化框架
  * @param config
  */
-export declare const init_editor: (config: Config) => Promise<void>;
-/**
- * 在运行时初始化框架
- * @param config
- */
-export declare const init_runtime: (config: Config) => Promise<void>;
+export declare const init: (config: Config) => void;
