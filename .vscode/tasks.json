@@ -23,6 +23,13 @@
       "problemMatcher": [],
       "label": "npm: test",
       "detail": "npx jest --silent --verbose --coverage"
+    },
+    {
+      "type": "npm",
+      "script": "prettier",
+      "problemMatcher": [],
+      "label": "npm: prettier",
+      "detail": "npx prettier --loglevel=silent --write ."
     }
   ]
 }
