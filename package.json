@@ -6,7 +6,8 @@
   "scripts": {
     "build": "npx rollup -c",
     "copy": "npx ts-node scripts/copy-to-example-project.ts",
-    "test": "npx jest --silent --verbose --coverage"
+    "test": "npx jest --silent --verbose --coverage",
+    "prettier": "npx prettier --loglevel=silent --write ."
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "canvas": "^2.6.1",
     "fs-extra": "^9.0.0",
     "jest": "^26.0.1",
+    "prettier": "^2.0.5",
     "rollup": "^2.8.2",
     "rollup-plugin-typescript2": "^0.27.0",
     "ts-jest": "^26.0.0",

@@ -224,7 +224,7 @@ declare namespace Editor {
         path: TypeAssetFspath,
         mountPath: string,
         opts: { hide: any; virtual: any; icon: any },
-        cb: Function
+        cb: Function,
       );
       function unmount(path: TypeAssetFspath, cb: Function);
       function attachMountPath(path: TypeAssetFspath, cb: Function);
@@ -240,7 +240,7 @@ declare namespace Editor {
       rawfiles: TypeFsPath[],
       destUrl: TypeAssetUrl,
       showProgress: boolean,
-      cb: Function
+      cb: Function,
     );
     function create(url: TypeAssetUrl, data: string, cb: Function);
     function move(srcUrl: string, destUrl: string, showMessageBox);
@@ -264,7 +264,7 @@ declare namespace Editor {
     function queryAssets(
       pattern: TypeAssetUrl,
       type: AssetType | AssetType[],
-      cb: (err: Error, results: Partial<TypeAssetInfo>[]) => void
+      cb: (err: Error, results: Partial<TypeAssetInfo>[]) => void,
     );
   }
 }
