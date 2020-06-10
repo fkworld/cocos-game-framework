@@ -15,7 +15,6 @@ class MetaTest extends meta.MetaBase {
     this.id = s["id"];
     this.name = s["name"];
   }
-  /** 创建meta类实例时，如果没有源数据，则设置为给定的默认值 */
   use_default(id: string): void {
     this.id = id;
     this.name = `fy${id}`;
@@ -24,28 +23,30 @@ class MetaTest extends meta.MetaBase {
   name: string;
 }
 
-test("get_meta", () => {
-  let meta1 = meta.get_meta(MetaTest, "1");
-  expect(meta1.name).toBe("fy");
-  let meta2 = meta.get_meta(MetaTest, "2");
-  expect(meta2.name).toBe("fyfy");
-  let meta3 = meta.get_meta(MetaTest, "3");
-  expect(meta3.name).toBe("fy3");
+describe(meta.get_meta.name, () => {
+  test("special", () => {
+    expect(meta.get_meta(MetaTest, "1").name).toBe("fy");
+    expect(meta.get_meta(MetaTest, "2").name).toBe("fyfy");
+  });
+  test("default", () => {
+    expect(meta.get_meta(MetaTest, "3").name).toBe("fy3");
+  });
+  test("error", () => {
+    @meta.DeSetMetaContext("MetaError")
+    class ErrorMeta extends meta.MetaBase {}
+    expect(ErrorMeta.get_meta_source()).toBeUndefined();
+  });
 });
 
-test("get_metas", () => {
-  let metas = meta.get_metas(MetaTest);
-  expect(metas.length).toBe(2);
-  expect(metas[0] instanceof MetaTest).toBe(true);
+describe(meta.get_metas.name, () => {
+  test("", () => {
+    expect(meta.get_metas(MetaTest)).toHaveLength(2);
+    expect(meta.get_metas(MetaTest)[0]).toBeInstanceOf(MetaTest);
+  });
 });
 
-test("get_metas_ids", () => {
-  expect(meta.get_metas_ids(MetaTest)).toEqual(["1", "2"]);
-});
-
-test("_parse_csv", () => {
-  expect(meta._parse_csv("#common-line\r\n@id,name\r\n1,fy\r\n2,fyfy\r\n")).toEqual({
-    1: { id: "1", name: "fy" },
-    2: { id: "2", name: "fyfy" },
+describe(meta.get_metas_ids.name, () => {
+  test("", () => {
+    expect(meta.get_metas_ids(MetaTest)).toEqual(["1", "2"]);
   });
 });
