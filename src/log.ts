@@ -30,7 +30,7 @@ export const _init_log = (level: LogLevel) => {
  * @param level
  * @param params
  */
-export const log = (level: LogLevel, ...params: any[]) => {
+export function log(level: LogLevel, ...params: any[]) {
   if (level < log_level) {
     return;
   }
@@ -44,4 +44,4 @@ export const log = (level: LogLevel, ...params: any[]) => {
     case LogLevel.IMPORTANT_ERROR:
       return cc.error(`[${level}]:`, ...params);
   }
-};
+}

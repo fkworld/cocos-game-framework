@@ -25,9 +25,9 @@ const REGS = {
 
 let metas: ConfigMeta;
 
-export const _init_meta = (config: ConfigMeta = {}) => {
+export function _init_meta(config: ConfigMeta = {}) {
   metas = config;
-};
+}
 
 export class MetaBase {
   /** 对应meta表的名称 */
@@ -57,45 +57,45 @@ export class MetaBase {
  * 设置meta类上下文的装饰器函数
  * @param meta_names meta配置表名
  */
-export const DeSetMetaContext = (...meta_names: string[]) => {
+export function DeSetMetaContext(...meta_names: string[]) {
   return (constructor: typeof MetaBase) => {
     constructor.meta_names = meta_names;
   };
-};
+}
 
 /**
  * 获取单个的meta
  * @param meta_class
  * @param id
  */
-export const get_meta = <T extends typeof MetaBase>(meta_class: T, id: string): InstanceType<T> => {
+export function get_meta<T extends typeof MetaBase>(meta_class: T, id: string): InstanceType<T> {
   let meta = new meta_class();
   let source = meta_class.meta_merge[id];
   source ? meta.use_special(source) : meta.use_default(id);
   return meta as any;
-};
+}
 
 /**
  * 获取meta数组
  * @param meta_class
  */
-export const get_metas = <T extends typeof MetaBase>(meta_class: T): InstanceType<T>[] => {
+export function get_metas<T extends typeof MetaBase>(meta_class: T): InstanceType<T>[] {
   return Object.keys(meta_class.meta_merge).map(id => get_meta(meta_class, id));
-};
+}
 
 /**
  * 获取所有meta的id数组
  * @param meta_class
  */
-export const get_metas_ids = <T extends typeof MetaBase>(meta_class: T): string[] => {
+export function get_metas_ids<T extends typeof MetaBase>(meta_class: T): string[] {
   return Object.keys(meta_class.meta_merge);
-};
+}
 
 /**
  * 解析csv文件为json对象
  * @param source csv文件内容
  */
-export const _parse_csv = (source: string): {} => {
+export function _parse_csv(source: string) {
   // 属性行
   let headers: string[] = [];
   // 拆分行
@@ -121,12 +121,12 @@ export const _parse_csv = (source: string): {} => {
     }
     return result;
   }, {});
-};
+}
 
 /**
  * 将resoueces/csv/路径下的所有csv文件，转换为同路径下的json文件
  */
-export const parse_csv_all = async () => {
+export async function parse_csv_all() {
   let url_target = to_editor_url(AUTO_GENERATE_FILENAME);
   let url_source = to_editor_url(cc.path.dirname(AUTO_GENERATE_FILENAME) + "/*.csv");
   let files: Partial<Editor.assetdb.TypeAssetInfo>[] = await new Promise(res => {
@@ -148,4 +148,4 @@ export const parse_csv_all = async () => {
         : log(LogLevel.NORMAL, "写入csv的ts文件成功");
     },
   );
-};
+}

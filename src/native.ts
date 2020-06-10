@@ -23,20 +23,26 @@ const EVENT_NATIVE_CALLBACK = "@event:native/native-callback";
 let native_callbacks: Map<string, string> = new Map();
 
 /** 判断为android平台 */
-export const is_android = () => cc.sys.isNative && cc.sys.os == cc.sys.OS_ANDROID;
+export function is_android() {
+  return cc.sys.isNative && cc.sys.os == cc.sys.OS_ANDROID;
+}
 
 /** 判断为ios平台 */
-export const is_ios = () => cc.sys.isNative && cc.sys.os == cc.sys.OS_IOS;
+export function is_ios() {
+  return cc.sys.isNative && cc.sys.os == cc.sys.OS_IOS;
+}
 
 /** 判断为原生平台 */
-export const is_native = () => cc.sys.isNative;
+export function is_native() {
+  return cc.sys.isNative;
+}
 
 /**
  * 调用原生
  * @param method 方法名
  * @param params 入参；如果是json字符串，请在外部手动传入
  */
-export const call = (method: string, params = {}): string => {
+export function call(method: string, params = {}): string {
   let params_json = JSON.stringify(params);
   if (is_ios()) {
     log(LogLevel.DEV, method, params_json);
@@ -53,7 +59,7 @@ export const call = (method: string, params = {}): string => {
     // 非原生平台
     return;
   }
-};
+}
 
 /**
  * 异步调用
@@ -62,7 +68,7 @@ export const call = (method: string, params = {}): string => {
  * @param params 入参
  * @param wait_time 最大等待时间，默认为100s
  */
-export const call_async = async (method: string, params = {}, wait_time = 100): Promise<string> => {
+export async function call_async(method: string, params = {}, wait_time = 100): Promise<string> {
   // 拼接回调id：方法名+当前时间+随机数
   let call_id = `${method}/${Date.now().toString(36)}/${Math.random().toFixed(5)}`;
   // 通知原生
@@ -82,7 +88,7 @@ export const call_async = async (method: string, params = {}, wait_time = 100): 
       t,
     );
   });
-};
+}
 
 /**
  * 原生调js的全局方法
