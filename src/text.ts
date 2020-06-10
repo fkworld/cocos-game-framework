@@ -7,6 +7,7 @@ import { event_center } from "./event";
 import { get_local, set_local } from "./local";
 import { log, LogLevel } from "./log";
 import { get_template_string } from "./tool";
+import { load_res } from "./tool-ccc";
 
 /** 事件：语言更改 */
 export const EVENT_LANGUAGE_CHANGE = "text/language-change";
@@ -66,5 +67,29 @@ export function get_text(key: string, ...params: string[]) {
   } else {
     log(LogLevel.ERROR, `key不存在, key=${key}`);
     return key;
+  }
+}
+
+/**
+ * 设置节点的text数据
+ * @param node
+ * @param key
+ * @param params
+ */
+export function set_node_text(node: cc.Node, key: string, ...params: string[]) {
+  let result = get_text(key, ...params);
+  if (node.getComponent(cc.Label)) {
+    node.getComponent(cc.Label).string = result;
+    return;
+  }
+  if (node.getComponent(cc.RichText)) {
+    node.getComponent(cc.RichText).string = result;
+    return;
+  }
+  if (node.getComponent(cc.Sprite)) {
+    load_res(result, cc.SpriteFrame).then(v => {
+      node.getComponent(cc.Sprite).spriteFrame = v;
+    });
+    return;
   }
 }
