@@ -9,10 +9,9 @@ const { ccclass, property, executeInEditMode } = cc._decorator;
 export class TText extends cc.Component {
   onLoad() {
     if (CC_EDITOR) {
-      this.update_show();
-      cc.log(`@TText:在编辑器中修改了文字,node=${this.node.name}`);
+      fy.set_node_text(this.node,this.key,...this.params)
     } else {
-      this.is_onload && this.update_show();
+      this.is_onload && fy.set_node_text(this.node,this.key,...this.params)
     }
   }
 
@@ -30,25 +29,6 @@ export class TText extends cc.Component {
     return false;
   }
   private set E(v: boolean) {
-    CC_EDITOR && this.update_show();
-  }
-
-  /** 更新显示 */
-  private async update_show() {
-    let result = fy.get_text(this.key as any, ...this.params);
-    // cc.Label
-    if (this.getComponent(cc.Label)) {
-      this.getComponent(cc.Label).string = result;
-      return;
-    }
-    // cc.RichText
-    if (this.getComponent(cc.RichText)) {
-      this.getComponent(cc.RichText).string = result;
-      return;
-    }
-    // cc.Sprite
-    if (this.getComponent(cc.Sprite)) {
-      this.getComponent(cc.Sprite).spriteFrame = await fy.load_res(result, cc.SpriteFrame);
-    }
-  }
+    CC_EDITOR && fy.set_node_text(this.node,this.key,...this.params)
+  } 
 }
