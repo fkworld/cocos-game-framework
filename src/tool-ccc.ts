@@ -206,3 +206,38 @@ export function get_filename(path: string) {
 export function to_editor_url(path: string) {
   return (cc.path.join as any)("db://assets/resources/", path);
 }
+
+/**
+ * 获取子节点
+ * - 使用cc.find获取子节点
+ * @param n
+ * @param childs 子节点类型
+ * @param childs_path 子节点路径
+ */
+export function get_node_childs<T extends { [k: string]: typeof cc.Node | typeof cc.Component }>(
+  n: cc.Node,
+  childs: T,
+  childs_path: Partial<Record<keyof T, string>> = {},
+): TypeChilds<T> {
+  let r = { self: n };
+  Object.entries(childs).forEach(([k, v]) => {
+    let path = childs_path[k] || k;
+    let child_node = cc.find(path, n);
+    if (!child_node) {
+      log(LogLevel.ERROR, "获取子节点失败，path=", path);
+      r[k] = child_node;
+      return;
+    }
+    r[k] = v === cc.Node ? child_node : child_node.getComponent(v as any);
+  });
+  return r as any;
+}
+
+/**
+ * 子节点类型
+ */
+export type TypeChilds<T extends { [k: string]: typeof cc.Node | typeof cc.Component }> = {
+  [k in keyof T]: T[k] extends typeof cc.Component ? InstanceType<T[k]> : cc.Node;
+} & {
+  self: cc.Node;
+};
