@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    // 由于jest只能测试es5代码，因此这里需要为es5
     "target": "ES5",
-    "module": "CommonJS",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "lib": ["DOM", "ESNext"],
     "experimentalDecorators": true,
     "skipLibCheck": true,
@@ -10,6 +12,5 @@
     "resolveJsonModule": true
   },
   "files": ["example-project/creator.d.ts", "types/game.d.ts"],
-  "include": ["src/**/*", "__test__/**/*"],
-  "exclude": ["node_modules", "example-project"]
+  "include": ["src/**/*", "__test__/**/*"]
 }
