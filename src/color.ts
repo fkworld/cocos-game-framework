@@ -33,3 +33,12 @@ export function get_color(color_key: string): cc.Color {
     return cc.Color.WHITE;
   }
 }
+
+/**
+ * 设置节点颜色
+ * @param node
+ * @param color_key
+ */
+export function set_node_color(node: cc.Node, color_key: string) {
+  node.color = get_color(color_key);
+}
