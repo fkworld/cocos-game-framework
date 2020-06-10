@@ -59,7 +59,7 @@ export abstract class PanelBase extends cc.Component {
  * 设置panel类上下文的装饰器
  * @param config
  */
-export const DeSetPanelContext = (path: string, type = "old", z_index_base = 0) => {
+export function DeSetPanelContext(path: string, type = "old", z_index_base = 0) {
   return (constructor: typeof PanelBase) => {
     constructor.context = {
       path: path,
@@ -73,7 +73,7 @@ export const DeSetPanelContext = (path: string, type = "old", z_index_base = 0) 
       }),
     };
   };
-};
+}
 
 /** panel的子类 */
 type PanelClass = typeof PanelBase;
@@ -88,25 +88,25 @@ type ParamPanelClose<T extends PanelClass> = Parameters<T["prototype"]["on_close
  * 初始化系统，传入父节点
  * @param node
  */
-export const _init_panel = (node: cc.Node = new cc.Node()) => {
+export function _init_panel(node: cc.Node = new cc.Node()) {
   parent = node;
-};
+}
 
 /**
  * 预载入界面 prefab
  * @param panel
  */
-export const pre_panel = async (panel: PanelClass) => {
+export async function pre_panel(panel: PanelClass) {
   if (!panel.context.prefab) {
     panel.context.prefab = await load_res(panel.context.path, cc.Prefab);
   }
-};
+}
 
 /**
  * 获取界面实例，如果获取不到，则创建新的
  * @param panel
  */
-const get_panel = async (panel: PanelClass) => {
+async function get_panel(panel: PanelClass) {
   if (!panel.context.ins) {
     await pre_panel(panel);
     let node = cc.instantiate(panel.context.prefab);
@@ -118,14 +118,14 @@ const get_panel = async (panel: PanelClass) => {
     await panel.context.ins.on_create();
   }
   return panel.context.ins;
-};
+}
 
 /**
  * 打开页面
  * @param panel
  * @param params
  */
-export const open_panel = async <T extends PanelClass>(panel: T, ...params: ParamPanelOpen<T>) => {
+export async function open_panel<T extends PanelClass>(panel: T, ...params: ParamPanelOpen<T>) {
   // 校验
   if (!panel.context.state.try_go_state("open")) {
     return;
@@ -137,17 +137,14 @@ export const open_panel = async <T extends PanelClass>(panel: T, ...params: Para
   ins.node.active = true;
   // 动画
   await panel.context.ins.on_open(...params);
-};
+}
 
 /**
  * 关闭页面
  * @param panel
  * @param params
  */
-export const close_panel = async <T extends PanelClass>(
-  panel: T,
-  ...params: ParamPanelClose<T>
-) => {
+export async function close_panel<T extends PanelClass>(panel: T, ...params: ParamPanelClose<T>) {
   // 校验
   if (!panel.context.state.try_go_state("close")) {
     return;
@@ -160,4 +157,4 @@ export const close_panel = async <T extends PanelClass>(
   } else if (panel.context.type === "old") {
     panel.context.ins.node.active = false;
   }
-};
+}

@@ -31,10 +31,10 @@ type TimeInput = string | number;
  * 检查输入参数的合理性
  * @param input
  */
-const check_time_input = (input: TimeInput): boolean => {
+function check_time_input(input: TimeInput): boolean {
   let REG = /^[0-9]+\.?[0-9]*(ms|s|m|h|d)$/g;
   return (is_string(input) && REG.test(input)) || is_number(input);
-};
+}
 
 /**
  * 数据组
@@ -74,7 +74,7 @@ export const D_MS = H_MODE * H_MS;
  * @param source
  * @example
  */
-export const to_ms = (source: TimeInput): number => {
+export function to_ms(source: TimeInput): number {
   if (!check_time_input(source)) {
     log(LogLevel.ERROR, `转义错误，func="to_ms"，source=${source}`);
     return;
@@ -99,9 +99,9 @@ export const to_ms = (source: TimeInput): number => {
   } else {
     return source;
   }
-};
+}
 
-export const to_group = (source: TimeInput): TimeGroup => {
+export function to_group(source: TimeInput): TimeGroup {
   let ms = to_ms(source);
   let ms_fix = get_positive_mode(ms, MS_MODE);
   let s = Math.floor(ms / S_MS);
@@ -111,7 +111,7 @@ export const to_group = (source: TimeInput): TimeGroup => {
   let h = Math.floor(ms / H_MS);
   let h_fix = get_positive_mode(h, H_MODE);
   return { ms, ms_fix, s, s_fix, m: m, m_fix: m_fix, h, h_fix };
-};
+}
 
 /**
  * 将给定微秒数格式化
@@ -125,7 +125,7 @@ export const to_group = (source: TimeInput): TimeGroup => {
  * to_show(88888, false); //-> 01:28
  * ```
  */
-export const to_show = (source: TimeInput, zero: boolean = true) => {
+export function to_show(source: TimeInput, zero: boolean = true) {
   let group = to_group(source);
   let r = [group.h, group.m_fix, group.s_fix];
   // 过滤
@@ -135,7 +135,7 @@ export const to_show = (source: TimeInput, zero: boolean = true) => {
     }
   }
   return r.length === 1 ? r.join("") : r.map(v => v.toString().padStart(2, "0")).join(":");
-};
+}
 
 /**
  * 显示为时间字符串
@@ -145,12 +145,14 @@ export const to_show = (source: TimeInput, zero: boolean = true) => {
  * to_timestring(1589974698751); //-> "19:38:18 GMT+0800 (中国标准时间)"
  * ```
  */
-export const to_timestring = (source: TimeInput) => {
+export function to_timestring(source: TimeInput) {
   return new Date(to_ms(source)).toTimeString();
-};
+}
 
 /**
  * 获取给定时间的天序号
  * @param ms
  */
-export const get_day = (ms = Date.now()) => Math.floor(ms / D_MS);
+export function get_day(ms = Date.now()) {
+  return Math.floor(ms / D_MS);
+}

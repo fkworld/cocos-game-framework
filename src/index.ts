@@ -50,7 +50,7 @@ export const VERSION = version;
  * 初始化框架
  * @param config
  */
-export const init = (config: Config) => {
+export function init(config: Config) {
   _init_log(config.log_level);
   _init_version(config.version, config.version_info);
   _init_local(config.local);
@@ -60,4 +60,4 @@ export const init = (config: Config) => {
   _init_panel(config.panel_parent);
   _init_meta(config.meta);
   !CC_EDITOR && log(LogLevel.DEV, "初始化框架成功", VERSION, config);
-};
+}

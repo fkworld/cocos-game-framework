@@ -5,7 +5,6 @@
 
 import { event_center } from "./event";
 import { get_local, set_local } from "./local";
-import { log, LogLevel } from "./log";
 import { load_res } from "./tool-ccc";
 import { SimpleFSM } from "./tool-fsm";
 
@@ -64,7 +63,7 @@ let sound_switch: boolean;
  * - TODO：在初始化中设置声音实例为1，可能会有bug，需要进一步测试
  * @param config
  */
-export const _init_audio = (config: ConfigAudio = {}) => {
+export function _init_audio(config: ConfigAudio = {}) {
   audios = new Map(
     Object.entries(config).map(([k, v]) => {
       let ins: AudioIns = {
@@ -83,51 +82,55 @@ export const _init_audio = (config: ConfigAudio = {}) => {
   );
   music_switch = get_local("music") === "true";
   sound_switch = get_local("sound") === "true";
-};
+}
 
 /** 获取音乐开关 */
-export const get_music_switch = () => music_switch;
+export function get_music_switch() {
+  return music_switch;
+}
 
 /** 反向音乐开关 */
-export const reverse_music_switch = () => {
+export function reverse_music_switch() {
   music_switch = !music_switch;
   music_switch ? event_center.emit(EVENT_MUSIC_SWITCH_OPEN) : cc.audioEngine.stopAll();
   set_local("music", `${music_switch}`);
-};
+}
 
 /** 获取音效开关 */
-export const get_sound_switch = () => sound_switch;
+export function get_sound_switch() {
+  return sound_switch;
+}
 
 /** 反向音乐开关 */
-export const reverse_sound_switch = () => {
+export function reverse_sound_switch() {
   sound_switch = !sound_switch;
   set_local("sound", `${sound_switch}`);
-};
+}
 
 /**
  * 预载入一个audio
  * @param key
  */
-export const pre_audio = async (key: string) => {
+export async function pre_audio(key: string) {
   let data = audios.get(key);
   if (!data.clip) {
     data.clip = await load_res(data.url, cc.AudioClip);
     data.fsm.try_go_state(data.clip ? "ok" : "error");
   }
   audios.set(key, data);
-};
+}
 
 /**
  * 获取声音实例
  * @param key
  */
-export const get_audio = async (key: string): Promise<AudioIns> => {
+export async function get_audio(key: string): Promise<AudioIns> {
   await pre_audio(key);
   return audios.get(key);
-};
+}
 
 /** 播放一个声音 */
-export const play_audio = async (key: string) => {
+export async function play_audio(key: string) {
   let data = await get_audio(key);
   if (
     data.fsm.is_state("error") ||
@@ -140,13 +143,13 @@ export const play_audio = async (key: string) => {
     data.type === "music"
       ? cc.audioEngine.playMusic(data.clip, true)
       : cc.audioEngine.playEffect(data.clip, false);
-};
+}
 
 /** 停止某一个声音 */
-export const stop_audio = async (key: string) => {
+export async function stop_audio(key: string) {
   let data = await get_audio(key);
   if (data.fsm.is_state("error")) {
     return;
   }
   data.id && cc.audioEngine.stop(data.id);
-};
+}

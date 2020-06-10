@@ -17,19 +17,19 @@ export interface ConfigColor {
 
 let colors: ConfigColor;
 
-export const _init_color = (config: ConfigColor = { none: "ffffff" }) => {
+export function _init_color(config: ConfigColor = { none: "ffffff" }) {
   colors = config;
-};
+}
 
 /**
  * 从配置中获取颜色，如果无颜色，则返回白色
  * @param color_key
  */
-export const get_color = (color_key: string): cc.Color => {
+export function get_color(color_key: string): cc.Color {
   if (colors[color_key]) {
     return cc.color().fromHEX(colors[color_key]);
   } else {
     log(LogLevel.WARN, `获取color失败，key=${color_key}`);
     return cc.Color.WHITE;
   }
-};
+}

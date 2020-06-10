@@ -44,22 +44,22 @@ export let version_center: StateTable<string, number>;
  * @param config 版本标记信息
  * @param info 版本额外信息
  */
-export const _init_version = (
+export function _init_version(
   config: ConfigVersion = { resetLocal: 1 },
   info: ConfigVersionInfo = {},
-) => {
+) {
   version_center = new StateTable(config);
   version_center.get_all().forEach((v, k) => {
     !v && version_center.del(k);
   });
-};
+}
 
 /** dev模式下全局变量，针对类的装饰器 */
-export const DeDevConsole = (constructor: any) => {
+export function DeDevConsole(constructor: any) {
   CC_DEV && (window[constructor.name] = constructor);
-};
+}
 
 /** dev模式下全局变量，针对模块 */
-export const DeDevConsoleNamespace = (name: string, namespace: any) => {
+export function DeDevConsoleNamespace(name: string, namespace: any) {
   CC_DEV && (window[name] = namespace);
-};
+}

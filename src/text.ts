@@ -33,35 +33,32 @@ let editor_language: string;
  * @param config
  * @param editor 编辑器默认语言
  */
-export const _init_text = (
-  config: ConfigLanguage = { chinese: {} },
-  editor: string = "chinese",
-) => {
+export function _init_text(config: ConfigLanguage = { chinese: {} }, editor: string = "chinese") {
   languages = config;
   editor_language = editor;
   !languages[editor_language] && log(LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
-};
+}
 
 /** 获取当前的语言 key */
-export const get_language = () => {
+export function get_language() {
   return get_local("language");
-};
+}
 
 /**
  * 修改当前语言
  * @param new_language
  */
-export const change_language = (new_language: string) => {
+export function change_language(new_language: string) {
   set_local("language", new_language);
   event_center.emit(EVENT_LANGUAGE_CHANGE);
-};
+}
 
 /**
  * 获取语言数据，如果获取失败，则返回 key
  * @param key
  * @param params
  */
-export const get_text = (key: string, ...params: string[]) => {
+export function get_text(key: string, ...params: string[]) {
   let language = CC_EDITOR ? editor_language : get_language();
   let text = languages[language][key];
   if (text) {
@@ -70,4 +67,4 @@ export const get_text = (key: string, ...params: string[]) => {
     log(LogLevel.ERROR, `key不存在, key=${key}`);
     return key;
   }
-};
+}

@@ -10,19 +10,19 @@ import { log, LogLevel } from "./log";
  * - 【注意】cc.winSize只有在适配后才能获取到正确的值，因此需要使用cc.getFrameSize来获取初始的屏幕大小
  * @param canvas
  */
-export const adjust_canvas = (canvas: cc.Canvas) => {
+export function adjust_canvas(canvas: cc.Canvas) {
   let screen_size = cc.view.getFrameSize().width / cc.view.getFrameSize().height;
   let design_size = canvas.designResolution.width / canvas.designResolution.height;
   let f = screen_size >= design_size;
   canvas.fitHeight = f;
   canvas.fitWidth = !f;
-};
+}
 
 /**
  * 刷新给定节点的widget
  * @param node
  */
-export const do_widget = (node: cc.Node) => {
+export function do_widget(node: cc.Node) {
   let w = node.getComponent(cc.Widget);
   if (w && w.enabled) {
     w.updateAlignment();
@@ -33,15 +33,15 @@ export const do_widget = (node: cc.Node) => {
       w.enabled = false;
     }
   }
-};
+}
 
 /**
  * 刷新给定节点下所有的widget
  * @param node
  */
-export const do_widget_all = (node: cc.Node) => {
+export function do_widget_all(node: cc.Node) {
   node.getComponentsInChildren(cc.Widget).forEach(w => do_widget(w.node));
-};
+}
 
 /**
  * schedule/scheduleOnce的封装
@@ -53,13 +53,13 @@ export const do_widget_all = (node: cc.Node) => {
  * @param is_first 是否在启动时执行首次
  * @param f
  */
-export const do_schedule = async (
+export async function do_schedule(
   target: object,
   interval: number,
   count: number,
   is_first: boolean,
   f: (index: number) => void,
-) => {
+) {
   return new Promise(res => {
     let index = 0;
     let do_f = () => {
@@ -77,15 +77,15 @@ export const do_schedule = async (
       cc.tween(target).delay(interval).call(do_f).union().repeat(count).call(res).start();
     }
   });
-};
+}
 
 /**
  * 获取节点的世界坐标
  * @param node
  */
-export const get_node_wp = (node: cc.Node): cc.Vec3 => {
+export function get_node_wp(node: cc.Node): cc.Vec3 {
   return node.convertToWorldSpaceAR(cc.Vec3.ZERO);
-};
+}
 
 /**
  * 根据世界坐标设置节点本地坐标
@@ -93,11 +93,11 @@ export const get_node_wp = (node: cc.Node): cc.Vec3 => {
  * @param wp
  * @param flag 是否设置，默认为false，则只获取坐标而不设置坐标
  */
-export const set_node_by_wp = (node: cc.Node, wp: cc.Vec3, flag = false) => {
+export function set_node_by_wp(node: cc.Node, wp: cc.Vec3, flag = false) {
   let lp = node.parent.convertToNodeSpaceAR(wp);
   flag && (node.position = lp);
   return lp;
-};
+}
 
 /**
  * 载入单个资源
@@ -105,9 +105,9 @@ export const set_node_by_wp = (node: cc.Node, wp: cc.Vec3, flag = false) => {
  * @description cc.loader.load
  * @param resources
  */
-export const load = async (
+export async function load(
   resources: string | string[] | { type: "uuid"; uuid?: string; url?: string },
-): Promise<any> => {
+): Promise<any> {
   return new Promise(res => {
     cc.loader.load(resources, (err: any, r: any) => {
       err && log(LogLevel.ERROR, `载入资源失败，resources=${resources}，err=${err}`);
@@ -116,7 +116,7 @@ export const load = async (
   }).catch(err => {
     log(LogLevel.ERROR, `载入资源失败，resources=${resources}，err=${err}`);
   });
-};
+}
 
 /**
  * 载入resources下的单个资源
@@ -125,10 +125,10 @@ export const load = async (
  * @param path 资源路径，以运行时路径为准
  * @param type
  */
-export const load_res = async <T extends typeof cc.Asset>(
+export async function load_res<T extends typeof cc.Asset>(
   path: string,
   type: T,
-): Promise<InstanceType<T>> => {
+): Promise<InstanceType<T>> {
   if (CC_EDITOR) {
     let url = to_editor_url(path);
     // 针jpg和png资源完善路径
@@ -148,7 +148,7 @@ export const load_res = async <T extends typeof cc.Asset>(
       });
     });
   }
-};
+}
 
 /**
  * 载入resources下某个文件夹下的所有资源
@@ -156,17 +156,17 @@ export const load_res = async <T extends typeof cc.Asset>(
  * @param path
  * @param type
  */
-export const load_res_dir = async <T extends typeof cc.Asset>(
+export async function load_res_dir<T extends typeof cc.Asset>(
   path: string,
   type: T,
-): Promise<InstanceType<T>[]> => {
+): Promise<InstanceType<T>[]> {
   return new Promise(res => {
     cc.loader.loadResDir(path, type, (err, r) => {
       err && log(LogLevel.ERROR, `载入资源组失败, path=${path}, err=${err}`);
       err ? res() : res(r);
     });
   });
-};
+}
 
 // cc.Intersection
 export const {
@@ -181,8 +181,9 @@ export const {
   pointInPolygon,
   pointLineDistance,
 } = cc.Intersection;
-export const pointInCircle = (point: cc.Vec2, circle: CCCCircle) =>
-  point.sub(circle.position).len() <= circle.radius;
+export function pointInCircle(point: cc.Vec2, circle: CCCCircle) {
+  return point.sub(circle.position).len() <= circle.radius;
+}
 
 /** 在ccc中表示一个圆 */
 export interface CCCCircle {
@@ -194,11 +195,14 @@ export interface CCCCircle {
  * 获取无后缀的文件名
  * @param path
  */
-export const get_filename = (path: string) => cc.path.basename("/" + path, cc.path.extname(path));
+export function get_filename(path: string) {
+  return cc.path.basename("/" + path, cc.path.extname(path));
+}
 
 /**
  * 将 resources 下的路径转为编辑器 url
  * @param resources_path
  */
-export const to_editor_url = (path: string) =>
-  (cc.path.join as any)("db://assets/resources/", path);
+export function to_editor_url(path: string) {
+  return (cc.path.join as any)("db://assets/resources/", path);
+}
