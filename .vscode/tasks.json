@@ -19,17 +19,25 @@
     },
     {
       "type": "npm",
-      "script": "test",
-      "problemMatcher": [],
-      "label": "npm: test",
-      "detail": "npx jest --silent --verbose --coverage"
-    },
-    {
-      "type": "npm",
       "script": "prettier",
       "problemMatcher": [],
       "label": "npm: prettier",
       "detail": "npx prettier --loglevel=silent --write ."
+    },
+    {
+      "type": "npm",
+      "script": "test-all",
+      "problemMatcher": [],
+      "label": "npm: test-all",
+      "detail": "npx jest --silent --coverage"
+    },
+    {
+      "type": "npm",
+      // 使用${file}来传入当前文件
+      "script": "test-single ${file}",
+      "problemMatcher": [],
+      "label": "npm: test-single",
+      "detail": "npx jest --silent --verbose"
     }
   ]
 }
