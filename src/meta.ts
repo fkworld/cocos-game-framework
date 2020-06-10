@@ -1,14 +1,78 @@
-/**
- * 数值表模块
- * - 需要在编辑器中手动将resources/csv下的csv文件生成ts文件
- * - 需要在运行时载入
- * - csv格式时为了更好的组织数值，也可以直接传入数值，结构为name-id-key-value三级对象，均为string
- */
-
 import { log, LogLevel } from "./log";
-import { get_filename, load, to_editor_url } from "./tool-ccc";
+import { to_editor_url, load } from "./tool-ccc";
 
-export type ConfigMeta = { [meta: string]: { [id: string]: { [key: string]: string } } };
+export type ConfigMeta = {
+  [meta_name: string]: {
+    [id: string]: {
+      [key: string]: string;
+    };
+  };
+};
+
+let metas: ConfigMeta;
+
+export function _init_meta(config: ConfigMeta = {}) {
+  metas = config;
+}
+
+/** meta基类，需要被继承 */
+export class MetaBase {
+  /** meta数据表名 */
+  static meta_name: string;
+  static get_meta_source(id: string = undefined) {
+    let r = id ? metas?.[this.meta_name]?.[id] : metas?.[this.meta_name];
+    !r && log(LogLevel.WARN, `获取meta源数据失败，meta_name=${this.meta_name}，id=${id}`);
+    return r;
+  }
+  /** 是否是不存在id而使用的默认值 */
+  is_default: boolean;
+  /** 创建meta类实例时，对传入的单行源数据进行处理 */
+  use_special(s: object) {}
+  /** 创建meta类实例时，如果没有源数据，则设置为给定的默认值 */
+  use_default(id: string) {
+    throw new Error(`meta-id不存在，id=${id}`);
+  }
+}
+
+/**
+ * 设置meta类的上下文信息
+ * @param meta_name meta名
+ */
+export function DeSetMetaContext(meta_name: string) {
+  return (constructor: typeof MetaBase) => {
+    constructor.meta_name = meta_name;
+  };
+}
+
+/**
+ * 获取单个的meta
+ * @param meta_class
+ * @param id
+ */
+export function get_meta<T extends typeof MetaBase>(meta_class: T, id: string): InstanceType<T> {
+  let meta = new meta_class();
+  let source = meta_class.get_meta_source(id);
+  source ? meta.use_special(source) : meta.use_default(id);
+  return meta as any;
+}
+
+/**
+ * 获取meta数组
+ * @param meta_class
+ */
+export function get_metas<T extends typeof MetaBase>(meta_class: T): InstanceType<T>[] {
+  return Object.keys(meta_class.get_meta_source()).map(id => get_meta(meta_class, id));
+}
+
+/**
+ * 获取所有meta的id数组
+ * @param meta_class
+ */
+export function get_metas_ids<T extends typeof MetaBase>(meta_class: T): string[] {
+  return Object.keys(meta_class.get_meta_source());
+}
+
+// TODO 在2.4.0中，由于资源载入方式发生变化，这里也需要进行修改
 
 const AUTO_GENERATE_FILENAME = "csv/auto-generate.ts";
 
@@ -22,74 +86,6 @@ const REGS = {
   // 单行中的块拆分正则
   LINE: /(?<=,|^)(("[^"]*")+|[^,]*)(?=,|$)/g,
 };
-
-let metas: ConfigMeta;
-
-export function _init_meta(config: ConfigMeta = {}) {
-  metas = config;
-}
-
-export class MetaBase {
-  /** 对应meta表的名称 */
-  static meta_names: string[];
-  /** 临时存储的合并表，合并多个表的内容 */
-  static _meta_merge;
-  /** 在获取时初始化 */
-  static get meta_merge() {
-    if (!this._meta_merge) {
-      this._meta_merge = this.meta_names.reduce((r, name) => {
-        name = get_filename(name);
-        r = { ...metas[name] };
-        return r;
-      }, {});
-    }
-    return this._meta_merge;
-  }
-  /** 是否是不存在id而使用的默认值 */
-  is_default: boolean;
-  /** 创建meta类实例时，对传入的单行源数据进行处理 */
-  use_special(s: object) {}
-  /** 创建meta类实例时，如果没有源数据，则设置为给定的默认值 */
-  use_default(id: string) {}
-}
-
-/**
- * 设置meta类上下文的装饰器函数
- * @param meta_names meta配置表名
- */
-export function DeSetMetaContext(...meta_names: string[]) {
-  return (constructor: typeof MetaBase) => {
-    constructor.meta_names = meta_names;
-  };
-}
-
-/**
- * 获取单个的meta
- * @param meta_class
- * @param id
- */
-export function get_meta<T extends typeof MetaBase>(meta_class: T, id: string): InstanceType<T> {
-  let meta = new meta_class();
-  let source = meta_class.meta_merge[id];
-  source ? meta.use_special(source) : meta.use_default(id);
-  return meta as any;
-}
-
-/**
- * 获取meta数组
- * @param meta_class
- */
-export function get_metas<T extends typeof MetaBase>(meta_class: T): InstanceType<T>[] {
-  return Object.keys(meta_class.meta_merge).map(id => get_meta(meta_class, id));
-}
-
-/**
- * 获取所有meta的id数组
- * @param meta_class
- */
-export function get_metas_ids<T extends typeof MetaBase>(meta_class: T): string[] {
-  return Object.keys(meta_class.meta_merge);
-}
 
 /**
  * 解析csv文件为json对象
