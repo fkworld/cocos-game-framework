@@ -1,5 +1,4 @@
-/** 所有颜色的数据 */
-export const DataColor: fy.ConfigColor = {
+export const CONFIG_COLOR: fy.ConfigColor = {
   // 默认颜色
   none: "FFFFFF",
 
