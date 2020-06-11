@@ -2,14 +2,17 @@
   "compilerOptions": {
     // 由于jest只能测试es5代码，因此这里需要为es5
     "target": "ES5",
-    "module": "ESNext",
+    // 需要为CommonJS，这样scripts下的脚本才可以被执行
+    "module": "CommonJS",
     "moduleResolution": "Node",
     "lib": ["DOM", "ESNext"],
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    // 用于限制在function中使用this关键字
+    "noImplicitThis": true
   },
   "files": ["example-project/creator.d.ts", "types/game.d.ts"],
   "include": ["src/**/*", "__test__/**/*"]
