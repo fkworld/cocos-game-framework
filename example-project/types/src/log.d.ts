@@ -24,4 +24,4 @@ export declare const _init_log: (level: LogLevel) => void;
  * @param level
  * @param params
  */
-export declare const log: (level: LogLevel, ...params: any[]) => void;
+export declare function log(level: LogLevel, ...params: any[]): void;

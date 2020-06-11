@@ -45,27 +45,33 @@ export declare abstract class PanelBase extends cc.Component {
  * 设置panel类上下文的装饰器
  * @param config
  */
-export declare const DeSetPanelContext: (path: string, type?: string, z_index_base?: number) => (constructor: typeof PanelBase) => void;
+export declare function DeSetPanelContext(path: string, type?: string, z_index_base?: number): (constructor: typeof PanelBase) => void;
+/** panel的子类 */
+declare type PanelClass = typeof PanelBase;
+/** panel子类的on_open方法参数 */
+declare type ParamPanelOpen<T extends PanelClass> = Parameters<T["prototype"]["on_open"]>;
+/** panel子类的on_close方法参数 */
+declare type ParamPanelClose<T extends PanelClass> = Parameters<T["prototype"]["on_close"]>;
 /**
  * 初始化系统，传入父节点
  * @param node
  */
-export declare const _init_panel: (node?: cc.Node) => void;
+export declare function _init_panel(node?: cc.Node): void;
 /**
  * 预载入界面 prefab
  * @param panel
  */
-export declare const pre_panel: (panel: typeof PanelBase) => Promise<void>;
+export declare function pre_panel(panel: PanelClass): Promise<void>;
 /**
  * 打开页面
  * @param panel
  * @param params
  */
-export declare const open_panel: <T extends typeof PanelBase>(panel: T, ...params: Parameters<T["prototype"]["on_open"]>) => Promise<void>;
+export declare function open_panel<T extends PanelClass>(panel: T, ...params: ParamPanelOpen<T>): Promise<void>;
 /**
  * 关闭页面
  * @param panel
  * @param params
  */
-export declare const close_panel: <T extends typeof PanelBase>(panel: T, ...params: Parameters<T["prototype"]["on_close"]>) => Promise<void>;
+export declare function close_panel<T extends PanelClass>(panel: T, ...params: ParamPanelClose<T>): Promise<void>;
 export {};
