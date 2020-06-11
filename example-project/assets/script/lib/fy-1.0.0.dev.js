@@ -1,4 +1,4 @@
-// fy-1.0.0, https://github.com/fkworld/cocos-game-framework
+/*! fy-1.0.0 https://github.com/fkworld/cocos-game-framework */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -33,17 +33,6 @@
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     }
-
-    var __assign = function() {
-        __assign = Object.assign || function __assign(t) {
-            for (var s, i = 1, n = arguments.length; i < n; i++) {
-                s = arguments[i];
-                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-            }
-            return t;
-        };
-        return __assign.apply(this, arguments);
-    };
 
     function __awaiter(thisArg, _arguments, P, generator) {
         function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -174,21 +163,21 @@
      * @param config 版本标记信息
      * @param info 版本额外信息
      */
-    var _init_version = function (config, info) {
+    function _init_version(config, info) {
         if (config === void 0) { config = { resetLocal: 1 }; }
         exports.version_center = new StateTable(config);
         exports.version_center.get_all().forEach(function (v, k) {
             !v && exports.version_center.del(k);
         });
-    };
+    }
     /** dev模式下全局变量，针对类的装饰器 */
-    var DeDevConsole = function (constructor) {
+    function DeDevConsole(constructor) {
         CC_DEV && (window[constructor.name] = constructor);
-    };
+    }
     /** dev模式下全局变量，针对模块 */
-    var DeDevConsoleNamespace = function (name, namespace) {
+    function DeDevConsoleNamespace(name, namespace) {
         CC_DEV && (window[name] = namespace);
-    };
+    }
 
     /**
      * 本地存储模块
@@ -202,33 +191,33 @@
      * 在运行时初始化
      * @param config
      */
-    var _init_local = function (config) {
+    function _init_local(config) {
         if (config === void 0) { config = { language: "chinese", music: true, sound: true }; }
         locals = new Map();
         locals_default = config;
         exports.version_center.has("resetLocal") && cc.sys.localStorage.clear();
-    };
+    }
     /**
      * 获取本地存储值
      * - 无值，则返回undefined
      * - 顺序依次为：缓存，本地存储，配置的默认值
      * @param key
      */
-    var get_local = function (key) {
+    function get_local(key) {
         var _a, _b;
         var value = (_b = (_a = locals.get(key)) !== null && _a !== void 0 ? _a : cc.sys.localStorage.getItem(key)) !== null && _b !== void 0 ? _b : "" + locals_default[key];
         locals.set(key, value);
         return value;
-    };
+    }
     /**
      * 修改本地存储
      * @param key
      * @param value
      */
-    var set_local = function (key, value) {
+    function set_local(key, value) {
         locals.set(key, value);
         Promise.resolve().then(function () { return cc.sys.localStorage.setItem(key, value); });
-    };
+    }
 
     /**
      * 日志模块
@@ -255,7 +244,7 @@
      * @param level
      * @param params
      */
-    var log = function (level) {
+    function log(level) {
         var params = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             params[_i - 1] = arguments[_i];
@@ -273,7 +262,7 @@
             case exports.LogLevel.IMPORTANT_ERROR:
                 return cc.error.apply(cc, __spread(["[" + level + "]:"], params));
         }
-    };
+    }
 
     /**
      * 工具函数模块
@@ -285,18 +274,18 @@
      * - 【注意】cc.winSize只有在适配后才能获取到正确的值，因此需要使用cc.getFrameSize来获取初始的屏幕大小
      * @param canvas
      */
-    var adjust_canvas = function (canvas) {
+    function adjust_canvas(canvas) {
         var screen_size = cc.view.getFrameSize().width / cc.view.getFrameSize().height;
         var design_size = canvas.designResolution.width / canvas.designResolution.height;
         var f = screen_size >= design_size;
         canvas.fitHeight = f;
         canvas.fitWidth = !f;
-    };
+    }
     /**
      * 刷新给定节点的widget
      * @param node
      */
-    var do_widget = function (node) {
+    function do_widget(node) {
         var w = node.getComponent(cc.Widget);
         if (w && w.enabled) {
             w.updateAlignment();
@@ -305,14 +294,14 @@
                 w.enabled = false;
             }
         }
-    };
+    }
     /**
      * 刷新给定节点下所有的widget
      * @param node
      */
-    var do_widget_all = function (node) {
+    function do_widget_all(node) {
         node.getComponentsInChildren(cc.Widget).forEach(function (w) { return do_widget(w.node); });
-    };
+    }
     /**
      * schedule/scheduleOnce的封装
      * - 使用cc.Tween实现
@@ -323,65 +312,69 @@
      * @param is_first 是否在启动时执行首次
      * @param f
      */
-    var do_schedule = function (target, interval, count, is_first, f) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (res) {
-                    var index = 0;
-                    var do_f = function () {
-                        f(index);
-                        index += 1;
-                    };
-                    if (is_first) {
-                        do_f();
-                        count -= 1;
-                    }
-                    if (count <= 0) {
-                        res();
-                        cc.tween(target).delay(interval).call(do_f).union().repeatForever().start();
-                    }
-                    else {
-                        cc.tween(target).delay(interval).call(do_f).union().repeat(count).call(res).start();
-                    }
-                })];
+    function do_schedule(target, interval, count, is_first, f) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (res) {
+                        var index = 0;
+                        var do_f = function () {
+                            f(index);
+                            index += 1;
+                        };
+                        if (is_first) {
+                            do_f();
+                            count -= 1;
+                        }
+                        if (count <= 0) {
+                            res();
+                            cc.tween(target).delay(interval).call(do_f).union().repeatForever().start();
+                        }
+                        else {
+                            cc.tween(target).delay(interval).call(do_f).union().repeat(count).call(res).start();
+                        }
+                    })];
+            });
         });
-    }); };
+    }
     /**
      * 获取节点的世界坐标
      * @param node
      */
-    var get_node_wp = function (node) {
+    function get_node_wp(node) {
         return node.convertToWorldSpaceAR(cc.Vec3.ZERO);
-    };
+    }
     /**
      * 根据世界坐标设置节点本地坐标
      * @param node
      * @param wp
      * @param flag 是否设置，默认为false，则只获取坐标而不设置坐标
      */
-    var set_node_by_wp = function (node, wp, flag) {
+    function set_node_by_wp(node, wp, flag) {
         if (flag === void 0) { flag = false; }
         var lp = node.parent.convertToNodeSpaceAR(wp);
         flag && (node.position = lp);
         return lp;
-    };
+    }
     /**
      * 载入单个资源
      * - 一般用于已知uuid的载入
      * @description cc.loader.load
      * @param resources
      */
-    var load = function (resources) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (res) {
-                    cc.loader.load(resources, function (err, r) {
-                        err && log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u5931\u8D25\uFF0Cresources=" + resources + "\uFF0Cerr=" + err);
-                        err ? res() : res(r);
-                    });
-                }).catch(function (err) {
-                    log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u5931\u8D25\uFF0Cresources=" + resources + "\uFF0Cerr=" + err);
-                })];
+    function load(resources) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (res) {
+                        cc.loader.load(resources, function (err, r) {
+                            err && log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u5931\u8D25\uFF0Cresources=" + resources + "\uFF0Cerr=" + err);
+                            err ? res() : res(r);
+                        });
+                    }).catch(function (err) {
+                        log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u5931\u8D25\uFF0Cresources=" + resources + "\uFF0Cerr=" + err);
+                    })];
+            });
         });
-    }); };
+    }
     /**
      * 载入resources下的单个资源
      * - 统一在运行时载入和在编辑器中载入
@@ -389,64 +382,93 @@
      * @param path 资源路径，以运行时路径为准
      * @param type
      */
-    var load_res = function (path, type) { return __awaiter(void 0, void 0, void 0, function () {
-        var url, uuid;
-        return __generator(this, function (_a) {
-            if (CC_EDITOR) {
-                url = to_editor_url(path);
-                // 针jpg和png资源完善路径
-                if (new cc.SpriteFrame() instanceof type) {
-                    // cc.path.join的声明有错误，需要使用as any修正
-                    url = cc.path.join(url, get_filename(url));
+    function load_res(path, type) {
+        return __awaiter(this, void 0, void 0, function () {
+            var url, uuid;
+            return __generator(this, function (_a) {
+                if (CC_EDITOR) {
+                    url = to_editor_url(path);
+                    // 针jpg和png资源完善路径
+                    if (new cc.SpriteFrame() instanceof type) {
+                        // cc.path.join的声明有错误，需要使用as any修正
+                        url = cc.path.join(url, get_filename(url));
+                    }
+                    uuid = Editor.assetdb.remote.urlToUuid(url);
+                    return [2 /*return*/, load({ type: "uuid", uuid: uuid })];
                 }
-                uuid = Editor.assetdb.remote.urlToUuid(url);
-                return [2 /*return*/, load({ type: "uuid", uuid: uuid })];
-            }
-            else {
-                return [2 /*return*/, new Promise(function (res) {
-                        // 运行时载入
-                        path = cc.path.mainFileName(path);
-                        cc.loader.loadRes(path, type, function (err, r) {
-                            err && log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u5931\u8D25, path=" + path + ", err=" + err);
-                            err ? res() : res(r);
-                        });
-                    })];
-            }
+                else {
+                    return [2 /*return*/, new Promise(function (res) {
+                            // 运行时载入
+                            path = cc.path.mainFileName(path);
+                            cc.loader.loadRes(path, type, function (err, r) {
+                                err && log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u5931\u8D25, path=" + path + ", err=" + err);
+                                err ? res() : res(r);
+                            });
+                        })];
+                }
+            });
         });
-    }); };
+    }
     /**
      * 载入resources下某个文件夹下的所有资源
      * - 不同平台下的载入顺序不同，因此在载入完毕后需要进行排序
      * @param path
      * @param type
      */
-    var load_res_dir = function (path, type) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (res) {
-                    cc.loader.loadResDir(path, type, function (err, r) {
-                        err && log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u7EC4\u5931\u8D25, path=" + path + ", err=" + err);
-                        err ? res() : res(r);
-                    });
-                })];
+    function load_res_dir(path, type) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (res) {
+                        cc.loader.loadResDir(path, type, function (err, r) {
+                            err && log(exports.LogLevel.ERROR, "\u8F7D\u5165\u8D44\u6E90\u7EC4\u5931\u8D25, path=" + path + ", err=" + err);
+                            err ? res() : res(r);
+                        });
+                    })];
+            });
         });
-    }); };
+    }
     // cc.Intersection
     var lineLine = (_a = cc.Intersection, _a.lineLine), lineRect = _a.lineRect, linePolygon = _a.linePolygon, rectRect = _a.rectRect, rectPolygon = _a.rectPolygon, polygonCircle = _a.polygonCircle, polygonPolygon = _a.polygonPolygon, circleCircle = _a.circleCircle, pointInPolygon = _a.pointInPolygon, pointLineDistance = _a.pointLineDistance;
-    var pointInCircle = function (point, circle) {
+    function pointInCircle(point, circle) {
         return point.sub(circle.position).len() <= circle.radius;
-    };
+    }
     /**
      * 获取无后缀的文件名
      * @param path
      */
-    var get_filename = function (path) { return cc.path.basename("/" + path, cc.path.extname(path)); };
+    function get_filename(path) {
+        return cc.path.basename("/" + path, cc.path.extname(path));
+    }
     /**
      * 将 resources 下的路径转为编辑器 url
      * @param resources_path
      */
-    var to_editor_url = function (path) {
+    function to_editor_url(path) {
         return cc.path.join("db://assets/resources/", path);
-    };
+    }
+    /**
+     * 获取子节点
+     * - 使用cc.find获取子节点
+     * @param n
+     * @param childs 子节点类型
+     * @param childs_path 子节点路径
+     */
+    function get_node_childs(n, childs, childs_path) {
+        if (childs_path === void 0) { childs_path = {}; }
+        var r = { self: n };
+        Object.entries(childs).forEach(function (_a) {
+            var _b = __read(_a, 2), k = _b[0], v = _b[1];
+            var path = childs_path[k] || k;
+            var child_node = cc.find(path, n);
+            if (!child_node) {
+                log(exports.LogLevel.ERROR, "获取子节点失败，path=", path);
+                r[k] = child_node;
+                return;
+            }
+            r[k] = v === cc.Node ? child_node : child_node.getComponent(v);
+        });
+        return r;
+    }
 
     /**
      * 简单有限状态机：simple finite state machine
@@ -536,7 +558,7 @@
      * - TODO：在初始化中设置声音实例为1，可能会有bug，需要进一步测试
      * @param config
      */
-    var _init_audio = function (config) {
+    function _init_audio(config) {
         if (config === void 0) { config = {}; }
         audios = new Map(Object.entries(config).map(function (_a) {
             var _b = __read(_a, 2), k = _b[0], v = _b[1];
@@ -555,111 +577,123 @@
         }));
         music_switch = get_local("music") === "true";
         sound_switch = get_local("sound") === "true";
-    };
+    }
     /** 获取音乐开关 */
-    var get_music_switch = function () { return music_switch; };
+    function get_music_switch() {
+        return music_switch;
+    }
     /** 反向音乐开关 */
-    var reverse_music_switch = function () {
+    function reverse_music_switch() {
         music_switch = !music_switch;
         music_switch ? event_center.emit(EVENT_MUSIC_SWITCH_OPEN) : cc.audioEngine.stopAll();
         set_local("music", "" + music_switch);
-    };
+    }
     /** 获取音效开关 */
-    var get_sound_switch = function () { return sound_switch; };
+    function get_sound_switch() {
+        return sound_switch;
+    }
     /** 反向音乐开关 */
-    var reverse_sound_switch = function () {
+    function reverse_sound_switch() {
         sound_switch = !sound_switch;
         set_local("sound", "" + sound_switch);
-    };
+    }
     /**
      * 预载入一个audio
      * @param key
      */
-    var pre_audio = function (key) { return __awaiter(void 0, void 0, void 0, function () {
-        var data, _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    data = audios.get(key);
-                    if (!!data.clip) return [3 /*break*/, 2];
-                    _a = data;
-                    return [4 /*yield*/, load_res(data.url, cc.AudioClip)];
-                case 1:
-                    _a.clip = _b.sent();
-                    data.fsm.try_go_state(data.clip ? "ok" : "error");
-                    _b.label = 2;
-                case 2:
-                    audios.set(key, data);
-                    return [2 /*return*/];
-            }
+    function pre_audio(key) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        data = audios.get(key);
+                        if (!!data.clip) return [3 /*break*/, 2];
+                        _a = data;
+                        return [4 /*yield*/, load_res(data.url, cc.AudioClip)];
+                    case 1:
+                        _a.clip = _b.sent();
+                        data.fsm.try_go_state(data.clip ? "ok" : "error");
+                        _b.label = 2;
+                    case 2:
+                        audios.set(key, data);
+                        return [2 /*return*/];
+                }
+            });
         });
-    }); };
+    }
     /**
      * 获取声音实例
      * @param key
      */
-    var get_audio = function (key) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, pre_audio(key)];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/, audios.get(key)];
-            }
+    function get_audio(key) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, pre_audio(key)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/, audios.get(key)];
+                }
+            });
         });
-    }); };
+    }
     /** 播放一个声音 */
-    var play_audio = function (key) { return __awaiter(void 0, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, get_audio(key)];
-                case 1:
-                    data = _a.sent();
-                    if (data.fsm.is_state("error") ||
-                        (data.type === "music" && !music_switch) ||
-                        (data.type === "sound" && !sound_switch)) {
+    function play_audio(key) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, get_audio(key)];
+                    case 1:
+                        data = _a.sent();
+                        if (data.fsm.is_state("error") ||
+                            (data.type === "music" && !music_switch) ||
+                            (data.type === "sound" && !sound_switch)) {
+                            return [2 /*return*/];
+                        }
+                        data.id =
+                            data.type === "music"
+                                ? cc.audioEngine.playMusic(data.clip, true)
+                                : cc.audioEngine.playEffect(data.clip, false);
                         return [2 /*return*/];
-                    }
-                    data.id =
-                        data.type === "music"
-                            ? cc.audioEngine.playMusic(data.clip, true)
-                            : cc.audioEngine.playEffect(data.clip, false);
-                    return [2 /*return*/];
-            }
+                }
+            });
         });
-    }); };
+    }
     /** 停止某一个声音 */
-    var stop_audio = function (key) { return __awaiter(void 0, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, get_audio(key)];
-                case 1:
-                    data = _a.sent();
-                    if (data.fsm.is_state("error")) {
+    function stop_audio(key) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, get_audio(key)];
+                    case 1:
+                        data = _a.sent();
+                        if (data.fsm.is_state("error")) {
+                            return [2 /*return*/];
+                        }
+                        data.id && cc.audioEngine.stop(data.id);
                         return [2 /*return*/];
-                    }
-                    data.id && cc.audioEngine.stop(data.id);
-                    return [2 /*return*/];
-            }
+                }
+            });
         });
-    }); };
+    }
 
     /**
      * 颜色模块
      * - 需要在编辑器中和运行时初始化
      */
     var colors;
-    var _init_color = function (config) {
+    function _init_color(config) {
         if (config === void 0) { config = { none: "ffffff" }; }
         colors = config;
-    };
+    }
     /**
      * 从配置中获取颜色，如果无颜色，则返回白色
      * @param color_key
      */
-    var get_color = function (color_key) {
+    function get_color(color_key) {
         if (colors[color_key]) {
             return cc.color().fromHEX(colors[color_key]);
         }
@@ -667,14 +701,75 @@
             log(exports.LogLevel.WARN, "\u83B7\u53D6color\u5931\u8D25\uFF0Ckey=" + color_key);
             return cc.Color.WHITE;
         }
-    };
-
+    }
     /**
-     * 数值表模块
-     * - 需要在编辑器中手动将resources/csv下的csv文件生成ts文件
-     * - 需要在运行时载入
-     * - csv格式时为了更好的组织数值，也可以直接传入数值，结构为name-id-key-value三级对象，均为string
+     * 设置节点颜色
+     * @param node
+     * @param color_key
      */
+    function set_node_color(node, color_key) {
+        node.color = get_color(color_key);
+    }
+
+    var metas;
+    function _init_meta(config) {
+        if (config === void 0) { config = {}; }
+        metas = config;
+    }
+    /** meta基类，需要被继承 */
+    var MetaBase = /** @class */ (function () {
+        function MetaBase() {
+        }
+        MetaBase.get_meta_source = function (id) {
+            if (id === void 0) { id = undefined; }
+            var _a;
+            var r = id ? (_a = metas === null || metas === void 0 ? void 0 : metas[this.meta_name]) === null || _a === void 0 ? void 0 : _a[id] : metas === null || metas === void 0 ? void 0 : metas[this.meta_name];
+            !r && log(exports.LogLevel.WARN, "\u83B7\u53D6meta\u6E90\u6570\u636E\u5931\u8D25\uFF0Cmeta_name=" + this.meta_name + "\uFF0Cid=" + id);
+            return r;
+        };
+        /** 创建meta类实例时，对传入的单行源数据进行处理 */
+        MetaBase.prototype.use_special = function (s) { };
+        /** 创建meta类实例时，如果没有源数据，则设置为给定的默认值 */
+        MetaBase.prototype.use_default = function (id) {
+            throw new Error("meta-id\u4E0D\u5B58\u5728\uFF0Cid=" + id);
+        };
+        return MetaBase;
+    }());
+    /**
+     * 设置meta类的上下文信息
+     * @param meta_name meta名
+     */
+    function DeSetMetaContext(meta_name) {
+        return function (constructor) {
+            constructor.meta_name = meta_name;
+        };
+    }
+    /**
+     * 获取单个的meta
+     * @param meta_class
+     * @param id
+     */
+    function get_meta(meta_class, id) {
+        var meta = new meta_class();
+        var source = meta_class.get_meta_source(id);
+        source ? meta.use_special(source) : meta.use_default(id);
+        return meta;
+    }
+    /**
+     * 获取meta数组
+     * @param meta_class
+     */
+    function get_metas(meta_class) {
+        return Object.keys(meta_class.get_meta_source()).map(function (id) { return get_meta(meta_class, id); });
+    }
+    /**
+     * 获取所有meta的id数组
+     * @param meta_class
+     */
+    function get_metas_ids(meta_class) {
+        return Object.keys(meta_class.get_meta_source());
+    }
+    // TODO 在2.4.0中，由于资源载入方式发生变化，这里也需要进行修改
     var AUTO_GENERATE_FILENAME = "csv/auto-generate.ts";
     var REGS = {
         // 注释行标记
@@ -686,78 +781,11 @@
         // 单行中的块拆分正则
         LINE: /(?<=,|^)(("[^"]*")+|[^,]*)(?=,|$)/g,
     };
-    var metas;
-    var _init_meta = function (config) {
-        if (config === void 0) { config = {}; }
-        metas = config;
-    };
-    var MetaBase = /** @class */ (function () {
-        function MetaBase() {
-        }
-        Object.defineProperty(MetaBase, "meta_merge", {
-            /** 在获取时初始化 */
-            get: function () {
-                if (!this._meta_merge) {
-                    this._meta_merge = this.meta_names.reduce(function (r, name) {
-                        name = get_filename(name);
-                        r = __assign({}, metas[name]);
-                        return r;
-                    }, {});
-                }
-                return this._meta_merge;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /** 创建meta类实例时，对传入的单行源数据进行处理 */
-        MetaBase.prototype.use_special = function (s) { };
-        /** 创建meta类实例时，如果没有源数据，则设置为给定的默认值 */
-        MetaBase.prototype.use_default = function (id) { };
-        return MetaBase;
-    }());
-    /**
-     * 设置meta类上下文的装饰器函数
-     * @param meta_names meta配置表名
-     */
-    var DeSetMetaContext = function () {
-        var meta_names = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            meta_names[_i] = arguments[_i];
-        }
-        return function (constructor) {
-            constructor.meta_names = meta_names;
-        };
-    };
-    /**
-     * 获取单个的meta
-     * @param meta_class
-     * @param id
-     */
-    var get_meta = function (meta_class, id) {
-        var meta = new meta_class();
-        var source = meta_class.meta_merge[id];
-        source ? meta.use_special(source) : meta.use_default(id);
-        return meta;
-    };
-    /**
-     * 获取meta数组
-     * @param meta_class
-     */
-    var get_metas = function (meta_class) {
-        return Object.keys(meta_class.meta_merge).map(function (id) { return get_meta(meta_class, id); });
-    };
-    /**
-     * 获取所有meta的id数组
-     * @param meta_class
-     */
-    var get_metas_ids = function (meta_class) {
-        return Object.keys(meta_class.meta_merge);
-    };
     /**
      * 解析csv文件为json对象
      * @param source csv文件内容
      */
-    var _parse_csv = function (source) {
+    function _parse_csv(source) {
         // 属性行
         var headers = [];
         // 拆分行
@@ -782,38 +810,40 @@
             }
             return result;
         }, {});
-    };
+    }
     /**
      * 将resoueces/csv/路径下的所有csv文件，转换为同路径下的json文件
      */
-    var parse_csv_all = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var url_target, url_source, files, file_texts, json;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    url_target = to_editor_url(AUTO_GENERATE_FILENAME);
-                    url_source = to_editor_url(cc.path.dirname(AUTO_GENERATE_FILENAME) + "/*.csv");
-                    return [4 /*yield*/, new Promise(function (res) {
-                            Editor.assetdb.queryAssets(url_source, "text", function (err, results) { return res(results); });
-                        })];
-                case 1:
-                    files = _a.sent();
-                    return [4 /*yield*/, Promise.all(files.map(function (file) { return load({ type: "uuid", uuid: file.uuid }); }))];
-                case 2:
-                    file_texts = _a.sent();
-                    json = file_texts.reduce(function (r, text) {
-                        r[text.name] = _parse_csv(text.text);
-                        return r;
-                    }, {});
-                    Editor.assetdb.createOrSave(url_target, "export const CONFIG_META=" + JSON.stringify(json), function (err) {
-                        err
-                            ? log(exports.LogLevel.ERROR, "生成csv的ts文件失败")
-                            : log(exports.LogLevel.NORMAL, "写入csv的ts文件成功");
-                    });
-                    return [2 /*return*/];
-            }
+    function parse_csv_all() {
+        return __awaiter(this, void 0, void 0, function () {
+            var url_target, url_source, files, file_texts, json;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        url_target = to_editor_url(AUTO_GENERATE_FILENAME);
+                        url_source = to_editor_url(cc.path.dirname(AUTO_GENERATE_FILENAME) + "/*.csv");
+                        return [4 /*yield*/, new Promise(function (res) {
+                                Editor.assetdb.queryAssets(url_source, "text", function (err, results) { return res(results); });
+                            })];
+                    case 1:
+                        files = _a.sent();
+                        return [4 /*yield*/, Promise.all(files.map(function (file) { return load({ type: "uuid", uuid: file.uuid }); }))];
+                    case 2:
+                        file_texts = _a.sent();
+                        json = file_texts.reduce(function (r, text) {
+                            r[text.name] = _parse_csv(text.text);
+                            return r;
+                        }, {});
+                        Editor.assetdb.createOrSave(url_target, "export const CONFIG_META=" + JSON.stringify(json), function (err) {
+                            err
+                                ? log(exports.LogLevel.ERROR, "生成csv的ts文件失败")
+                                : log(exports.LogLevel.NORMAL, "写入csv的ts文件成功");
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
-    }); };
+    }
 
     /**
      * 原生模块
@@ -834,17 +864,23 @@
     /** 原生给的回调结果，由回调id和回调结果组成 */
     var native_callbacks = new Map();
     /** 判断为android平台 */
-    var is_android = function () { return cc.sys.isNative && cc.sys.os == cc.sys.OS_ANDROID; };
+    function is_android() {
+        return cc.sys.isNative && cc.sys.os == cc.sys.OS_ANDROID;
+    }
     /** 判断为ios平台 */
-    var is_ios = function () { return cc.sys.isNative && cc.sys.os == cc.sys.OS_IOS; };
+    function is_ios() {
+        return cc.sys.isNative && cc.sys.os == cc.sys.OS_IOS;
+    }
     /** 判断为原生平台 */
-    var is_native = function () { return cc.sys.isNative; };
+    function is_native() {
+        return cc.sys.isNative;
+    }
     /**
      * 调用原生
      * @param method 方法名
      * @param params 入参；如果是json字符串，请在外部手动传入
      */
-    var call = function (method, params) {
+    function call(method, params) {
         if (params === void 0) { params = {}; }
         var params_json = JSON.stringify(params);
         if (is_ios()) {
@@ -859,7 +895,7 @@
             // 非原生平台
             return;
         }
-    };
+    }
     /**
      * 异步调用
      * - TODO：添加wait_time的作用
@@ -867,9 +903,9 @@
      * @param params 入参
      * @param wait_time 最大等待时间，默认为100s
      */
-    var call_async = function (method, params, wait_time) {
+    function call_async(method, params, wait_time) {
         if (params === void 0) { params = {}; }
-        return __awaiter(void 0, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var call_id;
             return __generator(this, function (_a) {
                 call_id = method + "/" + Date.now().toString(36) + "/" + Math.random().toFixed(5);
@@ -888,7 +924,7 @@
                     })];
             });
         });
-    };
+    }
     /**
      * 原生调js的全局方法
      * @param call_id 调用id
@@ -920,7 +956,7 @@
      * 设置panel类上下文的装饰器
      * @param config
      */
-    var DeSetPanelContext = function (path, type, z_index_base) {
+    function DeSetPanelContext(path, type, z_index_base) {
         if (type === void 0) { type = "old"; }
         if (z_index_base === void 0) { z_index_base = 0; }
         return function (constructor) {
@@ -936,72 +972,76 @@
                 }),
             };
         };
-    };
+    }
     /**
      * 初始化系统，传入父节点
      * @param node
      */
-    var _init_panel = function (node) {
+    function _init_panel(node) {
         if (node === void 0) { node = new cc.Node(); }
         parent = node;
-    };
+    }
     /**
      * 预载入界面 prefab
      * @param panel
      */
-    var pre_panel = function (panel) { return __awaiter(void 0, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (!!panel.context.prefab) return [3 /*break*/, 2];
-                    _a = panel.context;
-                    return [4 /*yield*/, load_res(panel.context.path, cc.Prefab)];
-                case 1:
-                    _a.prefab = _b.sent();
-                    _b.label = 2;
-                case 2: return [2 /*return*/];
-            }
+    function pre_panel(panel) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!!panel.context.prefab) return [3 /*break*/, 2];
+                        _a = panel.context;
+                        return [4 /*yield*/, load_res(panel.context.path, cc.Prefab)];
+                    case 1:
+                        _a.prefab = _b.sent();
+                        _b.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
         });
-    }); };
+    }
     /**
      * 获取界面实例，如果获取不到，则创建新的
      * @param panel
      */
-    var get_panel = function (panel) { return __awaiter(void 0, void 0, void 0, function () {
-        var node;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!!panel.context.ins) return [3 /*break*/, 3];
-                    return [4 /*yield*/, pre_panel(panel)];
-                case 1:
-                    _a.sent();
-                    node = cc.instantiate(panel.context.prefab);
-                    node.parent = parent;
-                    node.position = cc.Vec3.ZERO;
-                    node.width = cc.winSize.width;
-                    node.height = cc.winSize.height;
-                    panel.context.ins = node.getComponent(panel);
-                    return [4 /*yield*/, panel.context.ins.on_create()];
-                case 2:
-                    _a.sent();
-                    _a.label = 3;
-                case 3: return [2 /*return*/, panel.context.ins];
-            }
+    function get_panel(panel) {
+        return __awaiter(this, void 0, void 0, function () {
+            var node;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!panel.context.ins) return [3 /*break*/, 3];
+                        return [4 /*yield*/, pre_panel(panel)];
+                    case 1:
+                        _a.sent();
+                        node = cc.instantiate(panel.context.prefab);
+                        node.parent = parent;
+                        node.position = cc.Vec3.ZERO;
+                        node.width = cc.winSize.width;
+                        node.height = cc.winSize.height;
+                        panel.context.ins = node.getComponent(panel);
+                        return [4 /*yield*/, panel.context.ins.on_create()];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3: return [2 /*return*/, panel.context.ins];
+                }
+            });
         });
-    }); };
+    }
     /**
      * 打开页面
      * @param panel
      * @param params
      */
-    var open_panel = function (panel) {
+    function open_panel(panel) {
         var params = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             params[_i - 1] = arguments[_i];
         }
-        return __awaiter(void 0, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var z_index, ins;
             var _a;
             return __generator(this, function (_b) {
@@ -1026,18 +1066,18 @@
                 }
             });
         });
-    };
+    }
     /**
      * 关闭页面
      * @param panel
      * @param params
      */
-    var close_panel = function (panel) {
+    function close_panel(panel) {
         var params = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             params[_i - 1] = arguments[_i];
         }
-        return __awaiter(void 0, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -1062,7 +1102,7 @@
                 }
             });
         });
-    };
+    }
 
     /**
      * 工具函数模块
@@ -1073,14 +1113,25 @@
      * @param n
      * @param mode
      */
-    var get_positive_mode = function (n, mode) { return ((n % mode) + mode) % mode; };
+    function get_positive_mode(n, mode) {
+        return ((n % mode) + mode) % mode;
+    }
     /**
      * 等待n秒
      * @param time 单位s
      */
-    var do_delay = function (time) {
-        return new Promise(function (res) { return setTimeout(res, time * 1e3); });
-    };
+    function do_delay(time) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, new Promise(function (res) { return setTimeout(res, time * 1e3); })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    }
     /**
      * 带参数的自定义模版字符串
      * @param template 自定义模板字符串，使用{index}来表示参数，index表示参数序号
@@ -1093,22 +1144,40 @@
      * // => My name is fy, my age is 16, my sex is {2}.
      * ```
      */
-    var get_template_string = function (template) {
+    function get_template_string(template) {
         var params = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             params[_i - 1] = arguments[_i];
         }
         return template.replace(/{([0-9]+)}/g, function (match, index) { var _a; return (_a = params[index]) !== null && _a !== void 0 ? _a : "{" + index + "}"; });
-    };
-    var is_string = function (x) { return typeof x === "string"; };
-    var is_number = function (x) { return typeof x === "number"; };
-    var is_boolean = function (x) { return typeof x === "boolean"; };
-    var is_function = function (x) { return typeof x === "function"; };
-    var is_object = function (x) { return typeof x === "object"; };
-    var is_symbol = function (x) { return typeof x === "symbol"; };
-    var is_bigint = function (x) { return typeof x === "bigint"; };
-    var is_undefined = function (x) { return typeof x === "undefined"; };
-    var is_array = function (x) { return x instanceof Array; };
+    }
+    function is_string(x) {
+        return typeof x === "string";
+    }
+    function is_number(x) {
+        return typeof x === "number";
+    }
+    function is_boolean(x) {
+        return typeof x === "boolean";
+    }
+    function is_function(x) {
+        return typeof x === "function";
+    }
+    function is_object(x) {
+        return typeof x === "object";
+    }
+    function is_symbol(x) {
+        return typeof x === "symbol";
+    }
+    function is_bigint(x) {
+        return typeof x === "bigint";
+    }
+    function is_undefined(x) {
+        return typeof x === "undefined";
+    }
+    function is_array(x) {
+        return x instanceof Array;
+    }
 
     /**
      * 多语言模块
@@ -1125,31 +1194,31 @@
      * @param config
      * @param editor 编辑器默认语言
      */
-    var _init_text = function (config, editor) {
+    function _init_text(config, editor) {
         if (config === void 0) { config = { chinese: {} }; }
         if (editor === void 0) { editor = "chinese"; }
         languages = config;
         editor_language = editor;
         !languages[editor_language] && log(exports.LogLevel.IMPORTANT_ERROR, "无法载入编辑器text语言");
-    };
+    }
     /** 获取当前的语言 key */
-    var get_language = function () {
+    function get_language() {
         return get_local("language");
-    };
+    }
     /**
      * 修改当前语言
      * @param new_language
      */
-    var change_language = function (new_language) {
+    function change_language(new_language) {
         set_local("language", new_language);
         event_center.emit(EVENT_LANGUAGE_CHANGE);
-    };
+    }
     /**
      * 获取语言数据，如果获取失败，则返回 key
      * @param key
      * @param params
      */
-    var get_text = function (key) {
+    function get_text(key) {
         var params = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             params[_i - 1] = arguments[_i];
@@ -1163,7 +1232,34 @@
             log(exports.LogLevel.ERROR, "key\u4E0D\u5B58\u5728, key=" + key);
             return key;
         }
-    };
+    }
+    /**
+     * 设置节点的text数据
+     * @param node
+     * @param key
+     * @param params
+     */
+    function set_node_text(node, key) {
+        var params = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            params[_i - 2] = arguments[_i];
+        }
+        var result = get_text.apply(void 0, __spread([key], params));
+        if (node.getComponent(cc.Label)) {
+            node.getComponent(cc.Label).string = result;
+            return;
+        }
+        if (node.getComponent(cc.RichText)) {
+            node.getComponent(cc.RichText).string = result;
+            return;
+        }
+        if (node.getComponent(cc.Sprite)) {
+            load_res(result, cc.SpriteFrame).then(function (v) {
+                node.getComponent(cc.Sprite).spriteFrame = v;
+            });
+            return;
+        }
+    }
 
     /**
      * 时间模块
@@ -1178,10 +1274,10 @@
      * 检查输入参数的合理性
      * @param input
      */
-    var check_time_input = function (input) {
+    function check_time_input(input) {
         var REG = /^[0-9]+\.?[0-9]*(ms|s|m|h|d)$/g;
         return (is_string(input) && REG.test(input)) || is_number(input);
-    };
+    }
     /** 微秒的模 */
     var MS_MODE = 1000;
     /** 秒的模 */
@@ -1203,7 +1299,7 @@
      * @param source
      * @example
      */
-    var to_ms = function (source) {
+    function to_ms(source) {
         if (!check_time_input(source)) {
             log(exports.LogLevel.ERROR, "\u8F6C\u4E49\u9519\u8BEF\uFF0Cfunc=\"to_ms\"\uFF0Csource=" + source);
             return;
@@ -1229,8 +1325,8 @@
         else {
             return source;
         }
-    };
-    var to_group = function (source) {
+    }
+    function to_group(source) {
         var ms = to_ms(source);
         var ms_fix = get_positive_mode(ms, MS_MODE);
         var s = Math.floor(ms / S_MS);
@@ -1240,7 +1336,7 @@
         var h = Math.floor(ms / H_MS);
         var h_fix = get_positive_mode(h, H_MODE);
         return { ms: ms, ms_fix: ms_fix, s: s, s_fix: s_fix, m: m, m_fix: m_fix, h: h, h_fix: h_fix };
-    };
+    }
     /**
      * 将给定微秒数格式化
      * @param ms 微秒数
@@ -1253,7 +1349,7 @@
      * to_show(88888, false); //-> 01:28
      * ```
      */
-    var to_show = function (source, zero) {
+    function to_show(source, zero) {
         if (zero === void 0) { zero = true; }
         var group = to_group(source);
         var r = [group.h, group.m_fix, group.s_fix];
@@ -1264,7 +1360,7 @@
             }
         }
         return r.length === 1 ? r.join("") : r.map(function (v) { return v.toString().padStart(2, "0"); }).join(":");
-    };
+    }
     /**
      * 显示为时间字符串
      * @param source
@@ -1273,17 +1369,17 @@
      * to_timestring(1589974698751); //-> "19:38:18 GMT+0800 (中国标准时间)"
      * ```
      */
-    var to_timestring = function (source) {
+    function to_timestring(source) {
         return new Date(to_ms(source)).toTimeString();
-    };
+    }
     /**
      * 获取给定时间的天序号
      * @param ms
      */
-    var get_day = function (ms) {
+    function get_day(ms) {
         if (ms === void 0) { ms = Date.now(); }
         return Math.floor(ms / D_MS);
-    };
+    }
 
     var time = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -1299,7 +1395,6 @@
     });
 
     (function (SimpleNodeAnima) {
-        var _this = this;
         /** 保存在node上的状态存储 */
         var KEY_STATES = Symbol();
         /** 保存在node上的当前状态 */
@@ -1310,53 +1405,61 @@
          * @param init_state
          * @param states
          */
-        SimpleNodeAnima.set_all = function (node, init_state, states) {
+        function set_all(node, init_state, states) {
             node[KEY_STATES] = states;
             node[KEY_STATE_NOW] = init_state;
-            SimpleNodeAnima.no_anima(node, init_state);
-        };
+            no_anima(node, init_state);
+        }
+        SimpleNodeAnima.set_all = set_all;
         /**
          * 获取当前的节点动画状态
          * @param node
          */
-        SimpleNodeAnima.get_now = function (node) { return node[KEY_STATE_NOW]; };
+        function get_now(node) {
+            return node[KEY_STATE_NOW];
+        }
+        SimpleNodeAnima.get_now = get_now;
         /**
          * 无动画，直接至某个节点为某个状态
          * @param node
          * @param to
          */
-        SimpleNodeAnima.no_anima = function (node, to) {
+        function no_anima(node, to) {
             node[KEY_STATE_NOW] = to;
             cc.tween(node).set(node[KEY_STATES][to]).start();
-        };
+        }
+        SimpleNodeAnima.no_anima = no_anima;
         /**
          * 动画：从目前状态通过动画迁移到目标状态
          * @param node
          * @param to 目标状态的key
          * @param params 动画参数
          */
-        SimpleNodeAnima.anima = function (node, to, params) { return __awaiter(_this, void 0, void 0, function () {
+        function anima(node, to, params) {
             var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        params.time = (_a = params.time) !== null && _a !== void 0 ? _a : 0.3;
-                        params.delay = (_b = params.delay) !== null && _b !== void 0 ? _b : 0;
-                        params.ease = (_c = params.ease) !== null && _c !== void 0 ? _c : "linear";
-                        node[KEY_STATE_NOW] = to;
-                        return [4 /*yield*/, new Promise(function (res) {
-                                cc.tween(node)
-                                    .delay(params.delay)
-                                    .to(params.time, node[KEY_STATES][to], { easing: params.ease })
-                                    .call(res)
-                                    .start();
-                            })];
-                    case 1:
-                        _d.sent();
-                        return [2 /*return*/];
-                }
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_d) {
+                    switch (_d.label) {
+                        case 0:
+                            params.time = (_a = params.time) !== null && _a !== void 0 ? _a : 0.3;
+                            params.delay = (_b = params.delay) !== null && _b !== void 0 ? _b : 0;
+                            params.ease = (_c = params.ease) !== null && _c !== void 0 ? _c : "linear";
+                            node[KEY_STATE_NOW] = to;
+                            return [4 /*yield*/, new Promise(function (res) {
+                                    cc.tween(node)
+                                        .delay(params.delay)
+                                        .to(params.time, node[KEY_STATES][to], { easing: params.ease })
+                                        .call(res)
+                                        .start();
+                                })];
+                        case 1:
+                            _d.sent();
+                            return [2 /*return*/];
+                    }
+                });
             });
-        }); };
+        }
+        SimpleNodeAnima.anima = anima;
     })(exports.SimpleNodeAnima || (exports.SimpleNodeAnima = {}));
 
     /**
@@ -1370,7 +1473,7 @@
      * @param floating 为true则表示返回整数，默认为false
      * @deprecated 建议使用lodash.random代替
      */
-    var random = function (min, max, floating) {
+    function random(min, max, floating) {
         if (floating === void 0) { floating = false; }
         if (floating) {
             return Math.random() * (max - min) + min;
@@ -1380,21 +1483,21 @@
             max = Math.ceil(max);
             return Math.floor(Math.random() * (max - min) + min);
         }
-    };
+    }
     /**
      * 获取一个随机数组项，概率相同
      * @param array
      * @deprecated 建议使用lodash.sample代替
      */
-    var random_array_item = function (array) {
+    function random_array_item(array) {
         return array[Math.trunc(Math.random() * array.length)];
-    };
+    }
     /**
      * 根据概率数组获取随机index
      * - 从小到大排序，如果概率之和不为1，则会填充不足1的部分，或削减超过1的部分
      * @param prob_array 概率数组
      */
-    var random_prob = function (prob_array) {
+    function random_prob(prob_array) {
         // 获取随机数
         var r = Math.random();
         // 对概率数组的处理
@@ -1406,21 +1509,21 @@
         // 判断随机位置
         var result = s.find(function (v) { return (r -= v.prob) <= 0; });
         return result ? result.index : s.length - 1;
-    };
+    }
     /**
      * 随机1次，判断是否满足给定概率
      * @param prob
      */
-    var is_prob = function (prob) {
+    function is_prob(prob) {
         return Math.random() <= prob;
-    };
+    }
     /**
      * 随机位置
      * @param r
      */
-    var random_position = function (r) {
+    function random_position(r) {
         return cc.v3(random(-r, r, true), random(-r, r, true));
-    };
+    }
 
     var version = "1.0.0";
 
@@ -1430,7 +1533,7 @@
      * 初始化框架
      * @param config
      */
-    var init = function (config) {
+    function init(config) {
         _init_log(config.log_level);
         _init_version(config.version, config.version_info);
         _init_local(config.local);
@@ -1440,7 +1543,7 @@
         _init_panel(config.panel_parent);
         _init_meta(config.meta);
         !CC_EDITOR && log(exports.LogLevel.DEV, "初始化框架成功", VERSION, config);
-    };
+    }
 
     exports.DeDevConsole = DeDevConsole;
     exports.DeDevConsoleNamespace = DeDevConsoleNamespace;
@@ -1483,6 +1586,7 @@
     exports.get_metas = get_metas;
     exports.get_metas_ids = get_metas_ids;
     exports.get_music_switch = get_music_switch;
+    exports.get_node_childs = get_node_childs;
     exports.get_node_wp = get_node_wp;
     exports.get_positive_mode = get_positive_mode;
     exports.get_sound_switch = get_sound_switch;
@@ -1529,6 +1633,8 @@
     exports.reverse_sound_switch = reverse_sound_switch;
     exports.set_local = set_local;
     exports.set_node_by_wp = set_node_by_wp;
+    exports.set_node_color = set_node_color;
+    exports.set_node_text = set_node_text;
     exports.stop_audio = stop_audio;
     exports.to_editor_url = to_editor_url;
 

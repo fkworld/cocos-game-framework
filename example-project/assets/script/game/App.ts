@@ -1,19 +1,19 @@
 import { CONFIG_META } from "../../resources/csv/auto-generate";
-import { DataAudio } from "../config/DataAudio";
-import { DataColor } from "../config/DataColor";
-import { DataLocal } from "../config/DataLocal";
-import { DataLanguage } from "../config/DataText";
-import { DataVersion, DataVersionInfo } from "../config/DataVersion";
+import { CONFIG_AUDIO } from "../config/ConfigAudio";
+import { CONFIG_COLOR } from "../config/ConfigColor";
+import { CONFIG_LOCAL } from "../config/ConfigLocal";
+import { CONFIG_LANGUAGE } from "../config/ConfigText";
+import { CONFIG_VERSION, CONFIG_VERSION_INFO } from "../config/ConfigVersion";
 import { PanelExample } from "../panel/PanelExample";
 
 const { ccclass, property } = cc._decorator;
 const APP_CONFIG: fy.Config = {
-  version: DataVersion,
-  version_info: DataVersionInfo,
-  local: DataLocal,
-  text: DataLanguage,
-  color: DataColor,
-  audio: DataAudio,
+  version: CONFIG_VERSION,
+  version_info: CONFIG_VERSION_INFO,
+  local: CONFIG_LOCAL,
+  text: CONFIG_LANGUAGE,
+  color: CONFIG_COLOR,
+  audio: CONFIG_AUDIO,
   meta: CONFIG_META,
   editor_language: "chinese",
   panel_parent: undefined,
