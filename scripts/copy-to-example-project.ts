@@ -13,7 +13,7 @@ const configs: Config[] = [
     src: ".vscode/settings.json",
     dest: "example-project/.vscode/settings.json",
   },
-  { src: "dist/fy-1.0.0.js", dest: "example-project/assets/script/lib/fy-1.0.0.js" },
+  { src: "dist/fy-1.0.0.dev.js", dest: "example-project/assets/script/lib/fy-1.0.0.dev.js" },
   { src: "types/", dest: "example-project/types/" },
 ];
 
