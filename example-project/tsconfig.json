@@ -11,7 +11,9 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     // 允许 umd 模块直接使用，针对插件脚本
-    "allowUmdGlobalAccess": true
+    "allowUmdGlobalAccess": true,
+    // 用于限制在function中使用this关键字
+    "noImplicitThis": true
   },
   "exclude": ["node_modules", "library", "local", "temp", "build", "settings"]
 }
