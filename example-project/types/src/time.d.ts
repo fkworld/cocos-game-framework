@@ -49,8 +49,8 @@ export declare const D_MS: number;
  * @param source
  * @example
  */
-export declare const to_ms: (source: TimeInput) => number;
-export declare const to_group: (source: TimeInput) => TimeGroup;
+export declare function to_ms(source: TimeInput): number;
+export declare function to_group(source: TimeInput): TimeGroup;
 /**
  * 将给定微秒数格式化
  * @param ms 微秒数
@@ -63,7 +63,7 @@ export declare const to_group: (source: TimeInput) => TimeGroup;
  * to_show(88888, false); //-> 01:28
  * ```
  */
-export declare const to_show: (source: TimeInput, zero?: boolean) => string;
+export declare function to_show(source: TimeInput, zero?: boolean): string;
 /**
  * 显示为时间字符串
  * @param source
@@ -72,10 +72,10 @@ export declare const to_show: (source: TimeInput, zero?: boolean) => string;
  * to_timestring(1589974698751); //-> "19:38:18 GMT+0800 (中国标准时间)"
  * ```
  */
-export declare const to_timestring: (source: TimeInput) => string;
+export declare function to_timestring(source: TimeInput): string;
 /**
  * 获取给定时间的天序号
  * @param ms
  */
-export declare const get_day: (ms?: number) => number;
+export declare function get_day(ms?: number): number;
 export {};

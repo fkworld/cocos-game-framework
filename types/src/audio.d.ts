@@ -44,27 +44,27 @@ interface AudioIns {
  * - TODO：在初始化中设置声音实例为1，可能会有bug，需要进一步测试
  * @param config
  */
-export declare const _init_audio: (config?: ConfigAudio) => void;
+export declare function _init_audio(config?: ConfigAudio): void;
 /** 获取音乐开关 */
-export declare const get_music_switch: () => boolean;
+export declare function get_music_switch(): boolean;
 /** 反向音乐开关 */
-export declare const reverse_music_switch: () => void;
+export declare function reverse_music_switch(): void;
 /** 获取音效开关 */
-export declare const get_sound_switch: () => boolean;
+export declare function get_sound_switch(): boolean;
 /** 反向音乐开关 */
-export declare const reverse_sound_switch: () => void;
+export declare function reverse_sound_switch(): void;
 /**
  * 预载入一个audio
  * @param key
  */
-export declare const pre_audio: (key: string) => Promise<void>;
+export declare function pre_audio(key: string): Promise<void>;
 /**
  * 获取声音实例
  * @param key
  */
-export declare const get_audio: (key: string) => Promise<AudioIns>;
+export declare function get_audio(key: string): Promise<AudioIns>;
 /** 播放一个声音 */
-export declare const play_audio: (key: string) => Promise<void>;
+export declare function play_audio(key: string): Promise<void>;
 /** 停止某一个声音 */
-export declare const stop_audio: (key: string) => Promise<void>;
+export declare function stop_audio(key: string): Promise<void>;
 export {};

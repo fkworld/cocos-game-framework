@@ -38,8 +38,8 @@ export declare let version_center: StateTable<string, number>;
  * @param config 版本标记信息
  * @param info 版本额外信息
  */
-export declare const _init_version: (config?: ConfigVersion, info?: ConfigVersionInfo) => void;
+export declare function _init_version(config?: ConfigVersion, info?: ConfigVersionInfo): void;
 /** dev模式下全局变量，针对类的装饰器 */
-export declare const DeDevConsole: (constructor: any) => void;
+export declare function DeDevConsole(constructor: any): void;
 /** dev模式下全局变量，针对模块 */
-export declare const DeDevConsoleNamespace: (name: string, namespace: any) => void;
+export declare function DeDevConsoleNamespace(name: string, namespace: any): void;

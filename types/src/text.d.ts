@@ -21,17 +21,24 @@ export interface ConfigLanguage {
  * @param config
  * @param editor 编辑器默认语言
  */
-export declare const _init_text: (config?: ConfigLanguage, editor?: string) => void;
+export declare function _init_text(config?: ConfigLanguage, editor?: string): void;
 /** 获取当前的语言 key */
-export declare const get_language: () => string;
+export declare function get_language(): string;
 /**
  * 修改当前语言
  * @param new_language
  */
-export declare const change_language: (new_language: string) => void;
+export declare function change_language(new_language: string): void;
 /**
  * 获取语言数据，如果获取失败，则返回 key
  * @param key
  * @param params
  */
-export declare const get_text: (key: string, ...params: string[]) => string;
+export declare function get_text(key: string, ...params: string[]): string;
+/**
+ * 设置节点的text数据
+ * @param node
+ * @param key
+ * @param params
+ */
+export declare function set_node_text(node: cc.Node, key: string, ...params: string[]): void;

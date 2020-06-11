@@ -44,4 +44,4 @@ export declare const VERSION: string;
  * 初始化框架
  * @param config
  */
-export declare const init: (config: Config) => void;
+export declare function init(config: Config): void;
