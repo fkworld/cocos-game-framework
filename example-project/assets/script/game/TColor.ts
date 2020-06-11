@@ -9,10 +9,9 @@ const { ccclass, property, executeInEditMode } = cc._decorator;
 export class TColor extends cc.Component {
   onLoad() {
     if (CC_EDITOR) {
-      this.update_color();
-      cc.log(`@TColor:在编辑器中修改了颜色,node=${this.node.name}`);
+      fy.set_node_color(this.node,this.key)
     } else {
-      this.is_onload && this.update_color();
+      this.is_onload && fy.set_node_color(this.node,this.key)
     }
   }
 
@@ -27,10 +26,6 @@ export class TColor extends cc.Component {
     return false;
   }
   private set E(v: boolean) {
-    CC_EDITOR && this.update_color();
-  }
-
-  private update_color() {
-    this.node.color = fy.get_color(this.key as any);
+    CC_EDITOR && fy.set_node_color(this.node,this.key)
   }
 }
