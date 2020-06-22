@@ -1,21 +1,83 @@
-import * as ccc from "../src/tool-ccc";
+import {
+  adjust_canvas,
+  do_schedule,
+  do_widget,
+  get_filename,
+  get_node_childs,
+  get_node_wp,
+  load_async,
+  load_res_async,
+  load_res_dir_async,
+  set_node_by_wp,
+  to_editor_url,
+} from "../src/tool-ccc";
 
-describe(ccc.get_filename.name, () => {
+describe(adjust_canvas.name, () => {
+  // TODO
+});
+
+describe(do_widget.name, () => {
+  // TODO
+});
+
+describe(do_schedule.name, () => {
+  // TODO
+});
+
+describe(get_node_wp.name, () => {
   test("", () => {
-    expect(ccc.get_filename("a.png")).toBe("a");
-    expect(ccc.get_filename("path/a.png")).toBe("a");
-    expect(ccc.get_filename("path/a")).toBe("a");
-    expect(ccc.get_filename("db://path/a.png")).toBe("a");
+    let node = new cc.Node();
+    expect(get_node_wp(node)).toEqual(cc.Vec3.ZERO);
   });
 });
 
-describe(ccc.to_editor_url.name, () => {
-  test("", () => {
-    expect(ccc.to_editor_url("a.png")).toBe("db://assets/resources/a.png");
+describe(set_node_by_wp.name, () => {
+  let parent = new cc.Node();
+  let child = new cc.Node();
+  parent.addChild(child);
+
+  beforeEach(() => {
+    child.position = cc.Vec3.ZERO;
+  });
+
+  test("flag=false", () => {
+    expect(set_node_by_wp(child, cc.v3(100, 100))).toMatchObject({ x: 100, y: 100 });
+    expect(child.position).toMatchObject({ x: 0, y: 0, z: 0 });
+  });
+  test("flag=true", () => {
+    set_node_by_wp(child, cc.v3(100, 100), true);
+    expect(child.position).toMatchObject({ x: 100, y: 100 });
   });
 });
 
-describe(ccc.get_node_childs.name, () => {
+describe(load_async.name, () => {
+  // TODO
+});
+
+describe(load_res_async.name, () => {
+  // TODO
+});
+
+describe(load_res_dir_async.name, () => {
+  // TODO
+});
+
+describe(get_filename.name, () => {
+  test("", () => {
+    expect(get_filename("a.png")).toBe("a");
+    expect(get_filename("path/a.png")).toBe("a");
+    expect(get_filename("path/a")).toBe("a");
+    expect(get_filename("db://path/a.png")).toBe("a");
+  });
+});
+
+describe(to_editor_url.name, () => {
+  test("", () => {
+    expect(to_editor_url("a.png")).toBe("db://assets/resources/a.png");
+  });
+});
+
+describe(get_node_childs.name, () => {
   let n = new cc.Node();
   let c1 = new cc.Node("c1");
   let c2 = new cc.Node("c2");
@@ -25,7 +87,7 @@ describe(ccc.get_node_childs.name, () => {
   n.addChild(c2);
   c2.addChild(c2c3);
   test("success", () => {
-    let chidls = ccc.get_node_childs(
+    let chidls = get_node_childs(
       n,
       { c1: cc.Node, c2: cc.Node, c2c3: cc.Label },
       { c2c3: "c2/c2c3" },
