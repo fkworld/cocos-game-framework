@@ -1,0 +1,36 @@
+{
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    // 命名规范
+    "@typescript-eslint/naming-convention": [
+      "warn",
+      // 默认使用snake_case，特殊使用UPPER_CASE，_前缀表示需要被导出但不希望被使用
+      {
+        "selector": "default",
+        "format": ["snake_case", "UPPER_CASE"],
+        "leadingUnderscore": "allow"
+      },
+      // 类型使用PascalCase
+      { "selector": "typeLike", "format": ["PascalCase"] },
+      // 枚举成员使用PascalCase
+      { "selector": "enumMember", "format": ["PascalCase"] }
+    ],
+    // 不允许未被使用的变量，忽略以_作为前缀的变量
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    // 允许使用any但尽量不要使用
+    "@typescript-eslint/no-explicit-any": ["off"],
+    // 允许空方法
+    "@typescript-eslint/no-empty-function": ["off"],
+    // 不允许使用var定义变量
+    "no-var": "warn",
+    // 除Top-Level-Function外，均使用箭头函数
+    "prefer-arrow-callback": "warn",
+    // 常量定义使用const，非常量但内容不被改变的量，允许使用let
+    "prefer-const": "off"
+  }
+}
