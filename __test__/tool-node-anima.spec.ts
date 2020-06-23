@@ -1,40 +1,30 @@
-/**
- * 注意，涉及到游戏生命周期的函数，则不可在node环境中测试。
- */
+import {
+  set_node_anima,
+  get_node_anima_now,
+  node_anima_not,
+  node_anima,
+} from "../src/tool-node-anima";
 
-import { SimpleNodeAnima } from "../src/tool-node-anima";
+let node = new cc.Node();
 
-let source = { show: { scale: 1 }, hide: { scale: 0 } };
-
-test.skip("get_now", () => {
-  let n = new cc.Node();
-  SimpleNodeAnima.set_all(n, "hide", source);
-  expect(SimpleNodeAnima.get_now(n)).toBe("hide");
-  expect(n.scale).toBe(0);
+beforeEach(() => {
+  set_node_anima(node, { show: { scale: 1 }, hide: { scale: 0 } }, { now: "hide" });
 });
 
-test.skip("no_anima", () => {
-  let n = new cc.Node();
-  SimpleNodeAnima.set_all(n, "hide", source);
-  SimpleNodeAnima.no_anima(n, "show");
-  expect(SimpleNodeAnima.get_now(n)).toBe("show");
-  expect(n.scale).toBe(1);
-  SimpleNodeAnima.no_anima(n, "hide");
-  expect(SimpleNodeAnima.get_now(n)).toBe("hide");
-  expect(n.scale).toBe(0);
+describe(set_node_anima.name, () => {
+  // TODO
 });
 
-test.skip("anima", async () => {
-  let n = new cc.Node();
-  SimpleNodeAnima.set_all(n, "hide", source);
-  await SimpleNodeAnima.anima(n, "show", {});
-  expect(SimpleNodeAnima.get_now(n)).toBe("show");
-  expect(n.scale).toBe(1);
-  await SimpleNodeAnima.anima(n, "hide", {});
-  expect(SimpleNodeAnima.get_now(n)).toBe("hide");
-  expect(n.scale).toBe(0);
-  // 无await
-  SimpleNodeAnima.anima(n, "show", {});
-  expect(SimpleNodeAnima.get_now(n)).toBe("show");
-  expect(n.scale).not.toBe(1);
+describe.skip(get_node_anima_now.name, () => {
+  test("", () => {
+    expect(get_node_anima_now(node)).toBe("hide");
+  });
+});
+
+describe(node_anima_not.name, () => {
+  // TODO
+});
+
+describe(node_anima.name, () => {
+  // TODO
 });
