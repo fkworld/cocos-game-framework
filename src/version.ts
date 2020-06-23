@@ -35,10 +35,10 @@ let versions: Set<string>;
 
 /**
  * 初始化版本信息
- * @param config 版本标记信息
  * @since 1.0.0
+ * @param config 版本标记信息
  */
-export function _init_version(config: ConfigVersion = { reset_local: 1 }): void {
+export function _init_version(config: ConfigVersion = {}): void {
   versions = new Set(
     Object.keys(config).filter(key => {
       return !!config[key];
