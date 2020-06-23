@@ -1,18 +1,19 @@
 /**
  * 状态表
- * - key 为状态名称
- * - value 状态内容
+ * @since 1.0.0
+ * @see https://www.yuque.com/fengyong/game-develop-road/uirtec
  */
 export class StateTable<TKey extends string, TValue> {
   constructor(source: { [K in TKey]: TValue }) {
     this.source = new Map(Object.entries(source)) as any;
   }
 
-  /** 存储 */
-  private source: Map<TKey, TValue>;
+  /** 存储结构 */
+  private readonly source: Map<TKey, TValue>;
 
   /**
    * 判断是否包含某个状态
+   * @since 1.0.0
    * @param key
    */
   has(key: TKey): boolean {
@@ -21,37 +22,29 @@ export class StateTable<TKey extends string, TValue> {
 
   /**
    * 获取某个状态的值
+   * @since 1.0.0
    * @param key
    */
   get(key: TKey): TValue {
     return this.source.get(key);
   }
 
-  /** 获取全部状态 */
-  get_all() {
-    return this.source;
-  }
-
   /**
-   * 新增某个状态
+   * 新增某个状态，一般不要使用
+   * @since 1.0.0
    * @param key
    * @param value
    */
-  add(key: TKey, value?: any) {
+  _add(key: TKey, value?: TValue): void {
     this.source.set(key, value);
   }
 
   /**
-   * 删除某个状态
+   * 删除某个状态，一般不要使用
+   * @since 1.0.0
    * @param key
-   * @param value
    */
-  del(key: TKey, value?: any) {
+  _del(key: TKey): void {
     this.source.delete(key);
-  }
-
-  /** 获取所有的key */
-  get_keys(): string[] {
-    return [...this.source.keys()];
   }
 }
