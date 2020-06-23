@@ -1,47 +1,49 @@
 /**
  * 日志模块
+ * - 需要初始化，传入当前的日志输出等级
+ * @see https://www.yuque.com/fengyong/game-develop-road/nr9qs9
  */
 
 /** log等级 */
 export enum LogLevel {
   /** 开发者。 */
-  DEV,
+  Dev,
   /** 正常。 */
-  NORMAL,
+  Normal,
   /** 警告信息。发生了一些错误，一般不会导致游戏崩溃。 */
-  WARN,
+  Warn,
   /** 错误信息。发生了一些错误，可能会导致游戏崩溃。 */
-  ERROR,
+  Error,
   /** 重大错误信息。一般需要重启游戏。 */
-  IMPORTANT_ERROR,
+  ImportantError,
 }
 
 /** 当前的输出等级 */
-export let log_level: LogLevel;
+export let now_log_level: LogLevel;
 
-export const _init_log = (level: LogLevel) => {
-  log_level = level;
-};
+export function _init_log(level: LogLevel): void {
+  now_log_level = level;
+}
 
 /**
  * 输出log
- * - 根据给定的log_level输出log信息。
- * - console还有很多高级用法，这里不做封装，可以直接使用。参考：https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13
+ * @since 1.0.0
  * @param level
  * @param params
+ * @see https://juejin.im/post/5b586ec06fb9a04fc436c9b3#heading-13 console的高级用法
  */
-export function log(level: LogLevel, ...params: any[]) {
-  if (level < log_level) {
+export function log(level: LogLevel, ...params: unknown[]): void {
+  if (level < now_log_level) {
     return;
   }
   switch (level) {
-    case LogLevel.DEV:
-    case LogLevel.NORMAL:
-      return cc.log(`[${level}]:`, ...params);
-    case LogLevel.WARN:
-      return cc.warn(`[${level}]:`, ...params);
-    case LogLevel.ERROR:
-    case LogLevel.IMPORTANT_ERROR:
-      return cc.error(`[${level}]:`, ...params);
+    case LogLevel.Dev:
+    case LogLevel.Normal:
+      return cc.log(`[${LogLevel[level]}]:`, ...params);
+    case LogLevel.Warn:
+      return cc.warn(`[${LogLevel[level]}]:`, ...params);
+    case LogLevel.Error:
+    case LogLevel.ImportantError:
+      return cc.error(`[${LogLevel[level]}]:`, ...params);
   }
 }
