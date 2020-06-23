@@ -1,24 +1,22 @@
-import * as color from "../src/color";
+import { get_color, set_node_color, _init_color } from "../src/color";
 
-beforeAll(() => {
-  color._init_color({
-    none: "FFFFFF",
-    a: "000000",
-    b: "111111",
-  });
+beforeEach(() => {
+  _init_color({ a: "000000" });
 });
 
-describe(color.get_color.name, () => {
+describe(get_color.name, () => {
   test("", () => {
-    expect(color.get_color("a").toHEX("#rrggbb")).toBe("000000");
-    expect(color.get_color("b").toHEX("#rrggbb")).toBe("111111");
+    expect(get_color("a").toHEX("#rrggbb")).toBe("000000");
+  });
+  test("不存在此颜色", () => {
+    expect(get_color("b")).toEqual(cc.Color.WHITE);
   });
 });
 
-describe(color.set_node_color.name, () => {
+describe(set_node_color.name, () => {
   test("", () => {
     let n = new cc.Node();
-    color.set_node_color(n, "a");
+    set_node_color(n, "a");
     expect(n.color.toHEX("#rrggbb")).toBe("000000");
   });
 });
