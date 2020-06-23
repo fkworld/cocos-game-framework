@@ -1,19 +1,22 @@
-import * as local from "../src/local";
+import { _init_local, get_local, set_local } from "../src/local";
 
-local._init_local({
-  language: "chinese",
-  music: true,
-  sound: true,
-  a: "aaa",
-  b: "bbb",
+beforeEach(() => {
+  _init_local({ a: "aaa" }, true);
 });
 
-test("get_local", () => {
-  expect(local.get_local("a")).toBe("aaa");
-  expect(local.get_local("b")).toBe("bbb");
+describe(get_local.name, () => {
+  test("", () => {
+    expect(get_local("a")).toBe("aaa");
+    expect(get_local("b")).toBeUndefined();
+  });
+  test("default value", () => {
+    expect(get_local("b", "bbb")).toBe("bbb");
+  });
 });
 
-test("set_local", () => {
-  local.set_local("a", "aaaa");
-  expect(local.get_local("a")).toBe("aaaa");
+describe(set_local.name, () => {
+  test("", () => {
+    set_local("a", "aaaa");
+    expect(get_local("a")).toBe("aaaa");
+  });
 });
