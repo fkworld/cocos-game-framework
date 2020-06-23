@@ -1,33 +1,54 @@
-import * as text from "../src/text";
+import { _init_local } from "../src/local";
+import { change_language, get_language, get_text, set_node_text, _init_text } from "../src/text";
 
-beforeAll(() => {
-  text._init_text({
-    chinese: { a: "My name is {0}." },
-  });
+beforeEach(() => {
+  _init_local({}, true);
+  _init_text(
+    {
+      chinese: { a: "我的名字是{0}" },
+      english: { a: "My name is {0}" },
+    },
+    "chinese",
+    "chinese",
+  );
 });
 
-describe(text.get_language.name, () => {
+describe(get_language.name, () => {
   test("", () => {
-    expect(text.get_language()).toBe("chinese");
+    expect(get_language()).toBe("chinese");
   });
 });
 
-describe(text.get_text.name, () => {
+describe(change_language.name, () => {
   test("", () => {
-    expect(text.get_text("a", "fy")).toBe("My name is fy.");
+    change_language("english");
+    expect(get_language()).toBe("english");
   });
 });
 
-describe(text.set_node_text.name, () => {
+describe(get_text.name, () => {
+  test("", () => {
+    expect(get_text("a", "fy")).toBe("我的名字是fy");
+  });
+  test("没有此key", () => {
+    expect(get_text("b")).toBe("b");
+  });
+  test("其他语言", () => {
+    change_language("english");
+    expect(get_text("a", "fy")).toBe("My name is fy");
+  });
+});
+
+describe(set_node_text.name, () => {
   test("label", () => {
     let n_label = new cc.Node().addComponent(cc.Label);
-    text.set_node_text(n_label.node, "a", "fy");
-    expect(n_label.string).toBe("My name is fy.");
+    set_node_text(n_label.node, "a", "fy");
+    expect(n_label.string).toBe("我的名字是fy");
   });
   test("richtext", () => {
     let n_richtext = new cc.Node().addComponent(cc.RichText);
-    text.set_node_text(n_richtext.node, "a", "fy");
-    expect(n_richtext.string).toBe("My name is fy.");
+    set_node_text(n_richtext.node, "a", "fy");
+    expect(n_richtext.string).toBe("我的名字是fy");
   });
   test.todo("sprite");
 });
