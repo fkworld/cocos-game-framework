@@ -1,5 +1,7 @@
-import * as event from "../src/event";
+import { event_center } from "../src/event";
 
-test("event_center", () => {
-  expect(event.event_center).toBeInstanceOf(cc.EventTarget);
+describe("event_center", () => {
+  test("", () => {
+    expect(event_center).toBeInstanceOf(cc.EventTarget);
+  });
 });
