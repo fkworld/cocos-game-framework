@@ -4,8 +4,7 @@ import json from "@rollup/plugin-json";
 import _ from "lodash";
 import { terser } from "rollup-plugin-terser";
 import typescript from "rollup-plugin-typescript2";
-
-const { version } = require("./package.json");
+import { version } from "./package.json";
 
 const CONFIG = {
   // 入口文件
@@ -18,12 +17,10 @@ const CONFIG = {
       useTsconfigDeclarationDir: true,
       tsconfigOverride: {
         compilerOptions: {
-          target: "ES5",
-          module: "ESNext",
           declaration: true,
           declarationDir: "./types/",
         },
-        exclude: ["__test__/**/*"],
+        exclude: ["test/**/*"],
       },
     }),
   ],

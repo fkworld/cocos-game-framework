@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    // 由于jest只能测试es5代码，因此这里需要为es5
     "target": "ES5",
-    // 需要为CommonJS，这样scripts下的脚本才可以被执行
-    "module": "CommonJS",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "lib": ["DOM", "ESNext"],
     "experimentalDecorators": true,
@@ -15,5 +13,5 @@
     "noImplicitThis": true
   },
   "files": ["example-project/creator.d.ts", "types/game.d.ts"],
-  "include": ["src/**/*", "__test__/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }
