@@ -1,25 +1,15 @@
-import * as native from "../src/native";
+import { call, call_async, is_android, is_ios, is_native } from "../src/native";
 
-window["jsb"] = {
-  reflection: { callStaticMethod: () => {} },
-  Downloader: undefined,
-  fileUtils: undefined,
-};
-jest.spyOn(native, "is_ios").mockReturnValue(true);
-jest.spyOn(native, "is_android").mockReturnValue(true);
-jest.spyOn(jsb.reflection, "callStaticMethod").mockImplementation((p1, p2, p3, p4) => {
-  let params = JSON.parse(native.is_ios() ? p3 : p4);
-  let call_id = params["call_id"];
-  let call_result = "1024";
-  window["NativeCallback"](call_id, call_result);
-  return call_result;
+describe("platform", () => {
+  test.todo(is_ios.name);
+  test.todo(is_android.name);
+  test.todo(is_native.name);
 });
 
-test("call", () => {
-  expect(native.call("", {})).toBe("1024");
+describe(call.name, () => {
+  test.todo("");
 });
 
-test("call_async", () => {
-  jest.spyOn(native, "is_ios").mockReturnValue(false);
-  expect(native.call_async("", {})).resolves.toBe("1024");
+describe(call_async.name, () => {
+  test.todo("");
 });
