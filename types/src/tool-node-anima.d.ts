@@ -1,39 +1,56 @@
-/**
- * 简单节点动画
- */
-export declare namespace SimpleNodeAnima {
-    /** 动画参数 */
-    interface ParamAnima {
-        time?: number;
-        delay?: number;
-        ease?: cc.TweenEasing;
-    }
-    /**
-     * 设置节点的状态信息
-     * @param node
-     * @param init_state
-     * @param states
-     */
-    export function set_all(node: cc.Node, init_state: string, states: {
-        [key: string]: Partial<cc.Node>;
-    }): void;
-    /**
-     * 获取当前的节点动画状态
-     * @param node
-     */
-    export function get_now(node: cc.Node): any;
-    /**
-     * 无动画，直接至某个节点为某个状态
-     * @param node
-     * @param to
-     */
-    export function no_anima(node: cc.Node, to: string): void;
-    /**
-     * 动画：从目前状态通过动画迁移到目标状态
-     * @param node
-     * @param to 目标状态的key
-     * @param params 动画参数
-     */
-    export function anima(node: cc.Node, to: string, params: ParamAnima): Promise<void>;
-    export {};
+/** 其他信息 */
+interface Other {
+    /** 当前状态 */
+    now: string;
+    /** 动画时间 */
+    time?: number;
+    /** 动画延迟 */
+    delay?: number;
+    /** 动画ease函数 */
+    ease?: cc.TweenEasing;
 }
+/**
+ * 设置节点的状态信息
+ * @since 1.0.0
+ * @param node
+ * @param states
+ * @param others
+ * @example
+ * let n = new cc.Node();
+ * let states = { show: { width: 100 }, hide: { width: 0 } };
+ * let others = { now: "hide" };
+ * set_node_anima(n, states, others);
+ */
+export declare function set_node_anima(node: cc.Node, states: {
+    [key: string]: Partial<cc.Node>;
+}, others: Other): void;
+/**
+ * 获取当前的节点动画状态
+ * @since 1.0.0
+ * @param node
+ */
+export declare function get_node_anima_now(node: cc.Node): string;
+/**
+ * 无动画，直接修改某个节点为某个状态
+ * @since 1.0.0
+ * @param node
+ * @param target
+ * @example
+ * let n = new cc.Node();
+ * set_node_anima(n, { show: { width: 100 }, hide: { width: 0 } }, { now: "hide" });
+ * node_anima_not(n, "show");
+ */
+export declare function node_anima_not(node: cc.Node, target: string): void;
+/**
+ * 有动画，通过简单的动画效果修改某个节点为某个状态
+ * @since 1.0.0
+ * @param node
+ * @param target
+ * @param params 动画参数
+ * @example
+ * let n = new cc.Node();
+ * set_node_anima(n, { show: { width: 100 }, hide: { width: 0 } }, { now: "hide" });
+ * node_anima(n, "show");
+ */
+export declare function node_anima(node: cc.Node, target: string, params?: Omit<Other, "now">): Promise<void>;
+export {};

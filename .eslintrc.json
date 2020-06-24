@@ -5,6 +5,8 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint"],
+  // 只检测src和test文件夹下的ts文件
+  "ignorePatterns": ["**/*.js", "**/*.ts", "!src/*.ts", "!test/*.ts"],
   "rules": {
     // 命名规范
     "@typescript-eslint/naming-convention": [

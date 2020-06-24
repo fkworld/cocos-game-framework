@@ -1,23 +1,19 @@
 /**
  * 版本管理模块
- * - 通过版本标记管理游戏版本。
- * - 使用正向含义标记。
- * - 需要在运行时初始化，传入2个配置数据：ConfigVersion，ConfigVersionInfo。
+ * - 需要初始化，传入版本标记信息
+ * @see https://www.yuque.com/fengyong/game-develop-road/ylcktc
+ * @see https://www.yuque.com/fengyong/game-develop-road/fq9a6f
  */
-import { StateTable } from "./tool-state-table";
 /**
  * 版本标记信息
- * - key 表示版本标记
- * - value 表示是否包含此标记，1表示包含，0表示不包含
+ * @property key 表示版本标记
+ * @property value 表示是否包含此标记，1表示包含，0表示不包含
  */
 export interface ConfigVersion {
-    /** 是否清空本地存储 */
-    resetLocal: number;
     [k: string]: number;
 }
 /**
  * 版本额外信息
- * - 仅作为显示使用，如果没有，可以传undefined
  */
 export interface ConfigVersionInfo {
     /** 项目名称 */
@@ -31,15 +27,45 @@ export interface ConfigVersionInfo {
     /** android项目打包版本，例如：1.0.0/2020051102/2020.5.11 */
     android_version?: string;
 }
-/** 版本标记 */
-export declare let version_center: StateTable<string, number>;
 /**
  * 初始化版本信息
+ * @since 1.0.0
  * @param config 版本标记信息
- * @param info 版本额外信息
  */
-export declare function _init_version(config?: ConfigVersion, info?: ConfigVersionInfo): void;
-/** dev模式下全局变量，针对类的装饰器 */
-export declare function DeDevConsole(constructor: any): void;
-/** dev模式下全局变量，针对模块 */
-export declare function DeDevConsoleNamespace(name: string, namespace: any): void;
+export declare function _init_version(config?: ConfigVersion): void;
+/**
+ * 是否包含某个版本标记
+ * @since 1.0.0
+ * @param version_key
+ */
+export declare function has_version(version_key: string): boolean;
+/**
+ * 新增一个版本标记，一般情况下不要使用
+ * @since 1.0.0
+ * @param version_key
+ */
+export declare function _add_version(version_key: string): void;
+/**
+ * 删除一个版本标记，一般情况下不要使用
+ * @since 1.0.0
+ * @param version_key
+ */
+export declare function _del_version(version_key: string): void;
+/**
+ * dev模式下全局变量装饰器，针对类
+ * @since 1.0.0
+ * @example
+ * &#64;DE_DEV_CONSOLE
+ * export class A {}
+ */
+export declare function DE_DEV_CONSOLE(constructor: new () => unknown): void;
+/**
+ * dev模式下全局变量装饰器，针对模块
+ * - 实际上并非作为装饰器的用法
+ * @since 1.0.0
+ * @example
+ * export namespace A {
+ * DE_DEV_CONSOLE_NAMESPACE("A", A);
+ * }
+ */
+export declare function DE_DEV_CONSOLE_NAMESPACE(name: string, namespace: unknown): void;

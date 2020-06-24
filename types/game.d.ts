@@ -4,7 +4,7 @@ declare namespace cc {
 
   /**
    * ease 字符串
-   * - 参考:https://docs.cocos.com/creator/api/zh/editor/share/easing.html
+   * @see https://docs.cocos.com/creator/api/zh/editor/share/easing.html
    */
   type TweenEasing =
     | "linear"
