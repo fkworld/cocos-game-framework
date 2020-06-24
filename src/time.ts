@@ -1,11 +1,6 @@
 /**
  * 时间模块
- * - 缩写
- *    - MS 毫秒
- *    - S 秒
- *    - M 分钟
- *    - H 小时
- *    - D 天
+ * @see https://www.yuque.com/fengyong/game-develop-road/ox9e872
  */
 
 import { log, LogLevel } from "./log";
@@ -14,16 +9,14 @@ import { get_positive_mode, is_number, is_string } from "./tool";
 /**
  * 数据输入
  * @example
- * ```
- * // 如果为number，则表示毫秒数
- * 88888
- * // 如果为string，则表示带单位的描述
- * "99ms";
- * "99s";
- * "99m";
- * "99h";
- * "99.5d";
- * ```
+  // 如果为number，则表示毫秒数
+  88888
+  // 如果为string，则表示带单位的描述
+  "99ms"; // 99毫秒
+  "99s";  // 99秒
+  "99m";  // 99分钟
+  "99h";  // 99小时
+  "99.5d";// 99.5天
  */
 type TimeInput = string | number;
 
@@ -70,13 +63,14 @@ export const H_MS = M_MODE * M_MS;
 export const D_MS = H_MODE * H_MS;
 
 /**
- * 将字符串转为毫秒
+ * 转为毫秒数
+ * @since 1.0.0
  * @param source
  * @example
  */
 export function to_ms(source: TimeInput): number {
   if (!check_time_input(source)) {
-    log(LogLevel.ERROR, `转义错误，func="to_ms"，source=${source}`);
+    log(LogLevel.Error, `转义错误，func="to_ms"，source=${source}`);
     return;
   }
   if (is_string(source)) {
@@ -101,7 +95,12 @@ export function to_ms(source: TimeInput): number {
   }
 }
 
-export function to_group(source: TimeInput): TimeGroup {
+/**
+ * 转为数据组
+ * @since 1.0.0
+ * @param source
+ */
+export function to_time_group(source: TimeInput): TimeGroup {
   let ms = to_ms(source);
   let ms_fix = get_positive_mode(ms, MS_MODE);
   let s = Math.floor(ms / S_MS);
@@ -110,23 +109,22 @@ export function to_group(source: TimeInput): TimeGroup {
   let m_fix = get_positive_mode(m, M_MODE);
   let h = Math.floor(ms / H_MS);
   let h_fix = get_positive_mode(h, H_MODE);
-  return { ms, ms_fix, s, s_fix, m: m, m_fix: m_fix, h, h_fix };
+  return { ms, ms_fix, s, s_fix, m, m_fix, h, h_fix };
 }
 
 /**
- * 将给定微秒数格式化
+ * 转为格式化时间串
+ * @since 1.0.0
  * @param ms 微秒数
  * @param zero 是否显示为0的值
  * @example
- * ```
- * to_show(888888888); //-> 246:54:48
- * to_show(8888888); //-> 02:28:08
- * to_show(88888); //-> 00:01:28
- * to_show(88888, false); //-> 01:28
- * ```
+  to_time_format(888888888); //-> 246:54:48
+  to_time_format(8888888); //-> 02:28:08
+  to_time_format(88888); //-> 00:01:28
+  to_time_format(88888, false); //-> 01:28
  */
-export function to_show(source: TimeInput, zero: boolean = true) {
-  let group = to_group(source);
+export function to_time_format(source: TimeInput, zero = true): string {
+  let group = to_time_group(source);
   let r = [group.h, group.m_fix, group.s_fix];
   // 过滤
   if (!zero) {
@@ -138,21 +136,21 @@ export function to_show(source: TimeInput, zero: boolean = true) {
 }
 
 /**
- * 显示为时间字符串
+ * 转为普通时间串
+ * @since 1.0.0
  * @param source
  * @example
- * ```
- * to_timestring(1589974698751); //-> "19:38:18 GMT+0800 (中国标准时间)"
- * ```
+  to_time_string(1589974698751); //-> "19:38:18 GMT+0800 (中国标准时间)"
  */
-export function to_timestring(source: TimeInput) {
+export function to_time_string(source: TimeInput): string {
   return new Date(to_ms(source)).toTimeString();
 }
 
 /**
  * 获取给定时间的天序号
+ * @since 1.0.0
  * @param ms
  */
-export function get_day(ms = Date.now()) {
+export function get_day(ms = Date.now()): number {
   return Math.floor(ms / D_MS);
 }
