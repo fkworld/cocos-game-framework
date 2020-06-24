@@ -1,4 +1,4 @@
-import { _init_version, _add_version, has_version, _del_version } from "../src/version";
+import { has_version, _add_version, _del_version, _init_version } from "../src/version";
 
 beforeEach(() => {
   _init_version({ reset_local: 1, a: 0, b: 1 });

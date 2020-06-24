@@ -55,17 +55,17 @@ describe(reverse_sound_switch.name, () => {
 });
 
 describe(pre_audio.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(get_audio.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(play_audio.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(stop_audio.name, () => {
-  // TODO
+  test.todo("");
 });

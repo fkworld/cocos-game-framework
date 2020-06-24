@@ -1,12 +1,12 @@
 import {
+  do_delay,
+  get_positive_mode,
+  get_template_string,
+  is_prob,
   random,
   random_array_item,
-  random_prob,
-  is_prob,
-  get_positive_mode,
   random_position,
-  do_delay,
-  get_template_string,
+  random_prob,
 } from "../src/tool";
 
 describe(random.name, () => {
@@ -87,7 +87,7 @@ describe(get_positive_mode.name, () => {
 });
 
 describe(do_delay.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(get_template_string.name, () => {
