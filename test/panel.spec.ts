@@ -32,7 +32,7 @@ class PanelTest extends PanelBase {
   }
 }
 
-describe(open_panel.name, () => {
+describe.skip(open_panel.name, () => {
   test("", async () => {
     expect(PanelTest.ins).toBeUndefined();
     expect(PanelTest.a).toBe(0);
@@ -42,7 +42,7 @@ describe(open_panel.name, () => {
   });
 });
 
-describe(close_panel.name, () => {
+describe.skip(close_panel.name, () => {
   test("", async () => {
     await close_panel(PanelTest);
     expect(PanelTest.ins.node.active).toBe(false);
