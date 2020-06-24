@@ -1,4 +1,4 @@
-import { _init_local, get_local, set_local } from "../src/local";
+import { get_local, set_local, _init_local } from "../src/local";
 
 beforeEach(() => {
   _init_local({ a: "aaa" }, true);

@@ -13,15 +13,15 @@ import {
 } from "../src/tool-ccc";
 
 describe(adjust_canvas.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(do_widget.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(do_schedule.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(get_node_wp.name, () => {
@@ -51,15 +51,15 @@ describe(set_node_by_wp.name, () => {
 });
 
 describe(load_async.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(load_res_async.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(load_res_dir_async.name, () => {
-  // TODO
+  test.todo("");
 });
 
 describe(get_filename.name, () => {

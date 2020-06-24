@@ -4,9 +4,9 @@ import {
   get_metas,
   get_metas_id,
   MetaBase,
+  parse_csv_all,
   _init_meta,
   _parse_csv,
-  parse_csv_all,
 } from "../src/meta";
 
 beforeEach(() => {

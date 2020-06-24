@@ -40,11 +40,7 @@ let language_runtime: string;
  * @param editor 编辑器默认语言
  * @param runtime 运行时默认语言
  */
-export function _init_text(
-  config: ConfigLanguage = {},
-  editor = "chinese",
-  runtime = "chinese",
-): void {
+export function _init_text(config: ConfigLanguage = {}, editor: string, runtime: string): void {
   languages = new Map(
     Object.entries(config).map(([key_language, config_language]) => {
       return [key_language, new Map(Object.entries(config_language))];
