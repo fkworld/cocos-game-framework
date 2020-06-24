@@ -6,8 +6,3 @@
 !/types/fy.d.ts
 !/types/game.d.ts
 
-/example-project/**/*
-!/example-project/assets/**/*.ts
-!/example-project/**/*.md
-!/example-project/tsconfig.json
-

@@ -12,6 +12,6 @@
     // 用于限制在function中使用this关键字
     "noImplicitThis": true
   },
-  "files": ["example-project/creator.d.ts", "types/game.d.ts"],
+  "files": ["types/creator.d.ts", "types/game.d.ts"],
   "include": ["src/**/*", "test/**/*"]
 }
