@@ -3,8 +3,6 @@
 
 module.exports = {
   preset: "ts-jest",
-  // 缺少global-afterEnv版本的配置，所以每个模块执行前都会执行1次，花费时间约为330ms
-  setupFilesAfterEnv: ["./test/jest.setup.js"],
-  // 测试覆盖率
-  collectCoverageFrom: ["src/**/*"],
+  setupFiles: ["jest-canvas-mock", "./test/cocos2d-js-min.js"],
+  collectCoverageFrom: ["src/**/*.ts"],
 };
