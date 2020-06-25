@@ -6,7 +6,7 @@
  */
 
 import { log, LogLevel } from "./log";
-import { to_editor_url, load_async } from "./tool-ccc";
+import { load_dir_async, to_editor_url } from "./tool-ccc";
 
 /**
  * meta配置信息，一般是通过csv文件自动生成
@@ -191,20 +191,13 @@ export function _parse_csv(source: string): Record<string, unknown> {
   }
  */
 export async function parse_csv_all(): Promise<void> {
-  let url_target = to_editor_url(AUTO_GENERATE_FILENAME);
-  let url_source = to_editor_url(cc.path.dirname(AUTO_GENERATE_FILENAME) + "/*.csv");
-  let files: Partial<Editor.assetdb.TypeAssetInfo>[] = await new Promise(res => {
-    Editor.assetdb.queryAssets(url_source, "text", (err, results) => res(results));
-  });
-  let file_texts: cc.TextAsset[] = await Promise.all(
-    files.map(file => load_async({ type: "uuid", uuid: file.uuid })),
-  );
+  let file_texts = await load_dir_async("csv", cc.TextAsset);
   let json = file_texts.reduce((r, text) => {
     r[text.name] = _parse_csv(text.text);
     return r;
   }, {});
   Editor.assetdb.createOrSave(
-    url_target,
+    to_editor_url(AUTO_GENERATE_FILENAME),
     `export const CONFIG_META=${JSON.stringify(json)}`,
     (err: unknown) => {
       err
