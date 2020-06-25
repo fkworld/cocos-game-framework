@@ -8,7 +8,7 @@ import { event_center } from "./event";
 import { get_local, set_local } from "./local";
 import { log, LogLevel } from "./log";
 import { get_template_string } from "./tool";
-import { load_res_async } from "./tool-ccc";
+import { load_async } from "./tool-ccc";
 
 /** 事件：语言更改 */
 export const EVENT_LANGUAGE_CHANGE = "text/language-change";
@@ -112,7 +112,7 @@ export function set_node_text(node: cc.Node, key: string, ...params: string[]): 
   // sprite
   let sprite = node.getComponent(cc.Sprite);
   if (sprite) {
-    load_res_async(result, cc.SpriteFrame).then(v => {
+    load_async(result, cc.SpriteFrame).then(v => {
       sprite.spriteFrame = v;
     });
     return;

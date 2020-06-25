@@ -5,7 +5,7 @@
 
 import { event_center } from "./event";
 import { get_local, set_local } from "./local";
-import { load_res_async } from "./tool-ccc";
+import { load_async } from "./tool-ccc";
 
 /** 事件：打开音乐开关 */
 export const EVENT_MUSIC_SWITCH_OPEN = "audio/music-switch-open";
@@ -131,7 +131,7 @@ export function reverse_sound_switch(): void {
 export async function pre_audio(key: string): Promise<void> {
   let data = audios.get(key);
   if (data.state === AudioState.Prepare && !data.clip) {
-    data.clip = await load_res_async(data.url, cc.AudioClip);
+    data.clip = await load_async(data.url, cc.AudioClip);
     data.state = data.clip ? AudioState.Ok : AudioState.Error;
   }
   audios.set(key, data);

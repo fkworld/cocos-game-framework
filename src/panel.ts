@@ -4,7 +4,7 @@
  * @see https://www.yuque.com/fengyong/game-develop-road/olfgzo
  */
 
-import { load_res_async } from "./tool-ccc";
+import { load_async } from "./tool-ccc";
 
 /** 界面类型 */
 enum PanelType {
@@ -102,7 +102,7 @@ export function _init_panel(node: cc.Node = new cc.Node()): void {
  */
 export async function pre_panel(panel: typeof PanelBase): Promise<void> {
   if (!panel.context.prefab) {
-    panel.context.prefab = await load_res_async(panel.context.path, cc.Prefab);
+    panel.context.prefab = await load_async(panel.context.path, cc.Prefab);
   }
 }
 
