@@ -6,8 +6,7 @@ import {
   get_node_childs,
   get_node_wp,
   load_async,
-  load_res_async,
-  load_res_dir_async,
+  load_dir_async,
   set_node_by_wp,
   to_editor_url,
 } from "../src/tool-ccc";
@@ -54,11 +53,7 @@ describe(load_async.name, () => {
   test.todo("");
 });
 
-describe(load_res_async.name, () => {
-  test.todo("");
-});
-
-describe(load_res_dir_async.name, () => {
+describe(load_dir_async.name, () => {
   test.todo("");
 });
 

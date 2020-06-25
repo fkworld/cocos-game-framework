@@ -107,72 +107,41 @@ export function set_node_by_wp(node: cc.Node, wp: cc.Vec3, flag = false): cc.Vec
 }
 
 /**
- * 载入单个资源
- * @since 1.0.0
- * @param resources
- */
-export async function load_async(
-  resources: string | string[] | { type: "uuid"; uuid?: string; url?: string },
-): Promise<any> {
-  return new Promise(res => {
-    cc.loader.load(resources, (err: unknown, r: unknown) => {
-      err && log(LogLevel.Error, `载入资源失败，resources=${resources}，err=${err}`);
-      err ? res() : res(r);
-    });
-  }).catch(err => {
-    log(LogLevel.Error, `载入资源失败，resources=${resources}，err=${err}`);
-  });
-}
-
-/**
  * 载入resources下的单个资源
- * - 统一在运行时载入和在编辑器中载入
- * - 如果无此资源，则报错并返回undefined
- * @since 1.0.0
- * @param path 资源路径，以运行时路径为准
- * @param type
- */
-export async function load_res_async<T extends typeof cc.Asset>(
-  path: string,
-  type: T,
-): Promise<InstanceType<T>> {
-  if (CC_EDITOR) {
-    // 在编辑器中载入
-    let url = to_editor_url(path);
-    // 针jpg和png资源完善路径
-    if (new cc.SpriteFrame() instanceof type) {
-      url = (cc.path.join as any)(url, get_filename(url));
-    }
-    let uuid = Editor.assetdb.remote.urlToUuid(url);
-    return load_async({ type: "uuid", uuid: uuid });
-  } else {
-    // 运行时载入
-    return new Promise(res => {
-      // 去除后缀名
-      let url = cc.path.mainFileName(path);
-      cc.loader.loadRes(url, type, (err, r) => {
-        err && log(LogLevel.Error, `载入资源失败, path=${url}, err=${err}`);
-        err ? res() : res(r);
-      });
-    });
-  }
-}
-
-/**
- * 载入resources下某个文件夹下的所有资源
- * - 不同平台下的载入顺序不同，因此在载入完毕后需要进行排序
+ * - 与2.3.*不同的时，新api可以在CC_EDITOR下直接使用
  * @since 1.0.0
  * @param path
  * @param type
  */
-export async function load_res_dir_async<T extends typeof cc.Asset>(
+export async function load_async<P extends string | string[], T extends typeof cc.Asset>(
+  paths: P,
+  type: T,
+): Promise<P extends string ? InstanceType<T> : InstanceType<T>[]> {
+  return new Promise(res => {
+    cc.resources.load(paths, type, (error, assets) => {
+      error && log(LogLevel.Error, `载入资源失败, path=${paths}, err=${error}`);
+      error ? res() : res(assets as any);
+    });
+  });
+}
+
+/**
+ * 载入resources下某个文件夹下的所有资源
+ * - 与2.3.*不同的时，新api可以在CC_EDITOR下直接使用
+ * - 不同平台下的载入顺序不同，因此在载入完毕后需要进行排序
+ * @since 1.0.0
+ * @param path
+ * @param type
+ * @see https://github.com/cocos-creator/engine/issues/6929 在path=""时，在编辑器环境中，有bug
+ */
+export async function load_dir_async<T extends typeof cc.Asset>(
   path: string,
   type: T,
 ): Promise<InstanceType<T>[]> {
   return new Promise(res => {
-    cc.loader.loadResDir(path, type, (err, r) => {
-      err && log(LogLevel.Error, `载入资源组失败, path=${path}, err=${err}`);
-      err ? res() : res(r);
+    cc.resources.loadDir(path, type, (error, assets) => {
+      error && log(LogLevel.Error, `载入资源组失败, path=${path}, err=${error}`);
+      error ? res() : res(assets as any);
     });
   });
 }
