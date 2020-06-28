@@ -1,8 +1,6 @@
-/test/cocos2d-js-min.js
-/dist
-/coverage
-
-/types/**/*
-!/types/fy.d.ts
-!/types/game.d.ts
+/test/*.js
+/dist/**/*
+!/dist/fy*.d.ts
+/types/creator.d.ts
+/coverage/
 

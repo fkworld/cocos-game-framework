@@ -11,6 +11,10 @@
     "resolveJsonModule": true,
     // 用于限制在function中使用this关键字
     "noImplicitThis": true
+    // 在tsc中处理
+    // "outDir": "./dist",
+    // "declaration": true,
+    // "emitDeclarationOnly": true
   },
   "include": ["types/*.d.ts", "src/**/*", "test/**/*"]
 }

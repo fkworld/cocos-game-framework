@@ -6,16 +6,17 @@
     {
       "type": "npm",
       "script": "build",
+      "group": "build",
       "problemMatcher": [],
       "label": "npm: build",
-      "detail": "npx rollup -c"
+      "detail": "npx tsc --declaration --emitDeclarationOnly --declarationDir ./dist && npx rollup -c"
     },
     {
       "type": "npm",
       "script": "prettier",
       "problemMatcher": [],
       "label": "npm: prettier",
-      "detail": "npx prettier --loglevel=silent --write ."
+      "detail": "npx prettier --write ."
     },
     {
       "type": "npm",
@@ -26,7 +27,6 @@
     },
     {
       "type": "npm",
-      // 使用${file}来传入当前文件
       "script": "test-single ${file}",
       "problemMatcher": [],
       "label": "npm: test-single",
