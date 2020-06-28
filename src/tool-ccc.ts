@@ -146,31 +146,6 @@ export async function load_dir_async<T extends typeof cc.Asset>(
   });
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
-// cc.Intersection
-export const {
-  lineLine,
-  lineRect,
-  linePolygon,
-  rectRect,
-  rectPolygon,
-  polygonCircle,
-  polygonPolygon,
-  circleCircle,
-  pointInPolygon,
-  pointLineDistance,
-} = cc.Intersection;
-export function pointInCircle(
-  point: cc.Vec2,
-  circle: {
-    position: cc.Vec2;
-    radius: number;
-  },
-): boolean {
-  return point.sub(circle.position).len() <= circle.radius;
-}
-/* eslint-enable @typescript-eslint/naming-convention */
-
 /**
  * 获取无后缀的文件名
  * @since 1.0.0
