@@ -48,8 +48,6 @@ export interface Config {
 /** 框架版本号 */
 export const VERSION = version;
 
-const versiIII = 1;
-
 /**
  * 初始化框架
  * @since 1.0.0

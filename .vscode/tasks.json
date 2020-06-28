@@ -12,13 +12,6 @@
     },
     {
       "type": "npm",
-      "script": "copy",
-      "problemMatcher": [],
-      "label": "npm: copy",
-      "detail": "npx ts-node scripts/copy-to-example-project.ts"
-    },
-    {
-      "type": "npm",
       "script": "prettier",
       "problemMatcher": [],
       "label": "npm: prettier",
